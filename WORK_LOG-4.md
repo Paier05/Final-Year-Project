@@ -143,6 +143,85 @@ would be building on sand.
   cliff. If that does not also fix Cause 1, I will add an independently
   initialised committee as the source of genuinely different functions.
 
+### 2026-08-24 — M0 PASSES after two fixes; both dead ends kept on the record
+
+- What I did: Fixed the two causes separately, re-ran the gate, and added
+  `test_experiment.py` (43 checks, including a finite-difference check of the
+  hand-written BPTT).
+- Why: The two failures had different causes and fixing them together would have
+  made it impossible to say which fix did what.
+
+**Fix for Cause 2 (no graded frontier) — step-wise Solver.** Replaced the flat
+MLP with one shared op-conditioned block applied once per program step, feeding
+its own soft prediction forward:
+
+    state_0 = input grid;  state_t = softmax(block(state_{t-1}, op_t));  answer = argmax(state_d)
+
+Depth-1 competence now transfers to depth 4 because the weights are shared, but
+imperfectly, because each step consumes the previous step's *predicted* grid.
+Errors compound with depth, which is exactly the slope the method needs — and it
+is a closer analogue of a reasoning chain than the flat MLP was, since an early
+mistake corrupts everything downstream. This is a deviation from the issue's
+stated architecture and it is flagged in the README.
+
+Two bugs found on the way, both worth recording:
+
+1. *Left-padding deadlocked training.* My first version ran a fixed 4 steps with
+   pad tokens first, so even a depth-1 task had to chain through 4 blocks. Loss
+   sat at exactly `ln(2) = 0.6931` for 2000 steps — the model could not
+   bootstrap, because there was no gradient path to "pad = identity". Fixed by
+   right-padding with an explicit *activity mask*: steps past a program's depth
+   carry the state through untouched and never run the block. A depth-1 task is
+   now exactly one block application on a clean input.
+2. *The gradient check was wrong, not the gradient.* The finite-difference check
+   reported 3-13% error and I spent a while hunting a BPTT bug that did not
+   exist. `_to_state` hard-coded `dtype=np.float32`, so the "float64" check was
+   silently running the chain in float32 and comparing analytic gradients
+   against pure rounding noise. With the dtype following its input, worst
+   relative error is **1.1e-8 at depth 1 and 2.8e-7 at depth 4**. Lesson kept in
+   the test file as a comment: verify the instrument before believing it about
+   the thing being measured.
+
+**Fix for Cause 1 (vote never beats greedy) — committee instead of MC-dropout.**
+MC-dropout at rate 0.15 was actively catastrophic in a chained model: noise
+compounds across steps, all 10 samples land somewhere different, `p_hat` pins to
+0.10, and the vote scored *0-19%* where greedy scored *72-94%*. Lowering the rate
+only trades one degeneracy for the other (all samples identical, `p_hat = 1`, no
+signal). Replaced with a **committee of 10 independently initialised Solvers**,
+each contributing its own greedy answer, which is the strongest reading of the
+issue's own phrase "m genuinely different functions". MC-dropout is kept as an
+optional top-up but defaults to off.
+
+**M0 gate result** (seed = all 9 depth-1 buckets, 1200 steps, committee of 10,
+1.27M params total):
+
+| gate | result |
+|---|---|
+| seed bucket >= 90% | **PASS** — (1,3,2) at 99.0% |
+| frontier >= 25% on a harder bucket | **PASS** — 14 unseeded buckets in the 5-95% band |
+| hardest bucket near 0% | **PASS** — (4,5,4) at 0.0% |
+| vote beats a single sample | **PASS** |
+| vote beats greedy *(my addition)* | **PASS** |
+
+Frontier pseudo-label quality, the numbers that matter:
+
+| bucket | vote | single sample | greedy | mean p_hat |
+|---|---|---|---|---|
+| (2,3,4) | **58.3%** | 26.7% | 6.2% | 0.33 |
+| (2,4,3) | **56.2%** | 24.8% | 25.0% | 0.30 |
+| (3,3,3) | **75.0%** | 52.3% | 35.4% | 0.57 |
+| (4,3,3) | **83.3%** | 52.9% | 33.3% | 0.55 |
+
+- Result / what I found: I added `gate_vote_beats_greedy` as a fifth gate. The
+  issue only asks that the vote beat a *single sample*, but that check passed
+  even in the completely broken MC-dropout configuration where the vote was four
+  times worse than greedy. Beating greedy is the condition that actually
+  determines whether information enters the loop, so it is the one I gated on.
+- Next step: The seed phase is now cached to disk (it depends only on
+  `(seed, steps, committee)`, not on the mode), which both saves most of the wall
+  clock and makes every mode start from byte-identical weights — so mode
+  comparisons are paired. Run M1 baselines and M2.
+
 ## Open questions / risks
 
 - **M0 is a real risk, not a formality.** The issue documents a previous

@@ -102,7 +102,16 @@ def execute(program, grid, C):
 # Ground-truth access guard
 # ---------------------------------------------------------------------------
 
-_GT_ALLOWED = {"seed", "eval"}
+_GT_ALLOWED = {"seed", "eval", "oracle"}
+"""Purposes permitted to read a true label.
+
+``seed`` is the one-off pretraining phase, ``eval`` is measurement, and
+``oracle`` is the deliberately-cheating ceiling baseline from the issue's M1
+(same curriculum as ``rzero``, but trained on real labels).  ``oracle`` is listed
+here rather than smuggled in under ``seed`` so that a labelled run is impossible
+to start by accident and obvious in the code that requests it.  No claim about
+learning without labels is ever made from an ``oracle`` run.
+"""
 
 
 def assert_ground_truth_allowed(purpose):
@@ -221,43 +230,68 @@ def identity_mask(bucket_id):
 # Encoding
 # ---------------------------------------------------------------------------
 
-PROGRAM_DIM = MAX_D * (NUM_OPS + 1)
-GRID_DIM = MAX_G * MAX_G * (MAX_C + 1)
-SIZE_DIM = len(GRID_SIZES) + len(NUM_COLORS)
-INPUT_DIM = PROGRAM_DIM + GRID_DIM + SIZE_DIM
-
 OUTPUT_CELLS = MAX_G * MAX_G
 OUTPUT_DIM = OUTPUT_CELLS * MAX_C
 
+STATE_DIM = OUTPUT_CELLS * (MAX_C + 1)
+SIZE_DIM = len(GRID_SIZES) + len(NUM_COLORS)
+OP_DIM = NUM_OPS + 1
+STEP_INPUT_DIM = STATE_DIM + OP_DIM + SIZE_DIM
 
-def encode_batch(programs, grids, buckets):
-    """One-hot ``[program tokens || input grid || size tags]`` for a batch."""
+
+def encode_program_steps(programs):
+    """``(steps, active)``: ``(n, MAX_D)`` op tokens and an activity mask.
+
+    Programs are right-padded and ``active[i, t]`` is 1.0 only while ``t`` is
+    inside program ``i``.  Inactive steps carry the state through untouched
+    rather than running the block on a pad token, so a depth-1 task is exactly
+    one block application on the clean input grid, and a depth-4 task chains four
+    of them.  Depth therefore controls how far prediction error compounds, which
+    is what makes it a difficulty *slope* rather than a cliff.
+    """
     programs = list(programs)
+    n = len(programs)
+    steps = np.full((n, MAX_D), PAD_OP, dtype=np.int64)
+    active = np.zeros((n, MAX_D), dtype=np.float32)
+    for i, prog in enumerate(programs):
+        steps[i, : len(prog)] = prog
+        active[i, : len(prog)] = 1.0
+    return steps, active
+
+
+def encode_state(grids, buckets):
+    """Initial soft state ``(n, STATE_DIM)`` plus the ``(n, cells)`` inside mask.
+
+    Channels ``0..MAX_C-1`` hold the colour distribution, channel ``MAX_C`` flags
+    cells outside this task's grid.
+    """
     grids = list(grids)
     buckets = list(buckets)
-    n = len(programs)
-    x = np.zeros((n, INPUT_DIM), dtype=np.float32)
-
+    n = len(grids)
+    state = np.zeros((n, OUTPUT_CELLS, MAX_C + 1), dtype=np.float32)
+    inside = np.zeros((n, OUTPUT_CELLS), dtype=np.float32)
     for i in range(n):
-        prog = programs[i]
+        _, G, _C = BUCKETS[buckets[i]]
         grid = grids[i]
-        _, G, C = BUCKETS[buckets[i]]
-        # program slots, right-padded
-        for slot in range(MAX_D):
-            tok = prog[slot] if slot < len(prog) else PAD_OP
-            x[i, slot * (NUM_OPS + 1) + tok] = 1.0
-        # grid cells, top-left aligned inside the MAX_G x MAX_G frame
-        base = PROGRAM_DIM
-        for r in range(MAX_G):
-            for c in range(MAX_G):
-                cell = base + (r * MAX_G + c) * (MAX_C + 1)
-                tok = int(grid[r, c]) if (r < G and c < G) else PAD_CELL
-                x[i, cell + tok] = 1.0
-        # explicit size tags so the model need not infer G and C from padding
-        tag = PROGRAM_DIM + GRID_DIM
-        x[i, tag + GRID_SIZES.index(G)] = 1.0
-        x[i, tag + len(GRID_SIZES) + NUM_COLORS.index(C)] = 1.0
-    return x
+        state[i, :, PAD_CELL] = 1.0
+        for r in range(G):
+            for c in range(G):
+                cell = r * MAX_G + c
+                state[i, cell, PAD_CELL] = 0.0
+                state[i, cell, int(grid[r, c])] = 1.0
+                inside[i, cell] = 1.0
+    return state.reshape(n, STATE_DIM), inside
+
+
+def encode_size_tags(buckets):
+    """``(n, SIZE_DIM)`` one-hot tags for G and C."""
+    buckets = list(buckets)
+    tags = np.zeros((len(buckets), SIZE_DIM), dtype=np.float32)
+    for i, bid in enumerate(buckets):
+        _, G, C = BUCKETS[bid]
+        tags[i, GRID_SIZES.index(G)] = 1.0
+        tags[i, len(GRID_SIZES) + NUM_COLORS.index(C)] = 1.0
+    return tags
 
 
 def encode_targets(grids, buckets):
@@ -280,6 +314,17 @@ def encode_targets(grids, buckets):
                 labels[i, r * MAX_G + c] = int(grid[r, c])
                 mask[i, r * MAX_G + c] = 1.0
     return labels, mask
+
+
+def cell_mask_for(buckets):
+    """``(n, cells)`` mask of which cells exist, without needing any grid."""
+    buckets = list(buckets)
+    mask = np.zeros((len(buckets), OUTPUT_CELLS), dtype=np.float32)
+    for i, bid in enumerate(buckets):
+        _, G, _C = BUCKETS[bid]
+        for r in range(G):
+            mask[i, r * MAX_G : r * MAX_G + G] = 1.0
+    return mask
 
 
 def color_mask(buckets):
