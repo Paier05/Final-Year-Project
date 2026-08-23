@@ -13,6 +13,10 @@ Paste or reference this file whenever you tell your AI to start work on an issue
 - Confirm `gh auth status` is authenticated. If not, stop and tell the user.
 - Confirm the working tree is clean (`git status`). If there are uncommitted changes unrelated to this task, stop and ask the user how to handle them rather than discarding anything.
 - Make sure `main` (or the repo's default branch) is up to date: `git checkout main && git pull`.
+- If already inside a linked worktree (`git rev-parse --git-common-dir` differs
+  from `.git`), skip the checkout: the worktree is already isolated and based on
+  a fresh ref. Just run `git fetch origin` and confirm the base is current.
+  Otherwise: `git checkout main && git pull`.
 ## 1. Read the issue
  
 - Identify the issue number from the user's instruction (e.g. "issue #42"). If the user didn't give a number, ask which issue, or list open issues with `gh issue list` and ask.
