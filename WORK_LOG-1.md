@@ -87,3 +87,37 @@ the workflow says to stop rather than proceed unauthenticated.
 ## Summary (fill in at the end)
 
 _Not yet started._
+
+### 2026-08-23 — Sources fetched and cached; paper read in full
+
+- What I did: Verified arXiv:2607.28287 resolves (it does — title, authors, and 30 Jul 2026 date all
+  match the issue). Downloaded the full LaTeXML HTML (707 KB) to `refs/2607.28287v1.html`, converted
+  it to plain text (`refs/2607.28287v1.txt`, 4,064 lines) with a throwaway script so I could grep and
+  read it directly instead of through a summarizer. Read sections 1–8 and Appendices A, C, D. Fetched
+  the `NIMI-research/Tycho` README and `docs/REPRODUCING.md` to `refs/`, plus the repo file tree.
+- Why: Workflow 5b requires sources cached locally so claims can be re-checked. Reading the raw text
+  rather than a fetched summary is the only way to satisfy the issue's rule 1 (cite section/table
+  numbers for every number) — a summarizer drops table numbers.
+- Result / what I found: The paper is real, 8 sections + 5 appendices, and far more self-critical
+  than the issue's framing anticipated. Two findings stand out:
+
+  1. **The metric question (issue task 4) has a concrete answer.** Definition 2 (§3.1) gives the
+     per-level efficiency contribution as `e_ℓ = min{115, 100(h_ℓ/a_ℓ)²}` — capped at **115**, not
+     100 — with game RHAE `= min{ Σwℓeℓ/Σwℓ , 100·Σwℓcℓ/Σwℓ }`, `wℓ = ℓ`. The issue's stated official
+     per-level score is `min(1, h/a)²`, i.e. capped at 1.0. Those differ: the paper's form lets a level
+     where the agent beat the human baseline earn up to 115 and **offset** levels where it did worse,
+     before the outer `min` clips the game to 100. §5.1 "Efficiency beyond capped RHAE" confirms this
+     matters in practice: 171 of Opus 5's 183 completed levels sit at the per-level cap, so 12 do not —
+     under a strict per-level cap of 100 those 12 could not be compensated. The paper does describe its
+     formula as official and links six official ARC Prize scorecards, so I cannot call it wrong; I can
+     only report the discrepancy precisely and flag which side I cannot verify.
+  2. **The repair paradox (issue task 7) has real data behind it.** Trigger reaches 88.1% pre-action
+     accepted transition match vs orchestrator's 16.2% (Table 7) and 99.97% vs 45.56% end-of-run
+     (Table 11), yet scores 83.07 vs 88.49 RHAE. But Table 7 also shows trigger's pre-action model
+     *executes* only 52.0% of the time vs 83.5% — its accuracy is conditional on a model being there
+     far less often. And it burns 1,192 builder calls vs 147 (Table 8), hits the LM-call limit on 5
+     games (Table 10), and costs $8.03k vs $5.78k (§5.1 Cost and context). So "more accurate model,
+     worse play" is real, but the mechanism is not purely epistemic — it is partly budget exhaustion.
+     The sk48 case study (§5.2) supplies the epistemic half.
+- Next step: Read the two background PDFs in `Documentation_Generated/` for the positioning, ARC Prize
+  eligibility, and FYP-implications sections, then draft the review.

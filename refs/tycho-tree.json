@@ -1,0 +1,1412 @@
+{
+  "sha": "f68912a764372ead0a610db2e1c011d41ce5197e",
+  "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/f68912a764372ead0a610db2e1c011d41ce5197e",
+  "tree": [
+    {
+      "path": ".env.example",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c2089cfd766530fa03d5c05926d62f761e774326",
+      "size": 452,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c2089cfd766530fa03d5c05926d62f761e774326"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8bba6699becd4007f00b9e957c1aa54d868df4e1",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/8bba6699becd4007f00b9e957c1aa54d868df4e1"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3f5041e137091d838620ad00efc97dac2d4fbe68",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/3f5041e137091d838620ad00efc97dac2d4fbe68"
+    },
+    {
+      "path": ".github/workflows/tests.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e8dfb96c7bb935d50d253d5c44b8f1836303494",
+      "size": 489,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6e8dfb96c7bb935d50d253d5c44b8f1836303494"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc6d3ccfa0d91e958b64a7a2bc3c07162113c348",
+      "size": 125,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fc6d3ccfa0d91e958b64a7a2bc3c07162113c348"
+    },
+    {
+      "path": "CITATION.cff",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6153b2abadad42a10d8a76315c93bb1c0f6e5bdc",
+      "size": 468,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6153b2abadad42a10d8a76315c93bb1c0f6e5bdc"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36879a6058dd84099a351bd9cc84076e3ba5528a",
+      "size": 430,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/36879a6058dd84099a351bd9cc84076e3ba5528a"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "575d6dcaa4e9b8da4bcded7a1d3805cff0104559",
+      "size": 10792,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/575d6dcaa4e9b8da4bcded7a1d3805cff0104559"
+    },
+    {
+      "path": "Makefile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "979c942c3d41974397bb467b63282a5a6f8110e6",
+      "size": 724,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/979c942c3d41974397bb467b63282a5a6f8110e6"
+    },
+    {
+      "path": "PUBLIC_RELEASE_MANIFEST.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90ace6291a4193b6e67935eed5d337e55e849bbd",
+      "size": 20096,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/90ace6291a4193b6e67935eed5d337e55e849bbd"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62d33dc69d6539f994f816e171c4f0fbe40e3774",
+      "size": 4714,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/62d33dc69d6539f994f816e171c4f0fbe40e3774"
+    },
+    {
+      "path": "artifacts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "13919f5c1b96f5c27eda765359c5c453cc0447f7",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/13919f5c1b96f5c27eda765359c5c453cc0447f7"
+    },
+    {
+      "path": "artifacts/appendix_metrics.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6ea23fd1af829f761ad2768353f3441efdf6f154",
+      "size": 37238,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6ea23fd1af829f761ad2768353f3441efdf6f154"
+    },
+    {
+      "path": "artifacts/community_scorecard_human_comparison.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6f9fffb88393cf5a36b928609ff0b2d5c20b437",
+      "size": 5298,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c6f9fffb88393cf5a36b928609ff0b2d5c20b437"
+    },
+    {
+      "path": "artifacts/community_scorecard_human_comparison.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43d76977480af3d04f5d285ddd1efd7580b098da",
+      "size": 151996,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/43d76977480af3d04f5d285ddd1efd7580b098da"
+    },
+    {
+      "path": "artifacts/evaluation_integrity.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57a77dfaa8569879419774992eef1319275856cb",
+      "size": 2826,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/57a77dfaa8569879419774992eef1319275856cb"
+    },
+    {
+      "path": "artifacts/figure_data.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0347604c0df68e9f546771852216d33e7af6ee1b",
+      "size": 26756,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/0347604c0df68e9f546771852216d33e7af6ee1b"
+    },
+    {
+      "path": "artifacts/scorecards",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8c0a526e03c050483d11dde486179883a8874d9a",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/8c0a526e03c050483d11dde486179883a8874d9a"
+    },
+    {
+      "path": "artifacts/scorecards/gpt56_sol_orchestrator_max.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e601840019ab80799f410d6d8ad60eb8bb2edf42",
+      "size": 27682,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e601840019ab80799f410d6d8ad60eb8bb2edf42"
+    },
+    {
+      "path": "artifacts/scorecards/opus48_no_world_model.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd5a4803c8ce0d1fd8fe271c9b4cb8bbfac5bd15",
+      "size": 28364,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fd5a4803c8ce0d1fd8fe271c9b4cb8bbfac5bd15"
+    },
+    {
+      "path": "artifacts/scorecards/opus48_orchestrator.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d4351ac5849c9b4722ebd166ef72a5bc157b278",
+      "size": 28105,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6d4351ac5849c9b4722ebd166ef72a5bc157b278"
+    },
+    {
+      "path": "artifacts/scorecards/opus48_single.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2534aca336fd65141b1fedb958226dc068aa87b",
+      "size": 28185,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/f2534aca336fd65141b1fedb958226dc068aa87b"
+    },
+    {
+      "path": "artifacts/scorecards/opus48_trigger.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9f63cd77a51970f0423e5a7e38bde5d78607d3c2",
+      "size": 28298,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/9f63cd77a51970f0423e5a7e38bde5d78607d3c2"
+    },
+    {
+      "path": "artifacts/scorecards/opus5_orchestrator.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6b19eba5c3fee2e08481f156f7d77ec26ba9412",
+      "size": 27676,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c6b19eba5c3fee2e08481f156f7d77ec26ba9412"
+    },
+    {
+      "path": "configs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "368c0939f784fe7096226294e541fd039879fe86",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/368c0939f784fe7096226294e541fd039879fe86"
+    },
+    {
+      "path": "configs/paper",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "16c087e9404175baec4104ce0f40867d183d1191",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/16c087e9404175baec4104ce0f40867d183d1191"
+    },
+    {
+      "path": "configs/paper/gpt56_sol_orchestrator_max.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b788d1f9b11b56fff12c8e74f69a192bb8c7728f",
+      "size": 697,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b788d1f9b11b56fff12c8e74f69a192bb8c7728f"
+    },
+    {
+      "path": "configs/paper/opus48_no_world_model.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9279baf7257836c4704d8dd5c22860c97140c64e",
+      "size": 592,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/9279baf7257836c4704d8dd5c22860c97140c64e"
+    },
+    {
+      "path": "configs/paper/opus48_orchestrator.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad29495c6a6157e37442b38b34e5d57f8bbbf416",
+      "size": 590,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/ad29495c6a6157e37442b38b34e5d57f8bbbf416"
+    },
+    {
+      "path": "configs/paper/opus48_single.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2bcfcdeb0cbefbeaa4dd672f2a7f456bed3179a",
+      "size": 584,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/f2bcfcdeb0cbefbeaa4dd672f2a7f456bed3179a"
+    },
+    {
+      "path": "configs/paper/opus48_trigger.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50d7f892d89eec9a32db5afb4b8bdd453007a772",
+      "size": 585,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/50d7f892d89eec9a32db5afb4b8bdd453007a772"
+    },
+    {
+      "path": "configs/paper/opus5_orchestrator.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a61309b92158a78277291c94d979e9ba7ef6b4d1",
+      "size": 668,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/a61309b92158a78277291c94d979e9ba7ef6b4d1"
+    },
+    {
+      "path": "configs/smoke",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "de19c29a4d41f27ccc12af969658e6272c852ee2",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/de19c29a4d41f27ccc12af969658e6272c852ee2"
+    },
+    {
+      "path": "configs/smoke/minimal.yaml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15d390a13c9d959df4450896e10173bf7517ba4a",
+      "size": 421,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/15d390a13c9d959df4450896e10173bf7517ba4a"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4a00696ce768c104b530ffb1cbeacf51d8cd9fb0",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/4a00696ce768c104b530ffb1cbeacf51d8cd9fb0"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d39df5b77bc4ef3fa583debe37dc60e7f7d8ad55",
+      "size": 2257,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/d39df5b77bc4ef3fa583debe37dc60e7f7d8ad55"
+    },
+    {
+      "path": "docs/PAPER_RESULTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "29c724320d571ae0f615d1ccfe3cfb1a8dc74021",
+      "size": 1001,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/29c724320d571ae0f615d1ccfe3cfb1a8dc74021"
+    },
+    {
+      "path": "docs/REPRODUCING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "67f6ec6f6da3bf55e9135f7423736388e063e482",
+      "size": 5647,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/67f6ec6f6da3bf55e9135f7423736388e063e482"
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e60fb46edd65580a35f35f1de7bb1c928bd65b09",
+      "size": 1266,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e60fb46edd65580a35f35f1de7bb1c928bd65b09"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3d8dae6bc90e310928401261cd7b98b801e415fc",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/3d8dae6bc90e310928401261cd7b98b801e415fc"
+    },
+    {
+      "path": "scripts/smoke_provider.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "368ee7b90ac327f9b865fdbb8e894c1bb58bc837",
+      "size": 2786,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/368ee7b90ac327f9b865fdbb8e894c1bb58bc837"
+    },
+    {
+      "path": "scripts/validate_public.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "985870dc6759de34c5d51400ceac73d267699ee9",
+      "size": 8911,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/985870dc6759de34c5d51400ceac73d267699ee9"
+    },
+    {
+      "path": "scripts/validate_wheel.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5de59b04ef5d753e62dd102604070985f16093ab",
+      "size": 1921,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5de59b04ef5d753e62dd102604070985f16093ab"
+    },
+    {
+      "path": "tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "85c5e4a27039f6a6ccf4a9d2e64dfdd0398ab6de",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/85c5e4a27039f6a6ccf4a9d2e64dfdd0398ab6de"
+    },
+    {
+      "path": "tests/agent",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c79f9fb32f5bde699dedd8dfcd54c73a659418b2",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/c79f9fb32f5bde699dedd8dfcd54c73a659418b2"
+    },
+    {
+      "path": "tests/agent/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14f15bba4e9b032fad87abf2d404e93d71d560b7",
+      "size": 46,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/14f15bba4e9b032fad87abf2d404e93d71d560b7"
+    },
+    {
+      "path": "tests/agent/test_animation_summary.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2fd0b5c80ea81292ea04d345c75ed782fe3c026",
+      "size": 17057,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/a2fd0b5c80ea81292ea04d345c75ed782fe3c026"
+    },
+    {
+      "path": "tests/agent/test_diff_verbosity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3247387cf9ff841b567439d1f97b123ab10dd22",
+      "size": 1517,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c3247387cf9ff841b567439d1f97b123ab10dd22"
+    },
+    {
+      "path": "tests/agent/test_dynamic_action_schema.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77c8262fd55c9d633feac6867dd996006cdba8c6",
+      "size": 1895,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/77c8262fd55c9d633feac6867dd996006cdba8c6"
+    },
+    {
+      "path": "tests/agent/test_inference_budget.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87afef26a76bcdc342d6215ed79024bdfff3e7a8",
+      "size": 2350,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/87afef26a76bcdc342d6215ed79024bdfff3e7a8"
+    },
+    {
+      "path": "tests/agent/test_level_boundary.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "173f5fe0ca6b635007d0576448bdeb6bb2fd3a5b",
+      "size": 8687,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/173f5fe0ca6b635007d0576448bdeb6bb2fd3a5b"
+    },
+    {
+      "path": "tests/agent/test_perception_image_delivery.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "022f948ad018999d1eb590969453806f701adae4",
+      "size": 13793,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/022f948ad018999d1eb590969453806f701adae4"
+    },
+    {
+      "path": "tests/agent/test_reset_guard.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5343c0286b95c30b764e440fdae109afa2446487",
+      "size": 949,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5343c0286b95c30b764e440fdae109afa2446487"
+    },
+    {
+      "path": "tests/agent/test_resume_actor_state.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efa954d45aa21a48fa4fbd9fe1341bce39f2fce5",
+      "size": 1937,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/efa954d45aa21a48fa4fbd9fe1341bce39f2fce5"
+    },
+    {
+      "path": "tests/agent/test_same_batch_deferral.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "258f28a7f3a77ce29d2e6d8fe1b1d4730423fe2e",
+      "size": 20605,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/258f28a7f3a77ce29d2e6d8fe1b1d4730423fe2e"
+    },
+    {
+      "path": "tests/agent/test_wm_signal.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7428ec05076eb271b1f2d49613463c0a042a75e",
+      "size": 185,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/a7428ec05076eb271b1f2d49613463c0a042a75e"
+    },
+    {
+      "path": "tests/harness",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8ba65acde86214c465b75f7acccc271b8179257b",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/8ba65acde86214c465b75f7acccc271b8179257b"
+    },
+    {
+      "path": "tests/harness/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c0c73b2d1fbd4ecb48f097a915057a36b3c3b97",
+      "size": 32,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/1c0c73b2d1fbd4ecb48f097a915057a36b3c3b97"
+    },
+    {
+      "path": "tests/harness/test_action_availability.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5415a037b61d6d645837002044a99436c37ee592",
+      "size": 9104,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5415a037b61d6d645837002044a99436c37ee592"
+    },
+    {
+      "path": "tests/harness/test_animation_evidence.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3ec1843244f0b5b32f86ae5689a6a379a62a82e2",
+      "size": 2674,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/3ec1843244f0b5b32f86ae5689a6a379a62a82e2"
+    },
+    {
+      "path": "tests/harness/test_arcade_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b488121ab20d4ce627dcd59f8f6a6c271c154f71",
+      "size": 610,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b488121ab20d4ce627dcd59f8f6a6c271c154f71"
+    },
+    {
+      "path": "tests/harness/test_diagnostics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b741d417843997d25aab643180f578c680ee97f0",
+      "size": 578,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b741d417843997d25aab643180f578c680ee97f0"
+    },
+    {
+      "path": "tests/harness/test_partial_run_actions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db7470b8bf6a6af0fd2db402e0657255c726f134",
+      "size": 2009,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/db7470b8bf6a6af0fd2db402e0657255c726f134"
+    },
+    {
+      "path": "tests/harness/test_planner_follow_diagnostics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "023d4a05c962a25dbf2113d0efc9251007feae8d",
+      "size": 4304,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/023d4a05c962a25dbf2113d0efc9251007feae8d"
+    },
+    {
+      "path": "tests/harness/test_record_slim.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f82f4d7242c87004f16373d042a2792a33d97b3f",
+      "size": 3041,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/f82f4d7242c87004f16373d042a2792a33d97b3f"
+    },
+    {
+      "path": "tests/harness/test_recorded_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69e9577a62818a8df9520d20f71586eb2a5f6e49",
+      "size": 1203,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/69e9577a62818a8df9520d20f71586eb2a5f6e49"
+    },
+    {
+      "path": "tests/harness/test_reset_policy.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e266411fb4c2a15a89324747d31885f006d2d87d",
+      "size": 486,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e266411fb4c2a15a89324747d31885f006d2d87d"
+    },
+    {
+      "path": "tests/harness/test_resume_checkpoint.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32ed0b1f2c33bcf8ee7c503fc7cb423914ab5413",
+      "size": 5550,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/32ed0b1f2c33bcf8ee7c503fc7cb423914ab5413"
+    },
+    {
+      "path": "tests/harness/test_resume_reasoning_attribution.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd8a9c9e7f18ec42c253efc14ca03e3bc29651f8",
+      "size": 1875,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/bd8a9c9e7f18ec42c253efc14ca03e3bc29651f8"
+    },
+    {
+      "path": "tests/harness/test_run_status.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3679dd1b49bc90cc088f4883ae1b2040e3c79ad",
+      "size": 6396,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/d3679dd1b49bc90cc088f4883ae1b2040e3c79ad"
+    },
+    {
+      "path": "tests/harness/test_submission_replay.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9005ab98ddc4da70ab25cf72aed9d4da6529f223",
+      "size": 13576,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/9005ab98ddc4da70ab25cf72aed9d4da6529f223"
+    },
+    {
+      "path": "tests/harness/test_terminal_frame_selection.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20ca220aa4f73ff11532a1cbb18e407ae60beae8",
+      "size": 1337,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/20ca220aa4f73ff11532a1cbb18e407ae60beae8"
+    },
+    {
+      "path": "tests/prompts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7bc04db875c33daf0c1ad41934dc6a2caa68d392",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/7bc04db875c33daf0c1ad41934dc6a2caa68d392"
+    },
+    {
+      "path": "tests/prompts/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a2f050803a925e299a08244c6d3c6f440df6fb82",
+      "size": 29,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/a2f050803a925e299a08244c6d3c6f440df6fb82"
+    },
+    {
+      "path": "tests/prompts/test_actor_prompt_contracts.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92d669c837bfc0373ee7c8fa046280cbf76d44a2",
+      "size": 13538,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/92d669c837bfc0373ee7c8fa046280cbf76d44a2"
+    },
+    {
+      "path": "tests/serving",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a804810592f49908795ef74db8279cf8032bb6ca",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/a804810592f49908795ef74db8279cf8032bb6ca"
+    },
+    {
+      "path": "tests/serving/test_pricing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6384a78ab2debc0ef5e1c34ac0434e68fbeb0ddd",
+      "size": 1261,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6384a78ab2debc0ef5e1c34ac0434e68fbeb0ddd"
+    },
+    {
+      "path": "tests/serving/test_public_backends.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbd96eab8b6d30eafa69a1bf178019151b74b9e5",
+      "size": 11019,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fbd96eab8b6d30eafa69a1bf178019151b74b9e5"
+    },
+    {
+      "path": "tests/viewer",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ac49dce3a12ae74c336882b97782e05e27e3b64c",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/ac49dce3a12ae74c336882b97782e05e27e3b64c"
+    },
+    {
+      "path": "tests/viewer/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d1e3cb9ca1c638d4271195ccd7ee46b3917e920",
+      "size": 31,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/1d1e3cb9ca1c638d4271195ccd7ee46b3917e920"
+    },
+    {
+      "path": "tests/viewer/test_level_boundary_terminal_panel.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2de05640f380de2687b9f6089682cde8bae6248b",
+      "size": 2533,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/2de05640f380de2687b9f6089682cde8bae6248b"
+    },
+    {
+      "path": "tests/viewer/test_live_server_contracts.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fed2db008f2b79416f2e864ae3f6859546080321",
+      "size": 5826,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fed2db008f2b79416f2e864ae3f6859546080321"
+    },
+    {
+      "path": "tests/viewer/test_viewer_template_contracts.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87448ee682094b2b447f50a19500feb29d0824bc",
+      "size": 3062,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/87448ee682094b2b447f50a19500feb29d0824bc"
+    },
+    {
+      "path": "tests/viewer/test_wm_predict_serialization.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "63047e8c68938c8592013ebc4211dc3338b3f5e6",
+      "size": 5966,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/63047e8c68938c8592013ebc4211dc3338b3f5e6"
+    },
+    {
+      "path": "tests/workspace",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "68594bd62e049947bb188e53d4b1aebfebc682fe",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/68594bd62e049947bb188e53d4b1aebfebc682fe"
+    },
+    {
+      "path": "tests/workspace/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b4414ac8653134423635c565775c5d127aab15a",
+      "size": 32,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5b4414ac8653134423635c565775c5d127aab15a"
+    },
+    {
+      "path": "tests/workspace/test_agent_tool_feedback.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8600b890fd4c5b56339d5cb8ccaa601a9946ef2",
+      "size": 3870,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/d8600b890fd4c5b56339d5cb8ccaa601a9946ef2"
+    },
+    {
+      "path": "tests/workspace/test_animation_events.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eb80cb7711b2a41cfa778a64eccfa1284fe2b661",
+      "size": 5921,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/eb80cb7711b2a41cfa778a64eccfa1284fe2b661"
+    },
+    {
+      "path": "tests/workspace/test_death_events.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e121c7626d02d0fa65dcf4404614b063cfbf457",
+      "size": 4386,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5e121c7626d02d0fa65dcf4404614b063cfbf457"
+    },
+    {
+      "path": "tests/workspace/test_initial_render_verification.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e7096747b4c309fa4b6d9139670900c5554aa86",
+      "size": 3318,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5e7096747b4c309fa4b6d9139670900c5554aa86"
+    },
+    {
+      "path": "tests/workspace/test_no_world_model_workspace.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ef1f69cde1e17489398d8b797cb1666506ac03b5",
+      "size": 3549,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/ef1f69cde1e17489398d8b797cb1666506ac03b5"
+    },
+    {
+      "path": "tests/workspace/test_observation_variants.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d3fb54da728b9b28b6d00653a849d21f8c4aa58d",
+      "size": 8189,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/d3fb54da728b9b28b6d00653a849d21f8c4aa58d"
+    },
+    {
+      "path": "tests/workspace/test_run_python_cli_rewrite.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95ec7199bff0081256f79255656a7f6d5a0e0432",
+      "size": 2821,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/95ec7199bff0081256f79255656a7f6d5a0e0432"
+    },
+    {
+      "path": "tests/workspace/test_sandbox_runtime.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb6492c863f019693f566a73cd61653fc507bdcb",
+      "size": 6325,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/bb6492c863f019693f566a73cd61653fc507bdcb"
+    },
+    {
+      "path": "tests/workspace/test_unknown_render.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af9e0320b15ed3cf3a62b9ccf78da70e7a5b20a4",
+      "size": 4356,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/af9e0320b15ed3cf3a62b9ccf78da70e7a5b20a4"
+    },
+    {
+      "path": "tests/workspace/test_validated_plan_artifact.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b94d3e7a74db7c0f0d742172b9d03942a1892453",
+      "size": 3222,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b94d3e7a74db7c0f0d742172b9d03942a1892453"
+    },
+    {
+      "path": "tests/workspace/test_wm_feedback_planner_scope.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b33a791b5c9f717c88aa8bf0b09247248ddfe12",
+      "size": 2767,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/5b33a791b5c9f717c88aa8bf0b09247248ddfe12"
+    },
+    {
+      "path": "tests/workspace/test_wmlib_planning.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9e7d71e25c9ee24df8a6062b9f650d05cee2124",
+      "size": 13412,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e9e7d71e25c9ee24df8a6062b9f650d05cee2124"
+    },
+    {
+      "path": "tests/workspace/test_wmlib_segmentation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6273950f7534b27d9ea0bdd436021bc02928dd89",
+      "size": 2032,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6273950f7534b27d9ea0bdd436021bc02928dd89"
+    },
+    {
+      "path": "tests/workspace/test_workspace_paths.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "716cad264381bd107d2e94f1adbd2518725df238",
+      "size": 683,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/716cad264381bd107d2e94f1adbd2518725df238"
+    },
+    {
+      "path": "tests/workspace/test_workspace_versioning.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "941ee6bf7ad811464b0de77d9f96df62f4eeb1ad",
+      "size": 4152,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/941ee6bf7ad811464b0de77d9f96df62f4eeb1ad"
+    },
+    {
+      "path": "tycho",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "599b4224735d7100f276ef026480d67059df0dbf",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/599b4224735d7100f276ef026480d67059df0dbf"
+    },
+    {
+      "path": "tycho/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d6ce42e578c651c605ea94c6f4aacfc31e10268",
+      "size": 403,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6d6ce42e578c651c605ea94c6f4aacfc31e10268"
+    },
+    {
+      "path": "tycho/agent",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "525ec07fda17a09766cc155942155e17d9b5bdb2",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/525ec07fda17a09766cc155942155e17d9b5bdb2"
+    },
+    {
+      "path": "tycho/agent/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tycho/agent/agent.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa6c1a101cdf64e1abc5f2ab2dbc9b0efb378628",
+      "size": 138313,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/aa6c1a101cdf64e1abc5f2ab2dbc9b0efb378628"
+    },
+    {
+      "path": "tycho/agent/builder.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "21b9686888805ad40d08601211654ee7dfb0670d",
+      "size": 28485,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/21b9686888805ad40d08601211654ee7dfb0670d"
+    },
+    {
+      "path": "tycho/agent/colors.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ac5b15bd924176cacef69e805468e5c6fcc2c0c",
+      "size": 573,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/7ac5b15bd924176cacef69e805468e5c6fcc2c0c"
+    },
+    {
+      "path": "tycho/agent/context_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a45e7dd125dd6303fc987da3907d6971494d056",
+      "size": 10027,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/2a45e7dd125dd6303fc987da3907d6971494d056"
+    },
+    {
+      "path": "tycho/agent/dispatcher.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41d35fd65f65c555826f5737b66d2355461acdf4",
+      "size": 8964,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/41d35fd65f65c555826f5737b66d2355461acdf4"
+    },
+    {
+      "path": "tycho/agent/events.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbaa7b28cd374feb771c54b0907cc88f93c5a3b5",
+      "size": 4329,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/cbaa7b28cd374feb771c54b0907cc88f93c5a3b5"
+    },
+    {
+      "path": "tycho/agent/modes.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4be6114cc1a99a2403fe8278b7cb36fb994b61b2",
+      "size": 8361,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/4be6114cc1a99a2403fe8278b7cb36fb994b61b2"
+    },
+    {
+      "path": "tycho/agent/vision.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bef9145569023db1de006329012937c39dc7140f",
+      "size": 3874,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/bef9145569023db1de006329012937c39dc7140f"
+    },
+    {
+      "path": "tycho/agent/wm_signal.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "25161bcb972320d1cb906205856d41dedb2e0ae8",
+      "size": 7517,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/25161bcb972320d1cb906205856d41dedb2e0ae8"
+    },
+    {
+      "path": "tycho/config",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "601a67ae1a85a1a66a9a8a9e2a7be8d45f3ddd77",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/601a67ae1a85a1a66a9a8a9e2a7be8d45f3ddd77"
+    },
+    {
+      "path": "tycho/config/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "232c42f8eb2c194bced5efd8a0c363e025548d94",
+      "size": 524,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/232c42f8eb2c194bced5efd8a0c363e025548d94"
+    },
+    {
+      "path": "tycho/config/run_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da5cd51ec5c1373832a7fd532399e9337c5185c6",
+      "size": 18738,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/da5cd51ec5c1373832a7fd532399e9337c5185c6"
+    },
+    {
+      "path": "tycho/config/settings.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e1bbf8c122f520baf9295ad5852b7dc152809a19",
+      "size": 7638,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e1bbf8c122f520baf9295ad5852b7dc152809a19"
+    },
+    {
+      "path": "tycho/harness",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "17901fd5f88699a058e9cc9f0929a36230fa2486",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/17901fd5f88699a058e9cc9f0929a36230fa2486"
+    },
+    {
+      "path": "tycho/harness/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tycho/harness/actions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c496adb82cc64d67f5ad44f8baacfd059b86db24",
+      "size": 1430,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c496adb82cc64d67f5ad44f8baacfd059b86db24"
+    },
+    {
+      "path": "tycho/harness/agent.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ffbd5531bf418fa313b89d1c15326782a1388b4d",
+      "size": 2283,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/ffbd5531bf418fa313b89d1c15326782a1388b4d"
+    },
+    {
+      "path": "tycho/harness/animation_evidence.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0bb00a61dd86a69f53022b7937c416831f1c9e85",
+      "size": 18775,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/0bb00a61dd86a69f53022b7937c416831f1c9e85"
+    },
+    {
+      "path": "tycho/harness/diagnostics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44dd521b28cd15cc659e8a7f128b54c7d2c51822",
+      "size": 3903,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/44dd521b28cd15cc659e8a7f128b54c7d2c51822"
+    },
+    {
+      "path": "tycho/harness/harness.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c862ff651f0e415b27d9f23e1044450d0705334f",
+      "size": 34986,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c862ff651f0e415b27d9f23e1044450d0705334f"
+    },
+    {
+      "path": "tycho/harness/inference_budget.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35da0426c2aa3dd3ee9e47c8076532f6df183e8b",
+      "size": 2652,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/35da0426c2aa3dd3ee9e47c8076532f6df183e8b"
+    },
+    {
+      "path": "tycho/harness/model_replay.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "812b7253d02695bb6e389efbfa13909da45d97a2",
+      "size": 20250,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/812b7253d02695bb6e389efbfa13909da45d97a2"
+    },
+    {
+      "path": "tycho/harness/planner_follow_diagnostics.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "46b307525c19f75483dd34ca3e1860683ed53adc",
+      "size": 15771,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/46b307525c19f75483dd34ca3e1860683ed53adc"
+    },
+    {
+      "path": "tycho/harness/record_slim.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d5b3d413aa53170994ed7dfb51a3c33b6bfd543",
+      "size": 5627,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/7d5b3d413aa53170994ed7dfb51a3c33b6bfd543"
+    },
+    {
+      "path": "tycho/harness/resume.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a57e45e12a027621b8389d46142a35fc365f34b",
+      "size": 17610,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/2a57e45e12a027621b8389d46142a35fc365f34b"
+    },
+    {
+      "path": "tycho/harness/run.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c4181e6b24febb177d9108a1f27b64ac6c1f9ce",
+      "size": 9190,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/8c4181e6b24febb177d9108a1f27b64ac6c1f9ce"
+    },
+    {
+      "path": "tycho/harness/run_hooks.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "179cb9d45a2113f330ed369e318ee83eb0ae7775",
+      "size": 1225,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/179cb9d45a2113f330ed369e318ee83eb0ae7775"
+    },
+    {
+      "path": "tycho/harness/run_parallel.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9a7dbdb468f075eaa59500f3c3f87ea02993e58",
+      "size": 70565,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/f9a7dbdb468f075eaa59500f3c3f87ea02993e58"
+    },
+    {
+      "path": "tycho/harness/run_progress.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6147ef3f95eaf4c128606ff59c84b0c5b7ef0b57",
+      "size": 13688,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6147ef3f95eaf4c128606ff59c84b0c5b7ef0b57"
+    },
+    {
+      "path": "tycho/harness/run_spec.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdd8c62c489ebdad4ad88429f32f70f3953c83de",
+      "size": 6409,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fdd8c62c489ebdad4ad88429f32f70f3953c83de"
+    },
+    {
+      "path": "tycho/harness/run_status.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "90e394ed54a660670ca61c2ebc1f7879bb632b37",
+      "size": 22405,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/90e394ed54a660670ca61c2ebc1f7879bb632b37"
+    },
+    {
+      "path": "tycho/harness/scoring.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aab4ef3cf780cc7952f1dddc3faf1f0af67f3a56",
+      "size": 3046,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/aab4ef3cf780cc7952f1dddc3faf1f0af67f3a56"
+    },
+    {
+      "path": "tycho/harness/submission_replay.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e51bc3f6416270f10407581c2a0fd4a767966b5",
+      "size": 37762,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/8e51bc3f6416270f10407581c2a0fd4a767966b5"
+    },
+    {
+      "path": "tycho/prompts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a8231173c578d90f0e446f20a844086e8666c286",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/a8231173c578d90f0e446f20a844086e8666c286"
+    },
+    {
+      "path": "tycho/prompts/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9b23d9701df0933c4a58b916da8a7507560f1dda",
+      "size": 997,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/9b23d9701df0933c4a58b916da8a7507560f1dda"
+    },
+    {
+      "path": "tycho/prompts/actor.system.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5413fb533ca87fc7aa93303e1a0c697a117029c",
+      "size": 7507,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/c5413fb533ca87fc7aa93303e1a0c697a117029c"
+    },
+    {
+      "path": "tycho/prompts/actor.user.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11fa254aa4cf0a19d8306db7aaa528edbb28a3c1",
+      "size": 2973,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/11fa254aa4cf0a19d8306db7aaa528edbb28a3c1"
+    },
+    {
+      "path": "tycho/prompts/builder.system.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58f045c8fdc3c600452009a40dfbaa3eeb394675",
+      "size": 12054,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/58f045c8fdc3c600452009a40dfbaa3eeb394675"
+    },
+    {
+      "path": "tycho/prompts/builder.user.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "512c978939f9fbf5d0d123e67274c2e9b67fa069",
+      "size": 938,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/512c978939f9fbf5d0d123e67274c2e9b67fa069"
+    },
+    {
+      "path": "tycho/prompts/partials",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d8caa01ef2df6c76df876c372018efeec8cd1ef8",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/d8caa01ef2df6c76df876c372018efeec8cd1ef8"
+    },
+    {
+      "path": "tycho/prompts/partials/meta_reflect.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b05eccbf7bf492095e41819309ab910c52f1a8fa",
+      "size": 516,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b05eccbf7bf492095e41819309ab910c52f1a8fa"
+    },
+    {
+      "path": "tycho/prompts/partials/meta_reflect_builder.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "858340e74fcff5d7b069e631ceb480d76b0b35af",
+      "size": 710,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/858340e74fcff5d7b069e631ceb480d76b0b35af"
+    },
+    {
+      "path": "tycho/prompts/partials/wm_none.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "537620014df21525aa14a4102fc2372e6c3d6e83",
+      "size": 602,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/537620014df21525aa14a4102fc2372e6c3d6e83"
+    },
+    {
+      "path": "tycho/prompts/partials/wm_orch.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4a05afd4986c7fec5b2c6783e981ca0381d897c1",
+      "size": 1277,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/4a05afd4986c7fec5b2c6783e981ca0381d897c1"
+    },
+    {
+      "path": "tycho/prompts/partials/wm_single.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11847b044dd432db38ae35773f27a05daac71343",
+      "size": 5304,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/11847b044dd432db38ae35773f27a05daac71343"
+    },
+    {
+      "path": "tycho/prompts/partials/wm_trigger.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee1977b07c6a36e2b124378a3541cf57c7e78dcc",
+      "size": 752,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/ee1977b07c6a36e2b124378a3541cf57c7e78dcc"
+    },
+    {
+      "path": "tycho/prompts/render.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f2bff1735f1e86b0fe517351f15c4457f8570289",
+      "size": 2655,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/f2bff1735f1e86b0fe517351f15c4457f8570289"
+    },
+    {
+      "path": "tycho/prompts/scribe.user.j2",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e35ca757f15ece9f494363ea65f0e0977d643692",
+      "size": 1411,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e35ca757f15ece9f494363ea65f0e0977d643692"
+    },
+    {
+      "path": "tycho/serving",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9226dbf9b73a98652af8899737f28523990db92c",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/9226dbf9b73a98652af8899737f28523990db92c"
+    },
+    {
+      "path": "tycho/serving/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tycho/serving/llm_client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e413a5a308b509a886ff830de4e41c694342819",
+      "size": 16736,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/6e413a5a308b509a886ff830de4e41c694342819"
+    },
+    {
+      "path": "tycho/serving/pricing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b94eb81ccd5562ddca33a67a83e98fa614edf852",
+      "size": 3600,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b94eb81ccd5562ddca33a67a83e98fa614edf852"
+    },
+    {
+      "path": "tycho/serving/public_backends.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd7c49cc13d24178766b775c4ac6742ab4f29326",
+      "size": 20744,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/fd7c49cc13d24178766b775c4ac6742ab4f29326"
+    },
+    {
+      "path": "tycho/viewer",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d1b8499431b24ccd0f8919129da6a869fbd96a5",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/2d1b8499431b24ccd0f8919129da6a869fbd96a5"
+    },
+    {
+      "path": "tycho/viewer/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tycho/viewer/serve.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0492a95c0ad8ed424dd03ba2b7fc919f2b1fffd",
+      "size": 37753,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/b0492a95c0ad8ed424dd03ba2b7fc919f2b1fffd"
+    },
+    {
+      "path": "tycho/viewer/viz.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62154827e62775554ce33879871f0edf542188fc",
+      "size": 103701,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/62154827e62775554ce33879871f0edf542188fc"
+    },
+    {
+      "path": "tycho/viewer/wm_predict.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "96a3ebd28deb9bf378524914ca0dbad31c1ba039",
+      "size": 387,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/96a3ebd28deb9bf378524914ca0dbad31c1ba039"
+    },
+    {
+      "path": "tycho/workspace",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f156c741994dd4dab9bac57510872ef977ac4c18",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/f156c741994dd4dab9bac57510872ef977ac4c18"
+    },
+    {
+      "path": "tycho/workspace/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "tycho/workspace/agent_tools.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ad6ed22c00e33733b49b03429a938740075f1e7f",
+      "size": 26194,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/ad6ed22c00e33733b49b03429a938740075f1e7f"
+    },
+    {
+      "path": "tycho/workspace/container",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d26dd58049fe27176602f784c2f935c70e9751ec",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/d26dd58049fe27176602f784c2f935c70e9751ec"
+    },
+    {
+      "path": "tycho/workspace/container/Containerfile",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c7fcd68fe63526386184f619665cf1e72ad024b",
+      "size": 176,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/3c7fcd68fe63526386184f619665cf1e72ad024b"
+    },
+    {
+      "path": "tycho/workspace/optional_channels.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54089ed43f4a41a6a6a49bf9d5444442b3f29c84",
+      "size": 785,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/54089ed43f4a41a6a6a49bf9d5444442b3f29c84"
+    },
+    {
+      "path": "tycho/workspace/sandbox.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1de6fb7e597b51a8451ca3bf266b5313c20cded5",
+      "size": 15228,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/1de6fb7e597b51a8451ca3bf266b5313c20cded5"
+    },
+    {
+      "path": "tycho/workspace/templates",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b8d45279fb0dbf427cee344b88ed91340978121e",
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/trees/b8d45279fb0dbf427cee344b88ed91340978121e"
+    },
+    {
+      "path": "tycho/workspace/templates/seed_plan.py.tmpl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "55969c7104968d4b509cd77051f43bd2c352b6e0",
+      "size": 9100,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/55969c7104968d4b509cd77051f43bd2c352b6e0"
+    },
+    {
+      "path": "tycho/workspace/templates/seed_verify.py.tmpl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0f4528b8e1b2748fdf8c0d74335bea41fc7e7cf1",
+      "size": 14187,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/0f4528b8e1b2748fdf8c0d74335bea41fc7e7cf1"
+    },
+    {
+      "path": "tycho/workspace/templates/seed_world_model.py.tmpl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35cb5b38f4f562123e14db200f197acc0e595ce5",
+      "size": 4906,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/35cb5b38f4f562123e14db200f197acc0e595ce5"
+    },
+    {
+      "path": "tycho/workspace/templates/wm_feedback_probe.py.tmpl",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62839eee6b7c8c952b64b69e03502244c6fda71a",
+      "size": 39686,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/62839eee6b7c8c952b64b69e03502244c6fda71a"
+    },
+    {
+      "path": "tycho/workspace/version_store.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f2e34b97a991f2613d36e76bbb301b6200a8b07",
+      "size": 8267,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/2f2e34b97a991f2613d36e76bbb301b6200a8b07"
+    },
+    {
+      "path": "tycho/workspace/wm_templates.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "968ba3441dc3f025953ccfe300c1152d2ff8a1bd",
+      "size": 1550,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/968ba3441dc3f025953ccfe300c1152d2ff8a1bd"
+    },
+    {
+      "path": "tycho/workspace/wmlib_template.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b809fa1af5fc6538ab4ed0d1adf8a85470a7e8b",
+      "size": 84700,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/1b809fa1af5fc6538ab4ed0d1adf8a85470a7e8b"
+    },
+    {
+      "path": "tycho/workspace/workspace.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3461de08e4adf6bf5c849881aff4b7dc0f887c6f",
+      "size": 38964,
+      "url": "https://api.github.com/repos/NIMI-research/Tycho/git/blobs/3461de08e4adf6bf5c849881aff4b7dc0f887c6f"
+    }
+  ],
+  "truncated": false
+}
