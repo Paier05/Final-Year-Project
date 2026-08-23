@@ -96,6 +96,8 @@ def run_loop(
     n_candidates=1500,
     committee=10,
     seed_steps=None,
+    solver_lr=1e-4,
+    epochs=4,
     use_rep_penalty=True,
     use_filter=True,
     single_model=False,
@@ -113,6 +115,16 @@ def run_loop(
     sol, _ = SD.make_seeded_solver(
         seed=seed, steps=seed_steps or SD.SEED_STEPS, committee=committee
     )
+    # The co-evolution phase uses a much smaller step than the seed phase (2e-3).
+    # At the seed learning rate the Solver overwrites what it already knew on the
+    # easy buckets within one iteration -- accuracy fell 39% -> 32% -- because the
+    # difficulty filter deliberately keeps only frontier tasks, so nothing in the
+    # pseudo-label set rehearses the rest of the domain.  This mirrors the paper,
+    # where the RL phase is a light touch on top of a pretrained model rather than
+    # a retrain.  See WORK_LOG-4.md for the sweep.
+    members = sol.members if hasattr(sol, "members") else [sol]
+    for mem in members:
+        mem.lr = solver_lr
     test = D.held_out_set()
 
     if mode in ("uniform", "hardest"):
@@ -130,6 +142,7 @@ def run_loop(
             "iters": iters, "m": m, "delta": delta, "group_size": group_size,
             "challenger_steps": challenger_steps, "n_candidates": n_candidates,
             "committee": committee, "seed_steps": seed_steps or SD.SEED_STEPS,
+            "solver_lr": solver_lr, "epochs": epochs,
             "use_rep_penalty": use_rep_penalty, "use_filter": use_filter,
             "single_model": single_model,
         },
@@ -177,9 +190,9 @@ def run_loop(
         if mode == "oracle":
             # Ceiling baseline: identical curriculum, real labels.
             targets = oracle_labels(batch, idx)
-            loss, n_kept = train_on_pseudo(sol, batch, targets, idx, rng)
+            loss, n_kept = train_on_pseudo(sol, batch, targets, idx, rng, epochs=epochs)
         else:
-            loss, n_kept = train_on_pseudo(sol, batch, pseudo, idx, rng)
+            loss, n_kept = train_on_pseudo(sol, batch, pseudo, idx, rng, epochs=epochs)
 
         per, overall = evaluate_all(sol, test)
         entry = {

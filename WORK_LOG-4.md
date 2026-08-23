@@ -222,6 +222,42 @@ Frontier pseudo-label quality, the numbers that matter:
   clock and makes every mode start from byte-identical weights — so mode
   comparisons are paired. Run M1 baselines and M2.
 
+### 2026-08-24 — The loop initially made the Solver *worse*; cause was the step size
+
+- What I did: Wired up `loop.py` / `run.py` and ran `rzero` for the first time.
+  Accuracy went **down**, 39.0% -> 34.3% over 6 iterations. Swept the Solver's
+  co-evolution learning rate and epoch count to find out why.
+- Why: A drop is the expected symptom of *two* very different problems — junk
+  pseudo-labels, or catastrophic forgetting — and they need opposite fixes, so
+  guessing would have been a coin flip. The logged `pseudo_label_accuracy` was
+  75-80%, which already argued against junk labels, so forgetting was the
+  hypothesis to test.
+- Result / what I found: It was forgetting, and the sweep is unambiguous:
+
+  | Solver LR | epochs | accuracy over 6 iters | seeded buckets | unseeded |
+  |---|---|---|---|---|
+  | 2e-3 (= seed LR) | 4 | 39.0 -> 36.7 | **-4.1pp** | -1.6pp |
+  | 5e-4 | 2 | 39.0 -> 44.0 | +3.5pp | +5.5pp |
+  | 2e-4 | 2 | 39.0 -> 45.3 | +5.4pp | +6.6pp |
+  | 1e-4 | 4 | 39.0 -> **46.3** | +6.3pp | +7.6pp |
+
+  The mechanism is a direct consequence of the difficulty filter. Keeping only
+  `|p_hat - 1/2| <= 0.25` means the training set is *entirely* frontier tasks —
+  nothing in it rehearses the easy buckets. At the seed learning rate the Solver
+  overwrites what it already knew faster than it learns anything new, and the
+  loss on the seeded buckets shows it (-4.1pp). At 1e-4 both seeded and unseeded
+  buckets improve. This also matches the paper structurally: R-Zero's phase 3 is
+  a light RL touch on a pretrained model, not a retrain, and I had been running
+  the equivalent of a retrain.
+
+  With `solver_lr=1e-4`, a 15-iteration `rzero` run gives 39.0% -> 47.0% peak at
+  iteration 12, then flattens to 46.6%. Pseudo-label accuracy decays 75.6% ->
+  59.8% across those iterations and kept-fraction climbs 25% -> 46%, both of
+  which are the paper's qualitative findings.
+
+- Next step: Run the full matrix (4 modes + 3 ablations, 3 seeds, 15 iterations)
+  and write the plots.
+
 ## Open questions / risks
 
 - **M0 is a real risk, not a formality.** The issue documents a previous
