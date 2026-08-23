@@ -93,6 +93,56 @@ would be building on sand.
   installed, so an environment step is needed before anything can run.
 - Next step: Set up the venv, then write `domain.py`.
 
+### 2026-08-24 — M0 FAILS on the spec-faithful build; two distinct causes found
+
+- What I did: Built `domain.py` and `solver.py` exactly to the issue's spec
+  (flat MLP over one-hot `[program tokens || input grid]`, MC-dropout sampling,
+  majority vote) and ran the M0 gate. Then ran a diagnostic sweep
+  (`_diag_seed.py`) over three different seed sets to find out *why* it failed.
+- Why: M0 is the gate for the entire issue and the issue warns a prior prototype
+  died here. I wanted the failure characterised, not patched over.
+- Result / what I found: **M0 fails.** Seeding on the easiest bucket alone gives
+  100% on `(1,3,2)` and 0-17% on all 35 other buckets. `gate_frontier_ge_25`
+  fails. The diagnostic sweep then separated two independent causes:
+
+  **Cause 1 — the majority vote never beats greedy.** Across every frontier
+  bucket in every seed set, `vote <= greedy`:
+
+  | bucket | vote | single sample | greedy |
+  |---|---|---|---|
+  | (3,3,2) | 14.6% | 11.2% | **16.7%** |
+  | (3,4,2) | 16.7% | 7.9% | **18.8%** |
+  | (4,3,2) | 4.2% | 2.1% | **10.4%** |
+
+  The vote does beat a *single* dropout sample (so the issue's stated M0 check
+  passes on its own terms), but that is the wrong comparison: training on
+  pseudo-labels that are no better than the Solver's own greedy output is
+  self-distillation, and no information enters the loop. This is the same
+  degeneracy the issue warns about for per-cell temperature sampling — I avoided
+  the stated form of it and hit it in a different form. MC-dropout on a small
+  MLP perturbs a memorised lookup; it does not produce *independent attempts*
+  the way an LLM's sampled reasoning chains do, so the ensemble can at best
+  recover greedy.
+
+  **Cause 2 — there is no graded frontier, because the MLP cannot compose.**
+  Seeded on all nine `d=1` buckets, depth-2 accuracy is 0.0-4.2% everywhere. A
+  flat MLP over one-hot program slots has simply never seen slot 2 occupied; its
+  weights there are still at initialisation. The `(d,G,C)` axis is finer-grained
+  than the depth-only axis that killed the earlier prototype, but it does not
+  help: the jump that matters is still depth, and it is a cliff, not a slope.
+  Seeding on `d<=2` (18 buckets) just moves the cliff to `d=3` and *degrades*
+  `d=1` (G5C4 fell to 10.4%) because capacity is spread too thin.
+
+- Next step: These need different fixes, so I am treating them separately.
+  Cause 2 first, since Cause 1 cannot even be measured properly without a graded
+  frontier to measure it on. Plan: replace the flat MLP with a **step-wise
+  Solver** that applies one shared, op-conditioned block per program step,
+  feeding its own soft prediction forward as the next step's input. Depth then
+  becomes a *chain* whose errors compound, which is both the natural analogue of
+  a reasoning chain and the thing that produces a graded frontier instead of a
+  cliff. If that does not also fix Cause 1, I will add an independently
+  initialised committee as the source of genuinely different functions.
+
 ## Open questions / risks
 
 - **M0 is a real risk, not a formality.** The issue documents a previous
