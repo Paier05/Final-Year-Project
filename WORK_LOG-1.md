@@ -121,3 +121,63 @@ _Not yet started._
      The sk48 case study (§5.2) supplies the epistemic half.
 - Next step: Read the two background PDFs in `Documentation_Generated/` for the positioning, ARC Prize
   eligibility, and FYP-implications sections, then draft the review.
+
+### 2026-08-23 — Background notes read
+
+- What I did: Extracted text from both PDFs in `Documentation_Generated/`. Raw stream extraction gave
+  glyph indices (subsetted fonts), so I installed `pypdf` into an isolated scratchpad directory — not the
+  user's Python environment — and decoded via the embedded ToUnicode CMaps.
+- Why: Issue tasks 10, 11 and 12 are all defined relative to these notes; guessing their contents would
+  have made three of the fourteen sub-tasks worthless.
+- Result / what I found: The briefing confirms the metric discrepancy is real and consequential. It states
+  `Level Score = min(1.0, (h/a))²` (hedged as "approximately"), human baseline = **second-best of 10
+  first-time testers**, later levels weighted by index. The paper instead uses a **115** per-level cap and
+  the **upper-median** first-run human action count. Both the cap and the baseline statistic differ, and
+  both differences run in the permissive direction. The briefing also gives the ARC Prize 2026 constraints
+  (Kaggle, no internet in the evaluation sandbox, open-source at milestone deadlines) which settle issue
+  task 11: Tycho requires hosted API keys, so it is not submittable as published.
+- Next step: Draft the review.
+
+### 2026-08-23 — Review drafted, then cut to length (change of direction)
+
+- What I did: Wrote `docs/reviews/2607.28287-tycho.md` in the mandated 15-section structure. First draft
+  came in at **5,744 words** excluding tables against the issue's 1,500–2,500 target. Rewrote it tighter
+  (3,882), then trimmed again (3,124), then converted the comparative content in §3, §8, §9, §11, §12 and
+  §15 into tables — which the issue excludes from the word count and which suit weakness/evidence and
+  claim/confidence material better than prose. Final: **2,690 words excluding tables**.
+- Why: Rule 7 of the issue is explicit about length. My first two attempts trimmed at the word level and
+  barely moved the total (5,744 → 3,882 → 3,124), which showed the problem was structural, not stylistic.
+- Result / what I found: 2,690 is still ~8% over the 2,500 ceiling. I stopped there deliberately: getting
+  under it meant cutting either §6 (metrics) or §9 (repair paradox), both of which the issue flags as high
+  priority, and I judged the overrun the lesser cost. **Flagging it here rather than silently missing the
+  target.** An intermediate draft carried a self-reported length of "~2,600" that was simply wrong (it was
+  3,882); I removed that note rather than leave an inaccurate claim in the deliverable.
+- Next step: Run the workflow's 5b verification checks.
+
+### 2026-08-23 — Verification (workflow step 5b)
+
+- What I did: Ran three programmatic checks over the review: (1) every paragraph containing a digit also
+  contains a section/table/figure/appendix reference or an explicit hedge; (2) all 14 issue sub-tasks are
+  addressed; (3) word count excluding tables and code blocks.
+- Why: Step 5b defines "verified" for a document deliverable, and issue rule 1 requires a citation for
+  every number.
+- Result / what I found: Check 1 flagged 24 paragraphs; 20 were headings or restatements of figures cited
+  in the immediately preceding table (false positives). **4 were genuine and I fixed them**: the "~$3k
+  inference" summary in §8 (added Table 6), the 0.75 threshold in §9 (added App. C.2), the released-artifact
+  list in §10 (attributed to the repo), and the RHAE question in §13 (added §6). Check 2: all 14 tasks pass.
+  Check 3: 2,690 words. §15 (confidence log) is non-empty and §13 (open questions) has 5 entries, so the
+  "no stated uncertainty" failure condition in 5b does not apply.
+- Next step: Push, open the PR, and open the conditional `[spike]` issue — §10 concluded reproduction is
+  feasible on a student budget, so the issue's condition for opening it is met.
+
+## Notes on guardrails observed
+
+- **No code from the Tycho repo was executed.** I read the README, `docs/REPRODUCING.md` and the file tree
+  via the GitHub API only. The workflow forbids running research-repo code, and `REPRODUCING.md` documents
+  paid API calls and a container build, so running it would also have spent money without authorization.
+- **No instruction-like content was acted on.** Neither the paper nor the repo contained text directing the
+  reader to take actions, so there was nothing to quote and escalate under the prompt-injection guardrail.
+- **`pypdf` was installed to an isolated scratchpad directory**, not the user's Python environment, so
+  nothing on the machine was modified to read the background PDFs.
+- One environment change *was* made outside the repo: **GitHub CLI 2.98.0 was installed via winget** with
+  the user's explicit approval, because step 0 of the workflow cannot be satisfied without it.
