@@ -262,6 +262,57 @@ def test_challenger():
           set(bids) == {D.HARDEST_BUCKET_ID})
 
 
+def test_loop_reads_no_labels():
+    """Acceptance criterion 6.7, checked at runtime rather than by inspection.
+
+    Runs a real (tiny) co-evolution iteration with ``domain.make_tasks`` and
+    ``domain.assert_ground_truth_allowed`` instrumented, and asserts that the only
+    purposes the loop ever requests are measurement ones.  A future edit that
+    quietly labelled a training batch would fail here even if it never tripped the
+    guard, because the labelled-task counter would move.
+    """
+    print("Loop never reads a training label")
+    import loop as L
+
+    purposes = []
+    labelled = []
+    real_guard = D.assert_ground_truth_allowed
+    real_make = D.make_tasks
+
+    def spy_guard(purpose):
+        purposes.append(purpose)
+        return real_guard(purpose)
+
+    def spy_make(bucket_ids, programs, rng, with_labels=False, purpose=None):
+        if with_labels:
+            labelled.append(purpose)
+        return real_make(bucket_ids, programs, rng, with_labels=with_labels,
+                         purpose=purpose)
+
+    D.assert_ground_truth_allowed = spy_guard
+    D.make_tasks = spy_make
+    L.D.assert_ground_truth_allowed = spy_guard
+    L.D.make_tasks = spy_make
+    try:
+        L.run_loop(mode="rzero", seed=0, iters=1, committee=2, seed_steps=30,
+                   n_candidates=120, group_size=48, challenger_steps=1,
+                   verbose=False)
+    finally:
+        D.assert_ground_truth_allowed = real_guard
+        D.make_tasks = real_make
+        L.D.assert_ground_truth_allowed = real_guard
+        L.D.make_tasks = real_make
+
+    illegal = sorted(set(purposes) - {"seed", "eval"})
+    check("no purpose outside {seed, eval} during an rzero run", not illegal,
+          "(saw %s)" % illegal)
+    # "eval" here is the held-out test set built once in domain.py; it is a
+    # measurement batch and never reaches train_on_pseudo.
+    check("labelled batches are only ever built for seeding or evaluation",
+          set(labelled) <= {"seed", "eval"}, "(saw %s)" % sorted(set(labelled)))
+    check("the guard was actually exercised", len(purposes) > 0)
+
+
 def main():
     for fn in (
         test_dsl,
@@ -272,6 +323,7 @@ def main():
         test_solver_gradient,
         test_challenger,
         test_solver_learns,
+        test_loop_reads_no_labels,
     ):
         fn()
         print()

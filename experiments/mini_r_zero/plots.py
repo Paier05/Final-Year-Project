@@ -65,7 +65,7 @@ def plot_accuracy(tags=("rzero", "uniform", "hardest", "oracle")):
     ax.axvline(0, color="#999999", ls=":", lw=1)
     ax.annotate(
         "iteration 0 = after the seed phase\n(the last time a true label was used)",
-        xy=(0, ax.get_ylim()[0]), xytext=(0.6, 0.06), textcoords="axes fraction",
+        xy=(0, ax.get_ylim()[0]), xytext=(0.03, 0.88), textcoords="axes fraction",
         fontsize=8, color="#555555",
     )
     ax.set_xlabel("co-evolution iteration")
@@ -107,15 +107,29 @@ def plot_curriculum(tag="rzero", seed_idx=0):
     ax.legend(loc="upper left", frameon=False, fontsize=8, ncol=4)
 
     diff = [it.get("policy_mean_difficulty", it.get("mean_difficulty")) for it in iters]
-    ax2.plot(x, diff, color="#1e3a8a", lw=2, marker="o", ms=3)
+    ax2.plot(x, diff, color="#1e3a8a", lw=2, marker="o", ms=3,
+             label="a-priori difficulty (d, G, C)")
     ax2.axhline(
-        float(D.DIFFICULTY.mean()), color="#999999", ls="--", lw=1,
-        label="uniform policy (%.3f)" % D.DIFFICULTY.mean(),
+        float(D.DIFFICULTY.mean()), color="#1e3a8a", ls="--", lw=1, alpha=0.5,
+        label="uniform policy, a-priori (%.3f)" % D.DIFFICULTY.mean(),
     )
+
+    # The a-priori score weights d, G and C equally, which is not how hard this
+    # domain actually is -- see the README.  Overlay the empirical axis (1 - the
+    # seeded Solver's per-bucket accuracy, fixed once at iteration 0) so the
+    # escalation claim can be read on both.
+    emp = [it.get("policy_mean_empirical_difficulty") for it in iters]
+    if all(v is not None for v in emp):
+        ax2.plot(x, emp, color="#b45309", lw=2, marker="s", ms=3,
+                 label="empirical difficulty (1 - seeded accuracy)")
+        ref = float(np.mean(run["empirical_difficulty"]))
+        ax2.axhline(ref, color="#b45309", ls="--", lw=1, alpha=0.5,
+                    label="uniform policy, empirical (%.3f)" % ref)
+
     ax2.set_xlabel("co-evolution iteration")
-    ax2.set_ylabel("mean difficulty")
+    ax2.set_ylabel("mean difficulty of the policy")
     ax2.grid(alpha=0.25)
-    ax2.legend(frameon=False, fontsize=8)
+    ax2.legend(frameon=False, fontsize=7, ncol=2)
     _finish(fig, "plot2_curriculum.png")
 
 
@@ -137,15 +151,18 @@ def plot_pseudo_labels(tag="rzero"):
     x = np.arange(n_it)
 
     fig, ax = plt.subplots(figsize=(7.5, 4.6))
-    for arr, color, label in (
-        (pl, "#7c3aed", "pseudo-label accuracy"),
-        (kept, "#0891b2", "kept fraction"),
-        (acc, "#2563eb", "held-out accuracy"),
+    for arr, color, label, start in (
+        # Iteration 0 is the post-seed snapshot: no dataset was built, so
+        # pseudo-label accuracy and kept fraction do not exist there.
+        (pl, "#7c3aed", "pseudo-label accuracy", 1),
+        (kept, "#0891b2", "kept fraction", 1),
+        (acc, "#2563eb", "held-out accuracy", 0),
     ):
-        mean = 100 * np.nanmean(arr, axis=0)
-        std = 100 * np.nanstd(arr, axis=0)
-        ax.plot(x, mean, color=color, lw=2, label=label)
-        ax.fill_between(x, mean - std, mean + std, color=color, alpha=0.15, lw=0)
+        mean = 100 * np.nanmean(arr[:, start:], axis=0)
+        std = 100 * np.nanstd(arr[:, start:], axis=0)
+        xs = x[start:]
+        ax.plot(xs, mean, color=color, lw=2, label=label)
+        ax.fill_between(xs, mean - std, mean + std, color=color, alpha=0.15, lw=0)
 
     peak = int(np.nanargmax(np.nanmean(acc, axis=0)))
     ax.axvline(peak, color="#dc2626", ls="--", lw=1.5)

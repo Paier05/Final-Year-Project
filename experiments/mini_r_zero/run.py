@@ -53,6 +53,8 @@ def parse_args(argv=None):
                     help="candidate tasks sampled per iteration (paper: N=8000)")
     ap.add_argument("--group-size", type=int, default=256, help="GRPO group size")
     ap.add_argument("--challenger-steps", type=int, default=8)
+    ap.add_argument("--challenger-lr", type=float, default=2.0,
+                    help="GRPO-lite step size for the Challenger policy")
     ap.add_argument("--tag", default=None, help="output filename stem")
     ap.add_argument("--m0", action="store_true", help="run only the M0 sanity gate")
     ap.add_argument("--quiet", action="store_true")
@@ -87,6 +89,7 @@ def main(argv=None):
                 delta=args.delta,
                 group_size=args.group_size,
                 challenger_steps=args.challenger_steps,
+                challenger_lr=args.challenger_lr,
                 n_candidates=args.candidates,
                 committee=args.committee,
                 seed_steps=args.seed_steps,

@@ -1,4 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
-results/seed_cache/
+seed_cache/
+_diag_*.py
+_runall.sh
+_summarize.py

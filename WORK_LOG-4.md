@@ -258,6 +258,92 @@ Frontier pseudo-label quality, the numbers that matter:
 - Next step: Run the full matrix (4 modes + 3 ablations, 3 seeds, 15 iterations)
   and write the plots.
 
+### 2026-08-24 — The a-priori difficulty axis is a bad ruler; escalation needed a second one
+
+- What I did: Ran the first full `rzero` matrix and found the "mean sampled
+  difficulty rises monotonically" check sitting flat at ~0.50 — exactly the
+  uniform-policy reference. Before concluding "no escalation", I checked whether
+  the *ruler* was right, and it was not.
+- Why: The same instinct that saved the gradient check earlier. A flat curve on a
+  measured axis has two explanations — the thing didn't move, or the axis doesn't
+  measure the thing — and they have opposite implications for the whole issue.
+- Result / what I found: `difficulty_score` averages the three normalised axes
+  `(d, G, C)` with equal weight, which is not how hard this domain actually is.
+  The seeded Solver scores **0.8% on `(1,5,4)` but 95.2% on `(4,3,2)`** — the
+  a-priori axis orders those two backwards, so a Challenger climbing real
+  difficulty can leave the a-priori mean untouched.
+
+  I added an **empirical difficulty axis**: `1 - (seeded Solver's per-bucket
+  accuracy)`, computed once at iteration 0 from the post-seed evaluation and then
+  frozen. It matters that it is frozen — a difficulty measure that tracked the
+  live Solver would make "the Challenger moved to harder tasks" unfalsifiable,
+  because the target would move with it. Both axes are logged, and `plots.py`
+  shows both.
+
+  | axis | iter 1 -> 15 | uniform reference |
+  |---|---|---|
+  | a-priori `(d,G,C)` | 0.496 -> 0.525 | 0.500 |
+  | empirical | **0.609 -> 0.781**, strictly monotone | 0.610 |
+
+  On the empirical axis the escalation is unambiguous and monotone across all 15
+  iterations, and the policy concentrates to 1.47 nats of entropy (uniform: 3.58)
+  on `(3,3,4)` and `(2,3,4)` — mid-depth, small-grid, many-colour. That is the
+  frontier, and the Challenger found it without ever being told where it was.
+
+  Also raised the Challenger step size to `lr=2.0` (from the policy default 0.5)
+  after a sweep; at 0.5 the policy barely moved off uniform within 15 iterations.
+- Next step: Run the full matrix and write it up.
+
+### 2026-08-24 — Full matrix: the loop works, but the Challenger is not why
+
+- What I did: Ran 4 modes + 3 ablations x 3 seeds x 15 iterations (23 min total),
+  regenerated the three figures, and wrote `experiments/mini_r_zero/README.md`.
+- Why: M1/M2/M3 in one pass, since the cached seed phase makes every mode start
+  from byte-identical weights and the comparisons are therefore paired.
+- Result / what I found: **The headline reproduces: 38.7% -> 46.5%, +7.8pp with
+  no labels after the seed phase**, std 0.1pp across seeds. The `oracle` ceiling
+  is 48.9%, so pseudo-label noise costs only 2.4pp of a 10.2pp achievable gain.
+
+  Three things I did not expect, all of which changed what the README claims:
+
+  1. **`uniform` ties `rzero` (46.4% vs 46.5%).** Paper finding 1 does not
+     reproduce. There is a real early advantage (+0.7pp at iterations 1 and 4) —
+     the trained Challenger arrives sooner but not higher. My reading: with 36
+     buckets over 13,986 enumerable tasks, uniform sampling hits the frontier
+     often by accident and the difficulty filter discards the rest, so **the
+     filter, not the Challenger, is doing the curriculum work here.** That is a
+     property of a small task space, and worth saying plainly rather than
+     burying.
+
+  2. **`hardest` never trains at all.** Its curve is flat to four significant
+     figures, and I nearly wrote it up as "trains and fails". It does not train:
+     every task in `(4,5,4)` gets `p_hat = 0.100` *exactly* — all 10 committee
+     members disagree — so `|p_hat - 0.5| = 0.4` fails the filter and **zero
+     tasks are kept in all 15 iterations**. A cleaner result than a degraded
+     curve would have been: the filter refuses to manufacture labels past the
+     frontier.
+
+  3. **`--single-model` is a no-op by construction, not a null result.** Phases 1
+     and 2 both finish before phase 3 trains the Solver, so `sol.clone()` and the
+     live `sol` hold identical weights the whole time the Challenger probes. The
+     +/-0.1pp spread is `clone()` shifting the RNG stream, nothing more. Reported
+     as an implementation fact, because a 0.0pp ablation delta otherwise invites
+     the conclusion that freezing does not matter.
+
+  The ablation that *did* bite is invisible in accuracy: `--no-rep-penalty`
+  collapses the Challenger to **98.7% of its mass on one bucket** (entropy 0.10
+  vs 1.47 nats) while costing only 0.1pp of peak accuracy — because one bucket
+  still holds hundreds of programs, so a collapsed bucket distribution is not a
+  collapsed task distribution. `--no-filter` costs 26pp of pseudo-label accuracy
+  at iteration 1 (80.0% -> 53.5%) for 0.3pp of peak accuracy.
+
+  Pseudo-label decay reproduces clearly: **80.0% -> 36.3%** over 15 iterations,
+  kept fraction 30% -> 65%. Collapse only partially: peak at iteration 9, then a
+  sag to 46.1%. The Solver losing 0.4pp while its labels lose 44pp suggests the
+  wrong labels concentrate on tasks it cannot do anyway, so they act as noise
+  rather than poison.
+- Next step: Commit, push, open the PR.
+
 ## Open questions / risks
 
 - **M0 is a real risk, not a formality.** The issue documents a previous
@@ -283,6 +369,43 @@ Frontier pseudo-label quality, the numbers that matter:
   finite, enumerable task space is unclear — the toy may run out of frontier
   before it runs out of pseudo-label quality.
 
-## Summary (fill in at the end)
+## Summary
 
-<pending>
+Built a numpy-only, CPU-only demo of the R-Zero Challenger/Solver co-evolution
+loop on `MiniGrid-Exec`, a 36-bucket toy domain of grid-transformation programs.
+**The central claim reproduces: held-out accuracy rises 38.7% -> 46.5% (+7.8pp,
+n=3, std 0.1pp) with no ground-truth label read anywhere outside the seed phase
+and evaluation** — a constraint enforced at runtime by a guard on every
+ground-truth call site, and by a test that instruments a real iteration and
+asserts no other purpose is ever requested.
+
+Getting there took two deviations from the issue's stated architecture, both
+forced by measured failures rather than by preference. A flat MLP gave a
+difficulty *cliff* instead of a slope (depth-2 accuracy 0-4% everywhere), so the
+Solver became a shared op-conditioned block applied once per program step,
+feeding its own prediction forward — which makes errors compound with depth and
+produces the graded frontier the method needs. MC-dropout then gave votes four
+times *worse* than greedy in that chained model, so the `m` samples became a
+committee of 10 independently initialised Solvers. M0 failed before both fixes
+and passed after; both are flagged in the README.
+
+The honest accounting of the paper's four findings: pseudo-label decay reproduces
+clearly (80.0% -> 36.3%), collapse partially (peak at iteration 9, then a sag,
+not a collapse), the ablations partially (their *mechanisms* behave exactly as
+predicted — the repetition penalty is the only thing preventing a 98.7%
+single-bucket collapse — but each costs under 0.3pp of accuracy), and **the
+trained Challenger does not beat a uniform curriculum** (46.5% vs 46.4%). The
+Challenger is nonetheless demonstrably doing its job: on an empirical difficulty
+axis it escalates monotonically, 0.609 -> 0.781 against a uniform reference of
+0.610, concentrating on exactly the frontier buckets. What this toy shows is that
+**in a small, enumerable task space the difficulty filter carries the curriculum
+and the trained Challenger is redundant.** A domain where the frontier is a
+vanishing fraction of the task space is where the Challenger should start to pay,
+and that is the natural follow-up.
+
+Two debugging lessons worth keeping. A finite-difference check that disagreed
+with the analytic gradient turned out to have a `float32` hard-code in the
+*checker*, not a bug in the BPTT — verify the instrument before believing it
+about the thing being measured. And a flat curriculum-difficulty curve turned out
+to be a bad ruler rather than a static Challenger — the same mistake in a
+different costume.

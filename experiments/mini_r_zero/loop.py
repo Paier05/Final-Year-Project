@@ -93,6 +93,7 @@ def run_loop(
     delta=0.25,
     group_size=256,
     challenger_steps=8,
+    challenger_lr=2.0,
     n_candidates=1500,
     committee=10,
     seed_steps=None,
@@ -132,26 +133,48 @@ def run_loop(
     else:
         # "oracle" uses the same trained Challenger as "rzero"; the only
         # difference is that phase 3 trains on true labels instead of the vote.
-        ch = Ch.Challenger(rng, use_rep_penalty=use_rep_penalty)
+        ch = Ch.Challenger(rng, lr=challenger_lr, use_rep_penalty=use_rep_penalty)
 
     per, overall = evaluate_all(sol, test)
+
+    # An *empirical* difficulty axis, fixed once from the seeded Solver and never
+    # updated afterwards.  The a-priori score in domain.py weights depth, grid
+    # size and palette equally, and in this domain that is simply not how hard a
+    # bucket is: (1,5,4) is unsolvable for the seeded Solver while (4,3,2) is at
+    # 93%, so the a-priori axis orders them backwards.  Escalation is therefore
+    # reported on both axes -- the issue's literal one, and this one.  It is a
+    # fixed vector, so "the Challenger moved to harder tasks" stays a claim about
+    # the Challenger rather than a moving target.
+    empirical_difficulty = np.array(
+        [1.0 - per[str(D.BUCKETS[b])] for b in range(D.NUM_BUCKETS)]
+    )
+
     log = {
         "mode": mode,
         "seed": seed,
         "config": {
             "iters": iters, "m": m, "delta": delta, "group_size": group_size,
             "challenger_steps": challenger_steps, "n_candidates": n_candidates,
+            "challenger_lr": challenger_lr,
             "committee": committee, "seed_steps": seed_steps or SD.SEED_STEPS,
             "solver_lr": solver_lr, "epochs": epochs,
             "use_rep_penalty": use_rep_penalty, "use_filter": use_filter,
             "single_model": single_model,
         },
+        "empirical_difficulty": empirical_difficulty.tolist(),
         "iterations": [
             {
                 "iteration": 0,
                 "accuracy": overall,
                 "per_bucket": per,
                 "mean_difficulty": ch.mean_difficulty(),
+                "mean_empirical_difficulty": float(
+                    np.dot(ch.bucket_probs(), empirical_difficulty)
+                ),
+                "policy_mean_difficulty": ch.mean_difficulty(),
+                "policy_mean_empirical_difficulty": float(
+                    np.dot(ch.bucket_probs(), empirical_difficulty)
+                ),
                 "bucket_probs": list(ch.bucket_probs()),
             }
         ],
@@ -207,7 +230,13 @@ def run_loop(
             "mean_difficulty": float(
                 np.mean([D.DIFFICULTY[b] for b in batch.bucket_ids])
             ),
+            "mean_empirical_difficulty": float(
+                np.mean([empirical_difficulty[b] for b in batch.bucket_ids])
+            ),
             "policy_mean_difficulty": ch.mean_difficulty(),
+            "policy_mean_empirical_difficulty": float(
+                np.dot(ch.bucket_probs(), empirical_difficulty)
+            ),
             "bucket_probs": list(ch.bucket_probs()),
             "sampled_bucket_hist": np.bincount(
                 batch.bucket_ids, minlength=D.NUM_BUCKETS
@@ -218,10 +247,11 @@ def run_loop(
         if verbose:
             print(
                 "[%s seed=%d] iter %d  acc %.1f%%  pseudo %.1f%%  kept %.1f%%  "
-                "diff %.3f  reject %.1f%%"
+                "diff %.3f/%.3f  reject %.1f%%"
                 % (
                     mode, seed, it, 100 * overall, 100 * pl_acc,
                     100 * kept_fraction, entry["mean_difficulty"],
+                    entry["mean_empirical_difficulty"],
                     100 * ch_diag.get("format_reject_rate", 0.0),
                 )
             )
