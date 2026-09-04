@@ -187,3 +187,31 @@ _To be completed._
   "full 55-game private evaluation". 25+55 does not equal 135. Flagged `[unverified]` in the
   corpus rather than picking one.
 - Next step: taxonomy, synthesis, adjacent, refs.bib, search-log, README.
+
+### 2026-09-04 — supporting files; one late addition from OpenReview
+- What I did: wrote `taxonomy.md`, `synthesis.md`, `adjacent.md`, `search-log.md`, `refs.bib` and
+  `README.md`. Ran the OpenReview / ACL Anthology / Papers with Code / Google Scholar coverage the
+  issue's search protocol asks for, and recorded honestly what each returned.
+- Why: deliverables 4–9 of the issue, and the protocol requires more than arXiv.
+- Result / what I found:
+  * **OpenReview found a paper nothing else surfaced**: *Gödel Agent* (arXiv:2410.04444, ACL 2025
+    main), added as a full Topic 1 entry. It is the missing link between ADAS and DGM. Worth noting
+    *why* the arXiv search missed it: `ti:"Godel Agent"` returns nothing because the title uses
+    "Gödel" with a diaeresis and the title index does not ASCII-fold. Found by searching a
+    distinctive abstract phrase instead.
+  * **Papers with Code's API returned empty bodies** for every query — dead end, recorded as L1.
+  * **Google Scholar was not queried** (no API, scraping blocked and against terms). Semantic Scholar
+    substituted; recorded as L3 rather than glossed.
+  * Two-directional snowballing was implemented but Semantic Scholar's anonymous rate limit made it
+    impractical at this scale; vocabulary-based arXiv search was used instead. Recorded as L4 with
+    the specific risk it carries.
+- A correctness bug I introduced and fixed: the BibTeX generator's string cleaner stripped
+  backslashes wholesale, which silently turned `\$15` in the StateM title into `15`. Caught by the
+  refs.bib validator flagging an unescaped `%` in the same title. Fixed the cleaner to protect
+  escapes, drop math delimiters and re-escape BibTeX specials, then added `fetch.py resync` to
+  regenerate the already-expanded inline BibTeX blocks. **This is exactly the failure mode the
+  generated-BibTeX approach is meant to prevent, so it is worth recording that automation moved the
+  error from "one wrong citation" to "one wrong function, caught by a checker".**
+- `refs.bib`: 120 entries, 120 unique keys, validator clean. No LaTeX toolchain here, so
+  "compiles clean" is a structural check — stated as a caveat in the README rather than claimed.
+- Next step: verification pass, then PR.

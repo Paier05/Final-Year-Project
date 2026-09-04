@@ -5,7 +5,7 @@ prompts, tool definitions, memory, control flow, or the agent's own source code 
 weights. Excluded: prompt-engineering how-tos with no evaluation, and single-shot chain-of-thought
 papers with no improvement loop.
 
-**Corpus size:** 30 entries (29 archival + 1 `[non-archival]`), all verified against the live record.
+**Corpus size:** 31 entries (30 archival + 1 `[non-archival]`), all verified against the live record.
 Records cached under `refs/`. Cross-topic duplicates are written up once here and cross-referenced
 from `topic2-teacher-student.md` / `topic3-frozen-weights.md`.
 
@@ -97,6 +97,33 @@ question; §5 is the failure modes, which is where this topic is currently most 
   archivePrefix = {arXiv},
   primaryClass  = {cs.AI},
   url           = {https://arxiv.org/abs/2408.08435}
+}
+```
+
+### [GodelAgent] — Gödel Agent: A Self-Referential Agent Framework for Recursive Self-Improvement
+- **Authors / Year / Venue:** Xunjian Yin, Xinyi Wang, Liangming Pan, Li Lin, Xiaojun Wan, William Yang Wang / 2024 (v4 2025-05) / **ACL 2025 (main conference)** — stated on the arXiv record.
+- **Link:** arXiv:2410.04444
+- **Verified:** yes — record retrieved and cached (`refs/arxiv/2410.04444.json`); the comment field states "ACL 2025 main". Found via OpenReview search rather than by arXiv keyword search (see `search-log.md`).
+- **Type:** method
+- **Problem:** Both fixed pipelines and meta-learning frameworks like [ADAS] restrict the search to human-designed components, so the globally optimal agent design may lie outside the space either can reach.
+- **Method:** Gödel Agent is a self-evolving framework in which the agent **dynamically modifies its own logic and behaviour at runtime**, guided only by a high-level objective expressed in a prompt — no predefined routines, and no fixed optimisation algorithm wrapping the search. The contrast with [ADAS] is deliberate: ADAS has a meta agent that writes a *separate* target agent within a defined harness, whereas here the improving agent and the improved agent are the same running process.
+- **Verification signal:** environment/benchmark score on mathematical reasoning and agent tasks.
+- **What changes:** scaffold code (its own logic and behaviour), at runtime.
+- **Results that matter:** Continuous self-improvement is demonstrated, surpassing manually crafted agents in **performance, efficiency and generalisability**. The abstract reports no single headline number, so none is quoted.
+- **Limitations / criticisms:** Unconstrained self-modification is exactly the property [FrozenControl] argues is unauditable, and open-sourcing requirements make auditability a practical concern for ARC Prize eligibility; the reported evaluation is on maths and agent benchmarks rather than long-horizon interactive tasks.
+- **Relevance to this FYP (1–5) and why:** **4.** It is the missing link in the §1 lineage — the first peer-reviewed LLM-era system to take the Gödel machine's self-reference literally, sitting between [ADAS] (meta agent writes agent) and [DGM] (archive plus validation). It is also the one entry that reports **efficiency** as an improvement axis alongside performance, which is the axis ARC-AGI-3 scores.
+- **Reusable structure:** Runtime self-modification driven only by a high-level objective — the minimal-specification end of the design space, useful to the FYP as the *upper bound on freedom* against which a constrained, auditable variant ([FrozenControl]) can be compared.
+- **BibTeX:** 
+
+```bibtex
+@misc{yin2024del,
+  title         = {{Gödel Agent: A Self-Referential Agent Framework for Recursive Self-Improvement}},
+  author        = {Yin, Xunjian and Wang, Xinyi and Pan, Liangming and Lin, Li and Wan, Xiaojun and Wang, William Yang},
+  year          = {2024},
+  eprint        = {2410.04444},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2410.04444}
 }
 ```
 
@@ -642,7 +669,7 @@ question; §5 is the failure modes, which is where this topic is currently most 
 
 ```bibtex
 @misc{qin2026statem,
-  title         = {{StateM: Reaching 95.3% Raw Accuracy, or a 15 Frontier Run, on Terminal-Bench 2.1 via Harness Scaling}},
+  title         = {{StateM: Reaching 95.3\% Raw Accuracy, or a \$15 Frontier Run, on Terminal-Bench 2.1 via Harness Scaling}},
   author        = {Qin, Ziheng and Lu, Yaxin and Wang, Zhangyang Atlas and Wang, Kai},
   year          = {2026},
   eprint        = {2608.15089},

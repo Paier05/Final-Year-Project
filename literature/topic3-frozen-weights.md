@@ -505,7 +505,7 @@ must compare against it, not because it qualifies.
   primaryClass  = {cs.AI},
   url           = {https://arxiv.org/abs/2605.05138},
   note          = {Accepted for publication at AGI-2026},
-  doi           = {10.1007/978-3-032-33195-3_15}
+  doi           = {10.1007/978-3-032-33195-3\_15}
 }
 ```
 

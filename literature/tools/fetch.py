@@ -275,8 +275,22 @@ def bibkey(rec):
 def bibtex(rec):
     """Emit a BibTeX entry built only from the fetched record."""
     def clean(s):
-        return (s.replace("{", "").replace("}", "").replace("\\", "")
-                 .replace("$", "").strip())
+        """Make a fetched string safe to drop into a BibTeX field.
+
+        arXiv titles/abstracts are LaTeX-ish: they carry math delimiters, escaped
+        dollars, and occasional specials. Stripping backslashes wholesale silently
+        corrupts titles (it turned "\\$15" into "15"), so protect the escapes first,
+        drop math delimiters, then re-escape the BibTeX specials.
+        """
+        s = s.replace("{", "").replace("}", "")
+        s = s.replace("\\$", "\x00DOLLAR\x00")          # literal dollar sign
+        s = s.replace("\\times", "x").replace("\\%", "%")
+        s = re.sub(r"\\[A-Za-z]+", " ", s)               # drop remaining LaTeX commands
+        s = s.replace("$", "").replace("\\", "")         # drop math delimiters
+        for ch in ("&", "%", "#", "_"):
+            s = s.replace(ch, "\\" + ch)
+        s = s.replace("\x00DOLLAR\x00", "\\$")
+        return re.sub(r"\s+", " ", s).strip()
 
     authors = []
     for a in rec.get("authors", []):
@@ -309,7 +323,7 @@ def bibtex(rec):
         lines.append("  note          = {" + n + "}")
     if rec.get("doi"):
         lines[-1] += ","
-        lines.append("  doi           = {" + rec["doi"] + "}")
+        lines.append("  doi           = {" + rec["doi"].replace("_", "\\_") + "}")
     lines.append("}")
     return "\n".join(lines)
 
@@ -346,6 +360,38 @@ def cmd_expand(paths):
         n = len(pat.findall(text)) - len(missing)
         print(path + ": expanded " + str(n) + " markers"
               + ("; MISSING " + ",".join(missing) if missing else ""))
+
+
+def cmd_resync(paths):
+    """Regenerate every ```bibtex block in place from the cached record.
+
+    Markers are consumed by `expand`, so this is how an already-expanded file is
+    brought back into sync after a fix to the BibTeX generator.
+    """
+    block = re.compile(r"```bibtex\n(.*?)\n```", re.S)
+    for path in paths:
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+        changed = [0]
+
+        def sub(m):
+            body = m.group(1)
+            eid = re.search(r"eprint\s*=\s*\{([^}]+)\}", body)
+            if not eid:
+                return m.group(0)
+            rec = _load(eid.group(1).strip())
+            if rec is None:
+                return m.group(0)
+            new = "```bibtex\n" + bibtex(rec) + "\n```"
+            if new != m.group(0):
+                changed[0] += 1
+            return new
+
+        new_text = block.sub(sub, text)
+        if new_text != text:
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(new_text)
+        print(path + ": " + str(changed[0]) + " block(s) updated")
 
 
 def cmd_keys(ids):
@@ -401,6 +447,8 @@ if __name__ == "__main__":
         cmd_bib(sys.argv[2:])
     elif cmd == "expand":
         cmd_expand(sys.argv[2:])
+    elif cmd == "resync":
+        cmd_resync(sys.argv[2:])
     elif cmd == "keys":
         cmd_keys(sys.argv[2:])
     else:
