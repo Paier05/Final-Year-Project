@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/1703.05407v5",
+ "arxiv_id": "1703.05407v5",
+ "title": "Intrinsic Motivation and Automatic Curricula via Asymmetric Self-Play",
+ "abstract": "We describe a simple scheme that allows an agent to learn about its environment in an unsupervised manner. Our scheme pits two versions of the same agent, Alice and Bob, against one another. Alice proposes a task for Bob to complete; and then Bob attempts to complete the task. In this work we will focus on two kinds of environments: (nearly) reversible environments and environments that can be reset. Alice will \"propose\" the task by doing a sequence of actions and then Bob must undo or repeat them, respectively. Via an appropriate reward structure, Alice and Bob automatically generate a curriculum of exploration, enabling unsupervised training of the agent. When Bob is deployed on an RL task within the environment, this unsupervised training reduces the number of supervised episodes needed to learn, and in some cases converges to a higher reward.",
+ "published": "2017-03-15T22:27:43Z",
+ "updated": "2018-04-27T20:58:12Z",
+ "authors": [
+  "Sainbayar Sukhbaatar",
+  "Zeming Lin",
+  "Ilya Kostrikov",
+  "Gabriel Synnaeve",
+  "Arthur Szlam",
+  "Rob Fergus"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Published in ICLR 2018"
+}

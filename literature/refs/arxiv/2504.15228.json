@@ -1,0 +1,20 @@
+{
+ "id": "http://arxiv.org/abs/2504.15228v2",
+ "arxiv_id": "2504.15228v2",
+ "title": "A Self-Improving Coding Agent",
+ "abstract": "Recent advancements in Large Language Models (LLMs) have spurred interest in deploying LLM agents to undertake tasks in the world. LLMs are often deployed in agent systems: code that orchestrates LLM calls and provides them with tools. We demonstrate that an agent system, equipped with basic coding tools, can autonomously edit itself, and thereby improve its performance on benchmark tasks. We find performance gains from 17% to 53% on a random subset of SWE Bench Verified, with additional performance gains on LiveCodeBench, as well as synthetically generated agent benchmarks. Our work represents an advancement in the automated and open-ended design of agentic systems, and demonstrates a data-efficient, non gradient-based learning mechanism driven by LLM reflection and code updates.",
+ "published": "2025-04-21T16:58:18Z",
+ "updated": "2025-05-16T20:58:56Z",
+ "authors": [
+  "Maxime Robeyns",
+  "Martin Szummer",
+  "Laurence Aitchison"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Submitted as a preprint to NeurIPS 2025"
+}

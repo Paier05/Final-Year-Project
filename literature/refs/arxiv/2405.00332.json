@@ -1,0 +1,34 @@
+{
+ "id": "http://arxiv.org/abs/2405.00332v4",
+ "arxiv_id": "2405.00332v4",
+ "title": "A Careful Examination of Large Language Model Performance on Grade School Arithmetic",
+ "abstract": "Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.",
+ "published": "2024-05-01T05:52:05Z",
+ "updated": "2024-11-22T22:27:49Z",
+ "authors": [
+  "Hugh Zhang",
+  "Jeff Da",
+  "Dean Lee",
+  "Vaughn Robinson",
+  "Catherine Wu",
+  "Will Song",
+  "Tiffany Zhao",
+  "Pranav Raja",
+  "Charlotte Zhuang",
+  "Dylan Slack",
+  "Qin Lyu",
+  "Sean Hendryx",
+  "Russell Kaplan",
+  "Michele Lunati",
+  "Summer Yue"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.AI",
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "2024 NeurIPS Camera Ready (Datasets and Benchmarks Track)"
+}

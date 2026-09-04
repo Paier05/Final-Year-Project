@@ -1,0 +1,20 @@
+{
+ "id": "http://arxiv.org/abs/2512.24156v1",
+ "arxiv_id": "2512.24156v1",
+ "title": "Graph-Based Exploration for ARC-AGI-3 Interactive Reasoning Tasks",
+ "abstract": "We present a training-free graph-based approach for solving interactive reasoning tasks in the ARC-AGI-3 benchmark. ARC-AGI-3 comprises game-like tasks where agents must infer task mechanics through limited interactions, and adapt to increasing complexity as levels progress. Success requires forming hypotheses, testing them, and tracking discovered mechanics. The benchmark has revealed that state-of-the-art LLMs are currently incapable of reliably solving these tasks. Our method combines vision-based frame processing with systematic state-space exploration using graph-structured representations. It segments visual frames into meaningful components, prioritizes actions based on visual salience, and maintains a directed graph of explored states and transitions. By tracking visited states and tested actions, the agent prioritizes actions that provide the shortest path to untested state-action pairs. On the ARC-AGI-3 Preview Challenge, this structured exploration strategy solves a median of 30 out of 52 levels across six games and ranks 3rd on the private leaderboard, substantially outperforming frontier LLM-based agents. These results demonstrate that explicit graph-structured exploration, even without learning, can serve as a strong baseline for interactive reasoning and underscore the importance of systematic state tracking and action prioritization in sparse-feedback environments where current LLMs fail to capture task dynamics. The code is open source and available at https://github.com/dolphin-in-a-coma/arc-agi-3-just-explore.",
+ "published": "2025-12-30T11:40:23Z",
+ "updated": "2025-12-30T11:40:23Z",
+ "authors": [
+  "Evgenii Rudakov",
+  "Jonathan Shock",
+  "Benjamin Ultan Cowley"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "AAAI 2026 Workshop on AI for Scientific Research",
+ "comment": ""
+}

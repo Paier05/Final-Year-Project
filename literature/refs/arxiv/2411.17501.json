@@ -1,0 +1,21 @@
+{
+ "id": "http://arxiv.org/abs/2411.17501v3",
+ "arxiv_id": "2411.17501v3",
+ "title": "The Limits of Inference Scaling Through Resampling",
+ "abstract": "Recent research has generated hope that inference scaling, such as resampling solutions until they pass verifiers like unit tests, could allow weaker models to match stronger ones. Beyond inference, this approach also enables training reasoning models, where data is curated using rejection sampling against a verifier. However, we show that this approach is fundamentally limited when verifiers are imperfect and have a non-zero probability of producing false positives. Resampling cannot decrease this probability, so it imposes an upper bound to the accuracy of resampling-based inference scaling, regardless of compute budget. Our analysis shows that there is a strong correlation between the model's single-sample accuracy and its false positive rate on HumanEval and MBPP, whose unit tests have limited coverage. Therefore, no amount of inference scaling of weaker models can enable them to match the single-sample accuracy of a sufficiently strong model. Empirical results show that optimal sampling attempts are often fewer than 10, as the negative utility of false positives outweighs benefits, bending inference scaling curves downward. Finally, false positives may have other undesirable qualities, like poor adherence to coding style conventions.",
+ "published": "2024-11-26T15:13:06Z",
+ "updated": "2026-03-26T17:29:54Z",
+ "authors": [
+  "Benedikt Stroebl",
+  "Sayash Kapoor",
+  "Arvind Narayanan"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

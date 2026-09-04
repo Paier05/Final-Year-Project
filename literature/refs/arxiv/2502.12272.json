@@ -1,0 +1,24 @@
+{
+ "id": "http://arxiv.org/abs/2502.12272v6",
+ "arxiv_id": "2502.12272v6",
+ "title": "Learning to Reason at the Frontier of Learnability",
+ "abstract": "Reinforcement learning is now widely adopted as the final stage of large language model training, especially for reasoning-style tasks such as maths problems. Typically, models attempt each question many times during a single training step and attempt to learn from their successes and failures. However, we demonstrate that throughout training with two popular algorithms (PPO and VinePPO) on two widely used datasets, many questions are either solved by all attempts - meaning they are already learned - or by none - providing no meaningful training signal. To address this, we adapt a method from the reinforcement learning literature - sampling for learnability - and apply it to the reinforcement learning stage of LLM training. Our curriculum prioritises questions with high variance of success, i.e. those where the agent sometimes succeeds, but not always. Our findings demonstrate that this curriculum consistently boosts training performance across multiple algorithms and datasets, paving the way for more efficient and effective reinforcement learning with LLMs.",
+ "published": "2025-02-17T19:16:37Z",
+ "updated": "2026-04-30T11:57:30Z",
+ "authors": [
+  "Thomas Foster",
+  "Anya Sims",
+  "Johannes Forkel",
+  "Mattie Fellows",
+  "Jakob Foerster"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI",
+  "cs.CL"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

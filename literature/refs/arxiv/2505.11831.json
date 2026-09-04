@@ -1,0 +1,22 @@
+{
+ "id": "http://arxiv.org/abs/2505.11831v2",
+ "arxiv_id": "2505.11831v2",
+ "title": "ARC-AGI-2: A New Challenge for Frontier AI Reasoning Systems",
+ "abstract": "The Abstraction and Reasoning Corpus for Artificial General Intelligence (ARC-AGI), introduced in 2019, established a challenging benchmark for evaluating the general fluid intelligence of artificial systems via a set of unique, novel tasks only requiring minimal prior knowledge. While ARC-AGI has spurred significant research activity over the past five years, recent AI progress calls for benchmarks capable of finer-grained evaluation at higher levels of cognitive complexity. We introduce ARC-AGI-2, an upgraded version of the benchmark. ARC-AGI-2 preserves the input-output pair task format of its predecessor, ensuring continuity for researchers. It incorporates a newly curated and expanded set of tasks specifically designed to provide a more granular signal to assess abstract reasoning and problem-solving abilities at higher levels of fluid intelligence. To contextualize the difficulty and characteristics of ARC-AGI-2, we present extensive results from human testing, providing a robust baseline that highlights the benchmark's accessibility to human intelligence, yet difficulty for current AI systems. ARC-AGI-2 aims to serve as a next-generation tool for rigorously measuring progress towards more general and human-like AI capabilities.",
+ "published": "2025-05-17T04:34:48Z",
+ "updated": "2026-01-15T23:30:35Z",
+ "authors": [
+  "Francois Chollet",
+  "Mike Knoop",
+  "Gregory Kamradt",
+  "Bryan Landers",
+  "Henry Pinkard"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

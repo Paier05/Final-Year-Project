@@ -1,0 +1,20 @@
+{
+ "id": "http://arxiv.org/abs/2605.08468v1",
+ "arxiv_id": "2605.08468v1",
+ "title": "PYTHALAB-MERA: Validation-Grounded Memory, Retrieval, and Acceptance Control for Frozen-LLM Coding Agents",
+ "abstract": "Local LLM-based coding agents increasingly work in settings where correctness is earned through execution feedback, persistent state, and bounded repair, not through a single fluent answer. Static retrieval, long-context prompting, self-refinement, execution-feedback repair, and reinforcement learning over model weights each address part of this setting, but they do not jointly provide validation-grounded episodic memory, adaptive retrieval-action selection, delayed credit assignment, and structural skill reuse around a frozen local model. We introduce PYTHALAB-MERA, a lightweight external controller for local validation-conditioned code generation. The frozen language model proposes complete source files; the controller decides which memory records and AST-derived skills should enter the next prompt, validates each candidate through a fail-fast pipeline, converts validation outcomes into bounded shaped rewards, and propagates delayed credit through TD(lambda)-style eligibility traces. We evaluate the implementation as a local CLI artifact on reinforcement-learning coding tasks with strict validation gates. In the measured hard RL setting with three tasks, three repetitions, and a three-attempt budget, PYTHALAB-MERA passed 8/9 strict validations; the self-refinement baseline and the investigated GRACE extension each passed 0/9. These results support a deliberately bounded claim: in this recorded setting, the external memory-and-retrieval controller improved validation success. They do not establish general-purpose code synthesis, state-of-the-art performance, formal program correctness, or formal safety.",
+ "published": "2026-05-08T20:39:32Z",
+ "updated": "2026-05-08T20:39:32Z",
+ "authors": [
+  "Mehmet Iscan"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.AI",
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "28 pages, 4 figures, 7 tables; local CLI artifact evaluation"
+}

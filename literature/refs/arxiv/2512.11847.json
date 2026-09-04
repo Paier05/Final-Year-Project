@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2512.11847v2",
+ "arxiv_id": "2512.11847v2",
+ "title": "Tiny Recursive Models on ARC-AGI-1: Inductive Biases, Identity Conditioning, and Test-Time Compute",
+ "abstract": "Tiny Recursive Models (TRM) were proposed as a parameter-efficient alternative to large language models for solving Abstraction and Reasoning Corpus (ARC) style tasks. The original work reports strong performance and suggests that recursive latent updates enable non-trivial reasoning, but it remains unclear how much of this performance stems from architecture, test-time compute, or task-specific priors. In this technical note, we empirically analyze the ARC Prize TRM checkpoint on ARC-AGI-1 and report four behavioral findings and an efficiency comparison. First, we show that test-time augmentation and majority-vote ensembling account for a substantial fraction of reported performance: the 1000-sample voting pipeline improves Pass@1 by about 11 percentage points over single-pass canonical inference. Second, a puzzle-identity ablation reveals strict dependence on task identifiers: replacing the correct puzzle ID with a blank or random token yields zero accuracy. Third, a recursion trajectory analysis shows that most of the final accuracy is achieved at the first recursion step and that performance saturates after few latent updates, indicating shallow effective recursion. Fourth, early-stage training experiments under canonical versus heavy augmentation regimes suggest that heavy augmentation broadens the distribution of candidate solutions and improves multi-sample success. Finally, we compare TRM with a naive QLoRA fine-tune of Llama 3 8B on canonical ARC-AGI-1, finding that TRM's non-autoregressive design achieves much higher throughput and substantially lower memory usage in this setting. Overall, TRM's ARC-AGI-1 performance appears to arise from an interaction between efficiency, task-specific conditioning, and aggressive test-time compute rather than deep internal reasoning.",
+ "published": "2025-12-04T06:20:44Z",
+ "updated": "2026-01-08T02:32:50Z",
+ "authors": [
+  "Antonio Roye-Azar",
+  "Santiago Vargas-Naranjo",
+  "Dhruv Ghai",
+  "Nithin Balamurugan",
+  "Rayan Amir"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "13 pages, 0 figures, 6 tables"
+}

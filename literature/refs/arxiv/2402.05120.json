@@ -1,0 +1,24 @@
+{
+ "id": "http://arxiv.org/abs/2402.05120v2",
+ "arxiv_id": "2402.05120v2",
+ "title": "More Agents Is All You Need",
+ "abstract": "We find that, simply via a sampling-and-voting method, the performance of large language models (LLMs) scales with the number of agents instantiated. Also, this method, termed as Agent Forest, is orthogonal to existing complicated methods to further enhance LLMs, while the degree of enhancement is correlated to the task difficulty. We conduct comprehensive experiments on a wide range of LLM benchmarks to verify the presence of our finding, and to study the properties that can facilitate its occurrence. Our code is publicly available at: https://github.com/MoreAgentsIsAllYouNeed/AgentForest",
+ "published": "2024-02-03T05:55:24Z",
+ "updated": "2024-10-11T09:38:40Z",
+ "authors": [
+  "Junyou Li",
+  "Qin Zhang",
+  "Yangbin Yu",
+  "Qiang Fu",
+  "Deheng Ye"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.AI",
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Published at Transactions on Machine Learning Research (TMLR)"
+}

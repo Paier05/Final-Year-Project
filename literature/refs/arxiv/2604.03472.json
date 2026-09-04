@@ -1,0 +1,22 @@
+{
+ "id": "http://arxiv.org/abs/2604.03472v4",
+ "arxiv_id": "2604.03472v4",
+ "title": "Vocabulary Dropout for Curriculum Diversity in LLM Co-Evolution",
+ "abstract": "Co-evolutionary self-play, where one language model generates problems and another solves them, promises curriculum learning without human supervision. The promise breaks down early in practice. The proposer converges to a narrow distribution of problems that satisfy the reward function, and the collapsed curriculum teaches the solver little, stalling the loop. We introduce vocabulary dropout, a lightweight intervention that randomly masks the proposer's output logits during both policy training and curriculum generation. The mask is hard and non-stationary, so the proposer cannot lock into fixed token sequences. Training Qwen3-4B and Qwen3-8B on mathematical reasoning via R-Zero, vocabulary dropout sustains proposer diversity throughout training across lexical, semantic, and functional measures, and improves the solver by an average of +4.4 points at 8B with the largest gains on competition-level benchmarks. Explicit action-space constraints, filling the structural role that game rules fill in classical self-play, can keep co-evolution in language productive. Vocabulary dropout is one simple way to impose them.",
+ "published": "2026-04-03T21:40:03Z",
+ "updated": "2026-07-22T14:38:55Z",
+ "authors": [
+  "Jacob Dineen",
+  "Aswin RRV",
+  "Zhikun Xu",
+  "Ben Zhou"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Accepted to COLM 2026"
+}
