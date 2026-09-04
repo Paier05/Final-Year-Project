@@ -153,3 +153,37 @@ _To be completed._
   environments specifically. It does not exist — every UED paper found parameterises a known
   environment with a known reward. That absence is part of the gap statement, not a search failure.
 - Next step: topic 3.
+
+### 2026-09-04 — topic3-frozen-weights.md written (31 entries) — and the framing has to change
+- What I did: wrote Topic 3 in four sections — search/sampling over a frozen model; learning that
+  lives in context, memory or an external world model; a clearly separated test-time-training
+  sub-bucket where weights *do* change; and critical/negative results. Every entry carries the
+  required new-capability / elicitation / unclear classification.
+- Why: the issue's Topic 3 scope and its "required framing".
+- Result / what I found — this is the section that changes the project:
+  * **The ARC-AGI-3 public set is close to saturated, by frozen-weight harnesses.** [Twin]
+    (arXiv:2608.14490) reports the decomposition that matters: the same frozen base model scores
+    7.8% played directly, 61.1% with an off-the-shelf harness, and 93.3% with a self-authored
+    executable world model (23/25 games, 179/183 levels). [Tycho] (arXiv:2607.28287) reports
+    100.00 RHAE with two frontier models, all 183 levels, using 61% fewer scored actions than the
+    human baselines. The internal briefing's "frontier ~0.5%, best preview agent ~12.6%" is
+    obsolete by roughly two orders of magnitude.
+  * **But the public set may not measure anything.** [BenchmarkValidity] (arXiv:2605.25931) reports
+    that all 25 public games are reachable by non-intelligent strategies, and that a library-level
+    null-coordinate vulnerability bypasses 18 of them in a single step. [WMAblation]
+    (arXiv:2607.15439), by the author of the system being ablated, concludes its own near-perfect
+    results "indicate public-set saturation only" — and finds that variant differences are often
+    smaller than the differences between backbone models and reasoning-effort settings.
+  * Consequently the FYP's question is *not* "can a harness beat 1% on ARC-AGI-3" — that is
+    answered. The live questions are the private set, contamination (the strong models postdate the
+    games), and whether any of this works at small scale. The only small-model datapoint found in
+    the whole corpus is AERA at RHAE 0.2116 with Qwen2.5-0.5B.
+  * On the required framing: almost everything classifies as **elicitation**. The two entries I
+    classified as system-level **new capability** ([Twin], [Tycho]) are honest about the model being
+    unchanged, and the only clean model-level (a) is [AlgorithmDistillation]. [RLVR-Elicitation]
+    (NeurIPS 2025 Oral) is the methodological anchor: pass@k at large k, base model as upper bound.
+- Numbers I could not reconcile, recorded rather than resolved: the internal briefing says 135
+  environments at roughly 1:5 public:private; [BenchmarkValidity] refers to 25 public and a
+  "full 55-game private evaluation". 25+55 does not equal 135. Flagged `[unverified]` in the
+  corpus rather than picking one.
+- Next step: taxonomy, synthesis, adjacent, refs.bib, search-log, README.
