@@ -1,0 +1,22 @@
+{
+ "id": "http://arxiv.org/abs/2604.20051v2",
+ "arxiv_id": "2604.20051v2",
+ "title": "Bootstrapping Post-training Signals for Open-ended Tasks via Rubric-based Self-play on Pre-training Text",
+ "abstract": "Self-play has recently emerged as a promising paradigm for post-training Large Language Models (LLMs). In self-play, the target LLM creates the task input (e.g., a question), which it then addresses itself by producing a task output (e.g., an answer). A reward model evaluates the output, and the rewards are used to train the LLM, typically via Reinforcement Learning (RL). A key benefit of self-play for post-training LLMs is its minimal supervision costs: self-play avoids the need for high-quality input-output pairs traditionally constructed by humans or expensive proprietary models. Existing work, however, explores self-play only for verifiable tasks, such as math and coding, for which objective ground truth is available and easily checkable. In this paper, we seek to extend self-play to more realistic open-ended tasks. We propose POP, a self-play framework that uses the same LLM to synthesize evaluation rubrics along with each input-output pair. The rubric is used to evaluate outputs and train the model. Crucially, we ground the framework on a content-rich pretraining corpus to (1) enable an exploitable generation-verification gap and reduce reward hacking, and (2) prevent mode collapse. On Qwen-2.5-7B, POP increases performance of both the pretrained base model and instruction-tuned model on multiple tasks ranging from long-form healthcare QA to creative writing and instruction following.",
+ "published": "2026-04-21T23:21:56Z",
+ "updated": "2026-05-07T16:30:21Z",
+ "authors": [
+  "Chengyu Huang",
+  "Sheng-Yen Chou",
+  "Zhengxin Zhang",
+  "Claire Cardie"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

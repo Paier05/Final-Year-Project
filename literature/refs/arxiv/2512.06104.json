@@ -1,0 +1,19 @@
+{
+ "id": "http://arxiv.org/abs/2512.06104v1",
+ "arxiv_id": "2512.06104v1",
+ "title": "ARC-AGI Without Pretraining",
+ "abstract": "Conventional wisdom in the age of LLMs dictates that solving IQ-test-like visual puzzles from the ARC-AGI-1 benchmark requires capabilities derived from massive pretraining. To counter this, we introduce CompressARC, a 76K parameter model without any pretraining that solves 20% of evaluation puzzles by minimizing the description length (MDL) of the target puzzle purely during inference time. The MDL endows CompressARC with extreme generalization abilities typically unheard of in deep learning. To our knowledge, CompressARC is the only deep learning method for ARC-AGI where training happens only on a single sample: the target inference puzzle itself, with the final solution information removed. Moreover, CompressARC does not train on the pre-provided ARC-AGI \"training set\". Under these extremely data-limited conditions, we do not ordinarily expect any puzzles to be solvable at all. Yet CompressARC still solves a diverse distribution of creative ARC-AGI puzzles, suggesting MDL to be an alternative feasible way to produce intelligence, besides conventional pretraining.",
+ "published": "2025-12-05T19:17:43Z",
+ "updated": "2025-12-05T19:17:43Z",
+ "authors": [
+  "Isaac Liao",
+  "Albert Gu"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

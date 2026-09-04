@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/1705.06366v5",
+ "arxiv_id": "1705.06366v5",
+ "title": "Automatic Goal Generation for Reinforcement Learning Agents",
+ "abstract": "Reinforcement learning is a powerful technique to train an agent to perform a task. However, an agent that is trained using reinforcement learning is only capable of achieving the single task that is specified via its reward function. Such an approach does not scale well to settings in which an agent needs to perform a diverse set of tasks, such as navigating to varying positions in a room or moving objects to varying locations. Instead, we propose a method that allows an agent to automatically discover the range of tasks that it is capable of performing. We use a generator network to propose tasks for the agent to try to achieve, specified as goal states. The generator network is optimized using adversarial training to produce tasks that are always at the appropriate level of difficulty for the agent. Our method thus automatically produces a curriculum of tasks for the agent to learn. We show that, by using this framework, an agent can efficiently and automatically learn to perform a wide set of tasks without requiring any prior knowledge of its environment. Our method can also learn to achieve tasks with sparse rewards, which traditionally pose significant challenges.",
+ "published": "2017-05-17T23:05:46Z",
+ "updated": "2018-07-23T09:25:37Z",
+ "authors": [
+  "Carlos Florensa",
+  "David Held",
+  "Xinyang Geng",
+  "Pieter Abbeel"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI",
+  "cs.RO"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Accepted at ICML 2018, Proceedings of the 35th International Conference on Machine Learning, Stockholm, Sweden, PMLR 80, 2018"
+}

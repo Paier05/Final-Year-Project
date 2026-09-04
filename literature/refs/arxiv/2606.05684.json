@@ -1,0 +1,21 @@
+{
+ "id": "http://arxiv.org/abs/2606.05684v1",
+ "arxiv_id": "2606.05684v1",
+ "title": "AdaMEM: Test-Time Adaptive Memory for Language Agents",
+ "abstract": "A central challenge for language agents is utilizing past experience to adapt to dynamic test-time conditions. While recent work demonstrates the promise of agentic memory mechanisms, most systems restrict retrieval to episode initiation. Consequently, agents are forced to rely on static guidance that becomes increasingly misaligned as long-horizon tasks unfold. To address this rigidity, we propose the Adaptive Memory Agent (AdaMEM), a novel framework for agent test-time adaptation. Without updating model parameters online, AdaMEM adapts agent behavior via a hybrid memory architecture: it maintains a long-term trajectory memory of raw experiences collected offline while generating dynamic short-term strategy memory on-the-fly to guide decision-making. This mechanism enables the trade-off between token efficiency and adaptability across varying inference-time compute levels. Empirically, AdaMEM significantly outperforms static memory baselines, achieving relative gains of up to 13% on ALFWorld and 11% on WebShop, with consistent leading performance extending to agentic search on HotpotQA. To further enhance this adaptation, we develop STEP-MFT, a Step-wise Memory Fine-Tuning technique that trains the policy to synthesize high-quality strategies from retrieved experiences, yielding additional performance gains. Our work establishes a new scaling dimension for agentic memory, supporting continuous reasoning and self-evolution post-deployment in real-world environments. Our code is available at https://github.com/yunx-z/AdaMEM.",
+ "published": "2026-06-04T04:06:08Z",
+ "updated": "2026-06-04T04:06:08Z",
+ "authors": [
+  "Yunxiang Zhang",
+  "Yiheng Li",
+  "Ali Payani",
+  "Lu Wang"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "ICML 2026"
+}

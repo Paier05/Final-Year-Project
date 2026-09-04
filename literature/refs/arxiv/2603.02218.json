@@ -1,0 +1,24 @@
+{
+ "id": "http://arxiv.org/abs/2603.02218v2",
+ "arxiv_id": "2603.02218v2",
+ "title": "Self-Play Only Evolves When Self-Synthetic Pipeline Ensures Learnable Information Gain",
+ "abstract": "Large language models (LLMs) make it plausible to build systems that improve through self-evolving loops, but many existing proposals are better understood as self-play and often plateau quickly. A central failure mode is that the loop synthesises more data without increasing learnable information for the next iteration. Through experiments on a self-play coding task, we reveal that sustainable self-evolution requires a self-synthesised data pipeline with learnable information that increases across iterations. We identify triadic roles that self-evolving LLMs play: the Proposer, which generates tasks; the Solver, which attempts solutions; and the Verifier, which provides training signals, and we identify three system designs that jointly target learnable information gain from this triadic roles perspective. Asymmetric co-evolution closes a weak-to-strong-to-weak loop across roles. Capacity growth expands parameter and inference-time budgets to match rising learnable information. Proactive information seeking introduces external context and new task sources that prevent saturation. Together, these modules provide a measurable, system-level path from brittle self-play dynamics to sustained self-evolution.",
+ "published": "2026-02-10T08:12:09Z",
+ "updated": "2026-05-15T18:28:55Z",
+ "authors": [
+  "Wei Liu",
+  "Siya Qi",
+  "Yali Du",
+  "Yulan He"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI",
+  "cs.CL",
+  "cs.IT"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "10 pages, 6 figures, 7 formulas, accepted by ICML 2026 position paper track"
+}

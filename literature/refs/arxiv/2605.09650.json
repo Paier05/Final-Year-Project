@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2605.09650v1",
+ "arxiv_id": "2605.09650v1",
+ "title": "Workspace Optimization: How to Train Your Agent",
+ "abstract": "Modern agents built on frontier language models often cannot adapt their weights. What, then, remains trainable? We argue it is the agent's \\emph{workspace}, the structured external substrate it reads, writes, and tests; we call its evolution workspace optimization. Workspace optimization targets hard multi-turn environments where a frontier model has strong priors but cannot solve the task in a single shot, so the agent must learn through interaction. We propose a principled way to evolve the workspace, mirroring the structure of weight-space training: artifacts in place of parameters, evidence in place of data, counterexamples in place of losses, and textual feedback in place of gradients. We instantiate the idea in DreamTeam, a multi-agent harness for ARC-AGI-3 whose roles build an executable world model, plan, hypothesize, probe, strategize, and route failures. On the current 25-game ARC-AGI-3 public set under the official scoring protocol and averaged over two independent runs, DreamTeam improves the SOTA protocol-matched agent's score from 36% to 38.4%, while using 31% fewer environment actions per game.",
+ "published": "2026-05-10T16:52:10Z",
+ "updated": "2026-05-10T16:52:10Z",
+ "authors": [
+  "Elad Sarafian",
+  "Gal Kaplun",
+  "Ron Banner",
+  "Daniel Soudry",
+  "Boris Ginsburg"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI",
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

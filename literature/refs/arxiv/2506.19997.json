@@ -1,0 +1,24 @@
+{
+ "id": "http://arxiv.org/abs/2506.19997v5",
+ "arxiv_id": "2506.19997v5",
+ "title": "TRACED: Transition-aware Regret Approximation with Co-learnability for Environment Design",
+ "abstract": "Generalizing deep reinforcement learning agents to unseen environments remains a significant challenge. One promising solution is Unsupervised Environment Design (UED), a co-evolutionary framework in which a teacher adaptively generates tasks with high learning potential, while a student learns a robust policy from this evolving curriculum. Existing UED methods typically measure learning potential via regret, the gap between optimal and current performance, approximated solely by value-function loss. Building on these approaches, we introduce the transition-prediction error as an additional term in our regret approximation. To capture how training on one task affects performance on others, we further propose a lightweight metric called Co-Learnability. By combining these two measures, we present Transition-aware Regret Approximation with Co-learnability for Environment Design (TRACED). Empirical evaluations show that TRACED produces curricula that improve zero-shot generalization over strong baselines across multiple benchmarks. Ablation studies confirm that the transition-prediction error drives rapid complexity ramp-up and that Co-Learnability delivers additional gains when paired with the transition-prediction error. These results demonstrate how refined regret approximation and explicit modeling of task relationships can be leveraged for sample-efficient curriculum design in UED. Project Page: https://geonwoo.me/traced/",
+ "published": "2025-06-24T20:29:24Z",
+ "updated": "2026-03-15T09:16:57Z",
+ "authors": [
+  "Geonwoo Cho",
+  "Jaegyun Im",
+  "Jihwan Lee",
+  "Hojun Yi",
+  "Sejin Kim",
+  "Sundong Kim"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "ICLR 2026"
+}

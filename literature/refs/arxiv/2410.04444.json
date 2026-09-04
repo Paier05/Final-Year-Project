@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2410.04444v4",
+ "arxiv_id": "2410.04444v4",
+ "title": "Gödel Agent: A Self-Referential Agent Framework for Recursive Self-Improvement",
+ "abstract": "The rapid advancement of large language models (LLMs) has significantly enhanced the capabilities of AI-driven agents across various tasks. However, existing agentic systems, whether based on fixed pipeline algorithms or pre-defined meta-learning frameworks, cannot search the whole agent design space due to the restriction of human-designed components, and thus might miss the globally optimal agent design. In this paper, we introduce Gödel Agent, a self-evolving framework inspired by the Gödel machine, enabling agents to recursively improve themselves without relying on predefined routines or fixed optimization algorithms. Gödel Agent leverages LLMs to dynamically modify its own logic and behavior, guided solely by high-level objectives through prompting. Experimental results on mathematical reasoning and complex agent tasks demonstrate that implementation of Gödel Agent can achieve continuous self-improvement, surpassing manually crafted agents in performance, efficiency, and generalizability.",
+ "published": "2024-10-06T10:49:40Z",
+ "updated": "2025-05-31T07:33:17Z",
+ "authors": [
+  "Xunjian Yin",
+  "Xinyi Wang",
+  "Liangming Pan",
+  "Li Lin",
+  "Xiaojun Wan",
+  "William Yang Wang"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "ACL 2025 main. The code can be found at https://github.com/Arvid-pku/Godel_Agent"
+}

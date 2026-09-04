@@ -1,0 +1,20 @@
+{
+ "id": "http://arxiv.org/abs/2607.20668v1",
+ "arxiv_id": "2607.20668v1",
+ "title": "From Agent Failures to Text Policies: What Works and What Breaks",
+ "abstract": "TextGrad improves language-model systems by revising text from feedback. Its core thesis is that natural-language feedback can act as a gradient for optimizing text components without changing model weights. Applying it to agents is harder because feedback arrives only after a sequence of actions, making it difficult to identify which decision caused failure. We study this problem by separating the ability to follow a useful policy from the ability to learn that policy from experience. Our main finding is a clear gap between these two abilities. Human-written policies improve two frozen 7B agents on TextWorldExpress by 5.0 success points, showing that useful policy text exists. However, policies generated from agent trajectories do not reliably outperform fixed prompting, even with richer traces, counterfactual evidence, or iterative GEPA search. The main challenge for agent-level TextGrad is therefore not executing textual policy updates, but reliably generating and selecting them from experience.",
+ "published": "2026-07-22T19:08:19Z",
+ "updated": "2026-07-22T19:08:19Z",
+ "authors": [
+  "Jaideep Ray",
+  "Ankit Goyal"
+ ],
+ "primary_category": "cs.CL",
+ "categories": [
+  "cs.CL",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

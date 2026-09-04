@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2601.21557v2",
+ "arxiv_id": "2601.21557v2",
+ "title": "Meta Context Engineering via Agentic Skill Evolution",
+ "abstract": "The operational efficacy of large language models relies heavily on their inference-time context. This has established Context Engineering (CE) as a formal discipline for optimizing these inputs. Current CE methods rely on manually crafted harnesses, such as rigid generation-reflection workflows and predefined context schemas. They impose structural biases and restrict context optimization to a narrow, intuition-bound design space. To address this, we introduce Meta Context Engineering (MCE), a bi-level framework that supersedes static CE heuristics by co-evolving CE skills and context artifacts. In MCE iterations, a meta-level agent refines engineering skills via agentic crossover, a deliberative search over the history of skills, their executions, and evaluations. A base-level agent executes these skills, learns from training rollouts, and optimizes context as flexible files and code. We evaluate MCE across five disparate domains under offline and online settings. MCE demonstrates consistent performance gains, achieving 5.6--53.8% relative improvement over state-of-the-art agentic CE methods (mean of 16.9%), while maintaining superior context adaptability, transferability, and efficiency in both context usage and training.",
+ "published": "2026-01-29T11:22:02Z",
+ "updated": "2026-02-11T05:40:08Z",
+ "authors": [
+  "Haoran Ye",
+  "Xuning He",
+  "Vincent Arak",
+  "Haonan Dong",
+  "Guojie Song"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI",
+  "cs.NE"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "46 pages, 4 figures"
+}

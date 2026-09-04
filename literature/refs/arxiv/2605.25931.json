@@ -1,0 +1,18 @@
+{
+ "id": "http://arxiv.org/abs/2605.25931v1",
+ "arxiv_id": "2605.25931v1",
+ "title": "Explore Before You Solve: The Speed--Depth Trade-off in Epistemic Agents for ARC-AGI-3",
+ "abstract": "We systematically investigate all 25 public ARC-AGI-3 games and find that every one is reachable through non-intelligent strategies: 10 in a single blind step, 5 after one probing action, 1 via repeated ACTION1 presses, 1 via diverse exploration, and 8 via single repeated actions with sufficient budget (50-200 steps). A library-level null-coordinate vulnerability additionally bypasses 18 games in 1 step. This benchmark critique implies the public evaluation set cannot discriminate intelligent exploration from trivial heuristics - the private 55-game evaluation is the only genuine intelligence test. Against this backdrop, we present AERA (Adaptive Epistemic Reasoning Agent), a three-phase (EXPLORE / VERIFY / PLAN) agent achieving RHAE=0.2116 (4/25 solved) on these 25 games with Qwen2.5-0.5B, while random and no-explore baselines score 0.0000. We formalise AERA through a Speed--Depth trade-off framework: under a convexity assumption (proved for a class of environments in the Appendix), RHAE's quadratic form emerges as a second-order penalty for deviating from the Pareto frontier between action efficiency and information gain. Contributions: (i) a benchmark validity analysis showing that current interactive reasoning benchmarks fail to measure the exploration they claim to require, and (ii) the EXPLORE-before-PLAN framework and model-capability x exploration interaction. The linked code track entry achieves RHAE=0.30 on the full 55-game private evaluation. Code: CC0.",
+ "published": "2026-05-25T15:13:18Z",
+ "updated": "2026-05-25T15:13:18Z",
+ "authors": [
+  "Liew Keong Han"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "22 pages, 3 figures. Code: https://github.com/farmountain/aera-arc3-paper (CC0)"
+}

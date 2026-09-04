@@ -1,0 +1,26 @@
+{
+ "id": "http://arxiv.org/abs/2607.13083v1",
+ "arxiv_id": "2607.13083v1",
+ "title": "Phantom Guardrails: When Self-Improving Agent Harnesses Fix Failures That Never Happened",
+ "abstract": "Self-improving AI agents are designed to learn from their mistakes. We show they can also hallucinate mistakes that never happened. We study this failure mode in automated harness optimization, where an LLM-based proposer edits an agent's scaffold, including prompts, parsers, filters, validators and guardrails, to eliminate observed failures. But this process rarely asks first: was there a real failure to fix? We introduce the Counterfactual Fabrication Lab, a deterministic micro-lab where the correct action is known: do nothing. The lab plants a candidate guardrail for a failure class that provably never occurs, presents only legal episodes, and uses a byte-exact oracle to check every cited violation. The proposer behaves as expected on real violations and abstains on featureless legal input. Yet when the legal input contains a harmless pattern resembling a familiar game rule, it invents a failure: in 15/60 runs, versus 0/60 on featureless input, it enables the nonexistent-rule guardrail and cites a violation the oracle refutes. The effect is structured, not indiscriminate. In single-shot proposals it appears only when three conditions coincide: a rule-shaped pattern, an open-ended rule set and an instruction that presupposes failures. Removing any of these conditions eliminates the fabrication. Because the invented guardrail changes no true outcome and cannot improve an already-perfect suppression score, the phenomenon is neither reward hacking nor over-refusal. It is a phantom guardrail: a fix for a failure that never happened, invisible to suppression-only acceptance. Inside an add-only accept loop it re-enters even without the failure-presupposing instruction, the loop's keep-adding role supplying the demand the instruction supplied in single shot, and once in it stays. We present the Counterfactual Fabrication Lab for measuring fabricated failures in self-improving agent harnesses.",
+ "published": "2026-07-13T10:14:15Z",
+ "updated": "2026-07-13T10:14:15Z",
+ "authors": [
+  "Su Wang",
+  "Pin Qian",
+  "Yifan Lin",
+  "Jingzhou Xu",
+  "Yihang Chen",
+  "Xiaochong Jiang",
+  "Lifei Liu",
+  "Haoran Yu"
+ ],
+ "primary_category": "cs.CR",
+ "categories": [
+  "cs.CR",
+  "cs.SE"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}

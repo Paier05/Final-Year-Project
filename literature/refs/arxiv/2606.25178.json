@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2606.25178v2",
+ "arxiv_id": "2606.25178v2",
+ "title": "Transferability for General Reasoning: An Automated Curriculum for Multi-Domain RLVR",
+ "abstract": "Reinforcement learning with verifiable rewards (RLVR) has been extended from single-domain training to multi-domain reasoning suites spanning mathematics, programming, and science. However, the training curriculum (how often each domain is sampled) is typically fixed or hand-tuned, even though reasoning skills transfer unevenly across domains. Existing learnability-based curricula adapt to where the policy is currently improving, but are blind to whether a gradient step on the selected domain benefits the remaining domains. In this paper, we propose Transfer-Aware Curriculum (TAC), a bandit-style online curriculum that prioritizes domains whose updates broadly benefit the rest of the training suite. TAC repurposes signals already produced by RL training: per-domain advantages capture local learnability, and projected gradients, taken from the GRPO step being computed, estimate cross-domain transferability via gradient-geometry alignment, at negligible cost (<1% wall-clock overhead). Across a six-domain reasoning suite, TAC achieves the best macro-averaged accuracy on both Qwen3-1.7B and Llama3.2-3B, outperforming proportional random sampling, a hand-designed schedule, and a learnability-only bandit, and improving over the last of these by up to 2.8 points (10% relative). Ablations show performance degrades sharply when the transferability term is removed, and TAC remains robust on imbalanced training mixtures where learnability-only curricula over-commit to dominant domains. Our findings establish cross-domain transferability as a key signal for curriculum design in multi-domain RLVR.",
+ "published": "2026-06-23T21:10:29Z",
+ "updated": "2026-06-27T02:34:55Z",
+ "authors": [
+  "Yongjin Yang",
+  "Jiarui Liu",
+  "Yinghui He",
+  "Lechen Zhang",
+  "Bernhard Schölkopf",
+  "Zhijing Jin"
+ ],
+ "primary_category": "cs.AI",
+ "categories": [
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "32 pages, including supplementary material; code available at https://github.com/YangYongJin/transfer-aware-curriculum"
+}
