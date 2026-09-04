@@ -246,6 +246,114 @@ def cmd_web(url, name):
     print(text.strip()[:3000])
 
 
+STOP = {"a", "an", "the", "on", "in", "of", "for", "and", "is", "are", "can", "do", "does",
+        "what", "how", "why", "less", "more", "your", "you", "we", "it", "its", "to", "with",
+        "from", "at", "by", "not", "no", "when", "where", "toward", "towards"}
+
+
+def _load(aid):
+    p = os.path.join(ROOT, "arxiv", re.sub(r"[^A-Za-z0-9._-]", "_", aid + ".json"))
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def bibkey(rec):
+    first = (rec.get("authors") or ["anon"])[0]
+    surname = re.sub(r"[^A-Za-z]", "", first.split()[-1]).lower() or "anon"
+    year = rec.get("published", "")[:4]
+    words = re.findall(r"[A-Za-z][A-Za-z0-9-]*", rec.get("title", ""))
+    word = ""
+    for w in words:
+        if w.lower() not in STOP and len(w) > 2:
+            word = re.sub(r"[^A-Za-z0-9]", "", w).lower()
+            break
+    return surname + year + word
+
+
+def bibtex(rec):
+    """Emit a BibTeX entry built only from the fetched record."""
+    def clean(s):
+        return (s.replace("{", "").replace("}", "").replace("\\", "")
+                 .replace("$", "").strip())
+
+    authors = []
+    for a in rec.get("authors", []):
+        parts = a.split()
+        if len(parts) > 1:
+            authors.append(clean(parts[-1]) + ", " + clean(" ".join(parts[:-1])))
+        else:
+            authors.append(clean(a))
+    aid = rec.get("arxiv_id", "").split("v")[0]
+    lines = ["@misc{" + bibkey(rec) + ",",
+             "  title         = {{" + clean(rec.get("title", "")) + "}},",
+             "  author        = {" + " and ".join(authors) + "},",
+             "  year          = {" + rec.get("published", "")[:4] + "},",
+             "  eprint        = {" + aid + "},",
+             "  archivePrefix = {arXiv},",
+             "  primaryClass  = {" + (rec.get("primary_category") or "cs.AI") + "},",
+             "  url           = {https://arxiv.org/abs/" + aid + "}"]
+    note = []
+    if rec.get("journal_ref"):
+        note.append(clean(rec["journal_ref"]))
+    com = rec.get("comment", "")
+    m = re.search(r"(Accepted|Published|Appears?|To appear)[^.;]{0,90}", com, re.I)
+    if m and not note:
+        note.append(clean(m.group(0)))
+    if note:
+        n = "; ".join(note).replace('"', "'")
+        if len(n) > 200:
+            n = n[:200].rsplit(" ", 1)[0] + " ..."
+        lines[-1] += ","
+        lines.append("  note          = {" + n + "}")
+    if rec.get("doi"):
+        lines[-1] += ","
+        lines.append("  doi           = {" + rec["doi"] + "}")
+    lines.append("}")
+    return "\n".join(lines)
+
+
+def cmd_bib(ids):
+    for i in ids:
+        rec = _load(i)
+        if rec is None:
+            print("% !! NOT CACHED: " + i)
+            continue
+        print(bibtex(rec))
+        print()
+
+
+def cmd_expand(paths):
+    """Replace <!--BIB:xxxx.xxxxx--> markers in place with generated BibTeX blocks."""
+    pat = re.compile(r"<!--BIB:([^>]+?)-->")
+    for path in paths:
+        with open(path, encoding="utf-8") as fh:
+            text = fh.read()
+        missing = []
+
+        def sub(m):
+            aid = m.group(1).strip()
+            rec = _load(aid)
+            if rec is None:
+                missing.append(aid)
+                return m.group(0)
+            return "\n\n```bibtex\n" + bibtex(rec) + "\n```"
+
+        new = pat.sub(sub, text)
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(new)
+        n = len(pat.findall(text)) - len(missing)
+        print(path + ": expanded " + str(n) + " markers"
+              + ("; MISSING " + ",".join(missing) if missing else ""))
+
+
+def cmd_keys(ids):
+    for i in ids:
+        rec = _load(i)
+        print((i + ":").ljust(16) + (bibkey(rec) if rec else "!! NOT CACHED"))
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "help"
     if cmd == "arxiv":
@@ -278,6 +386,9 @@ if __name__ == "__main__":
             print()
     elif cmd == "s2":
         cmd_s2(sys.argv[2])
+    elif cmd == "ms2":
+        for pid in sys.argv[2:]:
+            cmd_s2(pid if ":" in pid else "arXiv:" + pid)
     elif cmd == "refs":
         cmd_edges(sys.argv[2], "references", int(sys.argv[3]) if len(sys.argv) > 3 else 30)
     elif cmd == "cites":
@@ -286,5 +397,11 @@ if __name__ == "__main__":
         cmd_s2find(sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else 10)
     elif cmd == "web":
         cmd_web(sys.argv[2], sys.argv[3])
+    elif cmd == "bib":
+        cmd_bib(sys.argv[2:])
+    elif cmd == "expand":
+        cmd_expand(sys.argv[2:])
+    elif cmd == "keys":
+        cmd_keys(sys.argv[2:])
     else:
         print(__doc__)

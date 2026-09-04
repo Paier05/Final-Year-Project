@@ -83,3 +83,48 @@ LLM writing the briefing PDFs, so checking them is part of the job, and mismatch
 
 ## Summary (fill in at the end)
 _To be completed._
+
+### 2026-09-04 — Seed verification complete; all nine seed IDs resolve
+- What I did: ran every seed arXiv ID from the issue through the arXiv API and cached the records.
+- Why: the issue states the seed IDs came from internal notes and are not pre-verified, and flags
+  fabricated citations as an academic-integrity problem.
+- Result / what I found: **all nine resolve to real papers**, but two naming problems need reporting:
+  (1) the issue lists arXiv:2601.18778 as "(SOAR)" *and* arXiv:2507.14172 as "SOAR" — these are two
+  different papers by different groups that both use the name SOAR (Sundaram et al., asymmetric
+  self-play with meta-RL; Pourcel/Colas/Oudeyer, evolutionary program synthesis on ARC-AGI). The
+  corpus disambiguates them as [SOAR-Teacher] and [SOAR-ProgSynth]. (2) arXiv:2607.21971 is titled
+  "Teaching LLMs to Self-Evolve: Cultivating Core Meta-Skills with Reinforcement Learning" — the
+  issue refers to it as "MetaEvolve", which is the name of the *framework* in that paper, not its
+  title. Both recorded in `search-log.md`.
+- Next step: snowball each topic, then write the topic files.
+
+### 2026-09-04 — Tooling decision: verify over the network, cache everything
+- What I did: confirmed the shell has outbound HTTPS and wrote `literature/tools/fetch.py`
+  (arXiv API, Semantic Scholar Graph API, page caching, BibTeX generation from the fetched record).
+- Why: 60+ entries cannot be verified reliably by hand, and hand-typed BibTeX is exactly where
+  fabricated metadata creeps in. Generating BibTeX from the same cached record that the prose is
+  written from means the citation and the description cannot drift apart.
+- Result / what I found: 113 arXiv records cached under `literature/refs/arxiv/`. arXiv rate-limits
+  aggressively (HTTP 429) — added a 10s per-host throttle after the first batch of failures.
+  Semantic Scholar is much less reliable anonymously: roughly half of the venue lookups failed even
+  with retries. **Decision: venue is stated only when the arXiv record's journal-ref or comment field
+  confirms it, or when a Semantic Scholar lookup succeeded; otherwise the entry says "no venue on
+  the record".** This is deliberately conservative — a wrong venue is a citation error.
+- Next step: topic 1.
+
+### 2026-09-04 — topic1-harness.md written (30 entries)
+- What I did: wrote Topic 1 in five sections — the Gödel-machine-to-DGM lineage, scaffold/prompt
+  optimisation, accumulation (tools/skills/workflows/experience), harness-vs-model empirical
+  studies, and failure modes. 29 archival entries plus the Weng blog marked `[non-archival]`.
+- Why: the issue's Topic 1 scope; the section split follows the *locus of change* logic the issue
+  asks the eventual chapter to use.
+- Result / what I found: the 2026 literature is much richer than the briefing notes suggested and
+  changes the story in three ways. (a) [HarnessEvo] measured the harness's own contribution by
+  fixing the model and varying 35 harness releases — direct evidence that harness churn moves
+  benchmark scores at a fixed model. (b) [WorkspaceOpt]/DreamTeam is an ARC-AGI-3 harness paper
+  reporting 36% → 38.4% on the 25-game public set with 31% fewer actions — closest prior art found,
+  and note this is far above the ~12.6% preview figure in the internal briefing, so the briefing's
+  SOTA numbers are already stale. (c) [TextPolicies] is a clean negative result: human-written text
+  policies help frozen 7B agents by 5.0 points, but *self-generated* policies do not reliably beat
+  fixed prompting — the bottleneck is generating and selecting policies, not applying them.
+- Next step: topic 2.
