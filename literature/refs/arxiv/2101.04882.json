@@ -1,0 +1,36 @@
+{
+ "id": "http://arxiv.org/abs/2101.04882v1",
+ "arxiv_id": "2101.04882v1",
+ "title": "Asymmetric self-play for automatic goal discovery in robotic manipulation",
+ "abstract": "We train a single, goal-conditioned policy that can solve many robotic manipulation tasks, including tasks with previously unseen goals and objects. We rely on asymmetric self-play for goal discovery, where two agents, Alice and Bob, play a game. Alice is asked to propose challenging goals and Bob aims to solve them. We show that this method can discover highly diverse and complex goals without any human priors. Bob can be trained with only sparse rewards, because the interaction between Alice and Bob results in a natural curriculum and Bob can learn from Alice's trajectory when relabeled as a goal-conditioned demonstration. Finally, our method scales, resulting in a single policy that can generalize to many unseen tasks such as setting a table, stacking blocks, and solving simple puzzles. Videos of a learned policy is available at https://robotics-self-play.github.io.",
+ "published": "2021-01-13T05:20:20Z",
+ "updated": "2021-01-13T05:20:20Z",
+ "authors": [
+  "OpenAI OpenAI",
+  "Matthias Plappert",
+  "Raul Sampedro",
+  "Tao Xu",
+  "Ilge Akkaya",
+  "Vineet Kosaraju",
+  "Peter Welinder",
+  "Ruben D'Sa",
+  "Arthur Petron",
+  "Henrique P. d. O. Pinto",
+  "Alex Paino",
+  "Hyeonwoo Noh",
+  "Lilian Weng",
+  "Qiming Yuan",
+  "Casey Chu",
+  "Wojciech Zaremba"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI",
+  "cs.CV",
+  "cs.RO"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Videos are shown at https://robotics-self-play.github.io"
+}

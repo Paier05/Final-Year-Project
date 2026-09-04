@@ -1,0 +1,27 @@
+{
+ "id": "http://arxiv.org/abs/2510.18821v3",
+ "arxiv_id": "2510.18821v3",
+ "title": "Search Self-play: Pushing the Frontier of Agent Capability without Supervision",
+ "abstract": "Reinforcement learning with verifiable rewards (RLVR) has become the mainstream technique for training LLM agents. However, RLVR highly depends on well-crafted task queries and corresponding ground-truth answers to provide accurate rewards, which requires significant human effort and hinders the scaling of RL processes, especially in agentic scenarios. Although a few recent works explore task synthesis methods, the difficulty of generated agentic tasks can hardly be controlled to provide effective RL training advantages. To achieve agentic RLVR with higher scalability, we explore self-play training for deep search agents, in which the learning LLM utilizes multi-turn search engine calling and acts simultaneously as both a task proposer and a problem solver. The task proposer aims to generate deep search queries with well-defined ground-truth answers and increasing task difficulty. The problem solver tries to handle the generated search queries and output the correct answer predictions. To ensure that each generated search query has accurate ground truth, we collect all the searching results from the proposer's trajectory as external knowledge, then conduct retrieval-augmentation generation (RAG) to test whether the proposed query can be correctly answered with all necessary search documents provided. In this search self-play (SSP) game, the proposer and the solver co-evolve their agent capabilities through both competition and cooperation. With substantial experimental results, we find that SSP can significantly improve search agents' performance uniformly on various benchmarks without any supervision under both from-scratch and continuous RL training setups. The code is at https://github.com/Qwen-Applications/SSP.",
+ "published": "2025-10-21T17:19:35Z",
+ "updated": "2026-05-19T07:37:46Z",
+ "authors": [
+  "Hongliang Lu",
+  "Yuhang Wen",
+  "Pengyu Cheng",
+  "Ruijin Ding",
+  "Jiaqi Guo",
+  "Haotian Xu",
+  "Chutian Wang",
+  "Haonan Chen",
+  "Xiaoxi Jiang",
+  "Guanjun Jiang"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": "Published as a conference paper at the Fourteenth International Conference on Learning Representations (ICLR 2026)"
+}

@@ -128,3 +128,28 @@ _To be completed._
   policies help frozen 7B agents by 5.0 points, but *self-generated* policies do not reliably beat
   fixed prompting — the bottleneck is generating and selecting policies, not applying them.
 - Next step: topic 2.
+
+### 2026-09-04 — topic2-teacher-student.md written (27 entries)
+- What I did: wrote Topic 2 in four sections — pre-LLM foundations (asymmetric self-play, TSCL,
+  GoalGAN, AlphaZero, POET), environment generation / UED (Enhanced POET, PAIRED, PLR, PLR-perp,
+  ACCEL, TRACED, OMNI, OMNI-EPIC), the 2025–26 LLM proposer–solver line, and failure modes.
+- Why: the issue's Topic 2 scope. Per the issue's instruction to skip static distillation, Self-Instruct
+  and WizardLM/Evol-Instruct were moved to `adjacent.md` — in both the teacher does not adapt to the
+  student, so they fail the inclusion criterion despite being obvious hits for the search queries.
+- Result / what I found:
+  * [SOAR-Teacher] is the key paper. Its regime — held-out sets with 0/128 success — is the
+    ARC-AGI-3 regime, and it reports that *grounded* teacher rewards (the student's measured
+    improvement) beat *intrinsic* learnability rewards and avoid diversity collapse. That contradicts
+    the internal briefing, which presents Absolute Zero's intrinsic learnability score as the recipe.
+  * Two independent 2026 papers ([R-Diverse], [VocabDropout]) document that R-Zero-style loops —
+    the architecture prototyped in `experiments/mini_r_zero/` on the sibling branch — show
+    non-sustained improvement and proposer collapse. Both offer fixes. This is the most decision-
+    relevant finding for the project's own experiment.
+  * [VHG]'s factorised setter reward (validity x difficulty, with an *independent* verifier) is the
+    cleanest published answer to the degenerate-task problem the briefing flags as a pitfall.
+  * [TRACED]'s transition-prediction error is a curriculum signal that needs no reward at all —
+    much better matched to a world-modelling benchmark than value-loss regret.
+- Dead end worth recording: I looked for UED work that generates *interactive, goal-unknown* grid
+  environments specifically. It does not exist — every UED paper found parameterises a known
+  environment with a known reward. That absence is part of the gap statement, not a search failure.
+- Next step: topic 3.

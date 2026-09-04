@@ -1,0 +1,23 @@
+{
+ "id": "http://arxiv.org/abs/2508.03682v4",
+ "arxiv_id": "2508.03682v4",
+ "title": "Self-Questioning Language Models",
+ "abstract": "Can large language models improve without external data -- by generating their own questions and answers? We hypothesize that a pre-trained language model can improve its reasoning skills given only a single prompt specifying the topic (e.g., algebra word problems) and asking the model to generate its own questions. To do this, we propose Self-Questioning Language Models (SQLM): an asymmetric self-play framework where a proposer is given the topic and generates a question for a solver, who tries to answer it. Both the proposer and solver are trained via reinforcement learning. The proposer receives a reward if the problem is not too easy or too difficult, and the solver receives a reward based on majority voting, a proxy for correctness in the absence of ground-truth answers. For coding, the proposer can instead generate unit tests which are used for verification. We study this asymmetric self-play framework on three benchmarks: three-digit multiplication, algebra problems from the OMEGA benchmark, and programming problems from Codeforces. By continually generating more interesting problems and attempting to solve them, language models can improve on downstream benchmarks without access to any curated training datasets.",
+ "published": "2025-08-05T17:51:33Z",
+ "updated": "2025-09-09T21:50:16Z",
+ "authors": [
+  "Lili Chen",
+  "Mihir Prabhudesai",
+  "Katerina Fragkiadaki",
+  "Hao Liu",
+  "Deepak Pathak"
+ ],
+ "primary_category": "cs.LG",
+ "categories": [
+  "cs.LG",
+  "cs.AI"
+ ],
+ "doi": "",
+ "journal_ref": "",
+ "comment": ""
+}
