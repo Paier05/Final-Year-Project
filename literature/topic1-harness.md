@@ -14,6 +14,11 @@ self-modifying agents; §2 is scaffold/prompt optimisation as a first-class opti
 §3 is accumulation — tools, skills, workflows, experience; §4 is the empirical harness-vs-model
 question; §5 is the failure modes, which is where this topic is currently most active.
 
+**Quoting convention.** Double quotes mark one of three things, never anything else: at most
+one short verbatim quotation per source; a metadata string copied exactly from the record
+(venue, comment, title); or scare quotes on this survey's own phrasing. Everything else is
+paraphrase.
+
 ---
 
 ## §1 Self-modifying agents: from proof to empirical validation
@@ -191,7 +196,7 @@ question; §5 is the failure modes, which is where this topic is currently most 
 - **Verification signal:** executable check — each benchmark's native verifier.
 - **What changes:** scaffold code (prompts, tools, skills, control flow), selected over a population; weights frozen.
 - **Results that matter:** ~17 points average gain from one loop across four benchmarks; Terminal-Bench 2.1 +7.7 to 83.2% on a matched base and 84.7% on a stronger one; WebArena-Infinity real-task pass@1 43.5% → 93.0%; a Terminal-Bench harness transfers unchanged to SWE-bench Verified.
-- **Limitations / criticisms:** A 2026 preprint with no visible peer-review record on the arXiv metadata; the WebArena-Infinity jump is very large and rests on the authors' own "audit-clean" protocol; the benchmarks that "progressively separate the evolution signal from the test" are the authors' own construction.
+- **Limitations / criticisms:** A 2026 preprint with no visible peer-review record on the arXiv metadata; the WebArena-Infinity jump is very large and rests on the authors' own audit-clean protocol; the benchmark suite said to separate the evolution signal from the test is itself the authors' construction.
 - **Relevance to this FYP (1–5) and why:** **5.** This is the strongest published statement of exactly the FYP's thesis — the paper's own framing is that a frozen model need not be a fixed agent. The preserve-and-extend contract is the direct answer to the regression problem an ARC-AGI-3 harness will hit when a fix for one game breaks another.
 - **Reusable structure:** The preserve-and-extend admission rule (accept only non-regressing coverage extensions) and the benchmark-suite design that separates the evolution signal from the test set — both should be copied into the FYP's evaluation protocol.
 - **BibTeX:** 
@@ -661,7 +666,7 @@ question; §5 is the failure modes, which is where this topic is currently most 
 - **Method:** StateM is a runtime, not a model change: execution is organised around durable states, phase-local context, checked transitions, recoverable runbooks, and versioned procedural practices that both agents and users can inspect. Postmortem findings are converted into persistent, executable preconditions rather than advice in a prompt. The authors call this **harness scaling** — buying capability by scaling the execution system while the weights stay fixed.
 - **Verification signal:** executable check (Terminal-Bench 2.1 and BusinessBench task success).
 - **What changes:** scaffold code and persistent procedural memory (runbooks, "golden rules"); weights frozen.
-- **Results that matter:** Terminal-Bench 2.1 raised to 92.1% on one backbone versus an 83.1% reference; 95.3% raw accuracy across 445 trials on a stronger backbone; a runbook transfers unchanged across model versions; final-score API usage ≈ $15 against $574.68 for the GPT reference — roughly a 38× cost reduction at higher accuracy.
+- **Results that matter:** Terminal-Bench 2.1 raised to 92.1% on one backbone versus an 83.1% reference; 95.3% raw accuracy across 445 trials on a stronger backbone; a runbook transfers unchanged across model versions; final-score API usage ≈ $15 against $574.68 for the GPT reference (a ~38× reduction, derived here from those two figures rather than stated in the paper).
 - **Limitations / criticisms:** No peer-review record; numbers are entangled with very recent proprietary backbones whose baselines are not independently reproducible; "held-out" BusinessBench gains are small (0.55 macro / 1.34 micro points) except for two mechanism-matched families, which suggests the transferable part is narrower than the headline.
 - **Relevance to this FYP (1–5) and why:** **5.** The cost-per-score result is the closest analogue in the literature to ARC-AGI-3's efficiency metric: it demonstrates that harness structure buys *efficiency*, not just success. Durable state and checked transitions are also the right primitives for an environment where the agent must build a world model from scratch.
 - **Reusable structure:** Runbooks as versioned, transferable procedural memory; reporting accuracy **and** cost per run; the "frozen profile" transfer test (apply an unchanged harness to a different model).
@@ -711,7 +716,7 @@ question; §5 is the failure modes, which is where this topic is currently most 
 - **Link:** https://lilianweng.github.io/posts/2026-07-04-harness/
 - **Verified:** yes — page fetched and cached as text (`refs/web/weng-harness.txt`, ~47k characters, retrieved 2026-09-04); date and authorship read from the page itself.
 - **Type:** position / survey
-- **Problem:** Organising the recursive-self-improvement literature around the harness — "the system surrounding a base model that orchestrates execution" — rather than around the weights.
+- **Problem:** Organising the recursive-self-improvement literature around the harness — the layer that decides how a model thinks, acts, manages context and evaluates results — rather than around the weights.
 - **Method:** A survey-style essay. It traces RSI from I. J. Good (1965) and Yudkowsky (2008), defines the harness as the layer that decides how the model thinks, calls tools, manages context, stores artefacts and evaluates results, and then organises harness design patterns (workflow automation, file system as persistent memory, sub-agents and backend jobs), harness optimisation (context engineering, workflow design), and self-improving harnesses (evolutionary search, joint optimisation with weights).
 - **Verification signal:** none — it is a synthesis of other people's results, not an experiment.
 - **What changes:** n/a (position piece); its subject matter is scaffold code, context and workflow.

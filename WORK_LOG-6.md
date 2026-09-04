@@ -72,17 +72,121 @@ LLM writing the briefing PDFs, so checking them is part of the job, and mismatch
   HTTPS, so citations can be verified against live records rather than from memory.
 - Next step: build the fetch/cache helper and run every seed ID through it.
 
+
+### 2026-09-04 — verification pass (workflow step 5b)
+- What I did: wrote `literature/tools/checkcorpus.py` and ran it over all 89 entries. It checks
+  three things: (1) every template field present and non-blank; (2) every `[Handle]`
+  cross-reference resolves to an entry that actually exists; (3) every numeric token in a
+  "Results that matter" line appears in the cached record for that paper.
+- Why: workflow 5b says "every quantitative claim carries a reference or is marked [unverified]" and
+  "re-read the draft and check each number". With ~90 entries that is not reliable by eye.
+- Result / what I found: two real defects, both fixed.
+  * A dangling cross-reference `[GroundingAleatoric]` in the PLR entry — the paper is in
+    `adjacent.md`, which does not use handles. Replaced with the title and arXiv ID.
+  * StateM's "roughly a 38x cost reduction" was **my arithmetic** ($574.68 / $15), not a figure the
+    paper states. Now labelled as derived. Worth noting the checker did *not* catch this: "38"
+    happens to appear elsewhere in that abstract ("less than $38 of adaptation"), so it passed by
+    coincidence. **The number checker rules out invented numbers; it does not rule out coincidental
+    matches, and I found this one by reading.** Recorded so nobody over-trusts the tool.
+  * Also audited quoting against the issue's "under 15 words, one quote per source" rule. Two
+    entries (DarwinX, Weng2026) carried two verbatim quotations each; reduced to one. Added an
+    explicit quoting convention to each topic file header so the rule is auditable.
+- Final state: `checkcorpus.py` reports 0 problems and 0 numbers for review; `checkbib.py` reports
+  120 entries, 120 unique keys, structurally clean.
+
 ## Open questions / risks
 
-- **R1.** Several seed arXiv IDs are 2026 IDs originating from LLM-written briefing notes. Any that
-  fail to resolve must be treated as suspect and reported, not silently replaced.
-- **R2.** Topic 3 is the topic the FYP hinges on, and it is also the one where "capability vs
-  elicitation" is contested. Risk of overstating consensus — the disagreement section has to be real.
-- **R3.** Coverage vs depth: the issue asks for up to ~60 full-template entries. If depth per entry
-  has to be traded against count, the log must say so rather than quietly shipping thin entries.
+Kept deliberately non-empty per workflow 5b: a review with no stated uncertainty has been summarised,
+not checked.
 
-## Summary (fill in at the end)
-_To be completed._
+- **R1 (resolved).** Several seed arXiv IDs came from LLM-written briefing notes and were suspect.
+  All nine resolved. Two naming problems found and reported in `search-log.md` §2.
+- **R2 (live, and the biggest one).** Topic 3's conclusion depends on the model/system distinction:
+  [Twin] and [Tycho] are classified "(a) new capability **at the system level**" while their models
+  gain nothing. A supervisor could reasonably reject that framing and call it all elicitation. The
+  argument is made explicitly in `synthesis.md` §3.1 rather than assumed — but it should be tested
+  with the supervisor before the chapter is built on it.
+- **R3 (live).** The ARC-AGI-3 environment-count discrepancy is unresolved: briefing says 135
+  environments at ~1:5 public:private; the papers describe 25 public games / 183 levels and a 55-game
+  private evaluation. Marked `[unverified]`, needs `docs.arcprize.org`.
+- **R4 (live).** Every interactive ARC-AGI-3 result in the corpus except one is public-set only, and
+  the papers' own authors say the public set is saturated. **Any FYP framing built on beating a
+  public-set number is built on sand.** The single private-set datapoint found is RHAE 0.30 from a
+  competition entry linked by [BenchmarkValidity] — that number has not been independently checked.
+- **R5 (live).** Numbers come from cached abstracts and records, not from full PDFs (limitation L6).
+  The automated checker confirms nothing was invented, but it cannot confirm a figure means what the
+  entry says it means in context. Before any figure carries argumentative weight in the dissertation,
+  read the relevant section of the paper.
+- **R6 (live).** `checkcorpus.py`'s number check can pass by coincidence — it did for one derived
+  ratio (see the verification-pass entry above). Treat it as a screen against fabrication, not as
+  proof of correct attribution.
+- **R7 (live).** Search coverage is incomplete in four documented ways (`search-log.md` §7): Papers
+  with Code's API returned nothing, ACL Anthology was not searched from its own side, Google Scholar
+  was not queried, and two-directional snowballing was rate-limited and replaced by vocabulary-based
+  arXiv search. The Gödel Agent case shows this matters: an ACL 2025 paper central to the Topic 1
+  lineage was missed by every arXiv query and found only via OpenReview.
+- **R8 (live, but low).** Venue information is under-reported by policy — entries reading "no venue
+  on the record" may well be published. Worth a pass with a Semantic Scholar API key before the
+  bibliography is final, since a reviewer may read "arXiv preprint" as a quality signal.
+- **R9 (housekeeping, for the user's attention).** `main` has no `.gitignore` — it exists only on
+  `experiment/4-mini-r-zero-toy-demo`. So on this branch the leftover working-tree files from that
+  experiment (`experiments/mini_r_zero/__pycache__/`, `_diag_*.py`, `_runall.sh`, `_summarize.py`,
+  and ~16 MB of `results/seed_cache/*.npz`) show as untracked rather than ignored. I briefly and
+  accidentally committed them with a `git add -A`, then reset that commit and re-committed only the
+  literature files; **nothing was deleted from disk and no other branch was touched.** Recommend
+  moving `.gitignore` onto `main` so this cannot recur.
+
+## Summary
+
+### What changed
+A new `literature/` directory containing the citation-verified corpus asked for by issue #6:
+
+- `topic1-harness.md` — **31 entries** on harness engineering and self-modifying scaffolds.
+- `topic2-teacher-student.md` — **27 entries** on proposer-solver / curriculum structures.
+- `topic3-frozen-weights.md` — **31 entries** on capability gain with frozen weights, each carrying
+  the required new-capability / elicitation / unclear classification.
+- `taxonomy.md` — the filled two-axis table with every entry placed and six empty-cell findings.
+- `synthesis.md` — all six required sections plus a seventh on chapter structure.
+- `adjacent.md` (25 one-liners), `search-log.md`, `refs.bib` (120 entries), `README.md`.
+- `refs/` — 127 cached source records, committed, so every claim can be re-checked.
+- `tools/` — `fetch.py` (retrieval, caching, BibTeX generation), `checkbib.py`, `checkcorpus.py`.
+
+89 full entries against a required minimum of 30 and a target of ~60.
+
+### Why
+The two internal briefing notes cite ~6 papers between them. The review needed breadth, a taxonomy,
+and an explicit argument for where the project sits. The method chosen — fetch the canonical record,
+cache it, write from the cache, and generate the BibTeX from that same cache — was driven by the
+issue's citation-integrity bar: it makes it structurally impossible for a citation's metadata and its
+description to disagree.
+
+### How it was verified
+- `python literature/tools/checkcorpus.py` -> 89 entries, **0 problems**: no missing or blank template
+  fields, all 89 marked `Verified: yes`, no dangling cross-references, and every number in every
+  "Results that matter" line traced to the cached record.
+- `python literature/tools/checkbib.py literature/refs.bib` -> **120 entries, 120 unique keys, clean**
+  (balanced braces, required fields, no unescaped BibTeX specials). No LaTeX toolchain exists in this
+  environment, so this is a structural check and the README says so rather than claiming a bibtex run.
+- All nine seed arXiv IDs from the issue verified against the live record; two naming problems found
+  and reported (the SOAR collision, and MetaEvolve being a framework name rather than a title).
+- Manual checks: no paper written up fully in two topic files; quoting audited against the issue's
+  one-quote/15-word rule.
+
+### The three findings that matter most
+1. **The briefing's ARC-AGI-3 numbers are obsolete by ~two orders of magnitude.** [Twin]
+   (arXiv:2608.14490) reports a frozen model going 7.8% -> 61.1% (off-the-shelf harness) -> 93.3%
+   (self-authored world model); [Tycho] (arXiv:2607.28287) reports 100.00 RHAE on all 183 public
+   levels. The briefing's "frontier ~0.5%, best preview agent ~12.6%" was a March 2026 snapshot.
+2. **But the public set may not measure anything.** [BenchmarkValidity] (arXiv:2605.25931) finds all
+   25 public games reachable by non-intelligent strategies, with a library-level bug bypassing 18 in
+   one step; [WMAblation] (arXiv:2607.15439) concludes its own near-perfect results indicate
+   public-set saturation only, and finds backbone/reasoning-effort differences often exceed harness
+   differences. So the FYP's question moves to the private set, the no-internet constraint, and
+   small models.
+3. **The R-Zero architecture prototyped on the sibling branch has two documented failure modes.**
+   [R-Diverse] and [VocabDropout], independently, report non-sustained improvement and proposer
+   collapse in exactly that design; [SOAR-Teacher] reports that grounded teacher rewards beat the
+   intrinsic learnability rewards the briefing recommends. Fixes exist for all three.
 
 ### 2026-09-04 — Seed verification complete; all nine seed IDs resolve
 - What I did: ran every seed arXiv ID from the issue through the arXiv API and cached the records.

@@ -23,6 +23,11 @@ must compare against it, not because it qualifies.
 
 **Corpus size:** 31 entries, all verified against the live record and cached under `refs/`.
 
+**Quoting convention.** Double quotes mark one of three things, never anything else: at most
+one short verbatim quotation per source; a metadata string copied exactly from the record
+(venue, comment, title); or scare quotes on this survey's own phrasing. Everything else is
+paraphrase.
+
 ---
 
 ## §1 Search and sampling over a frozen model

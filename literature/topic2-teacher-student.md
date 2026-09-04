@@ -15,6 +15,11 @@ the 2025–2026 LLM proposer–solver literature, which is where the FYP's metho
 failure-mode literature, which is unusually well developed for such a young topic and is the reason
 this section should be read before designing any loop.
 
+**Quoting convention.** Double quotes mark one of three things, never anything else: at most
+one short verbatim quotation per source; a metadata string copied exactly from the record
+(venue, comment, title); or scare quotes on this survey's own phrasing. Everything else is
+paraphrase.
+
 ---
 
 ## §1 Foundations: the proposer–solver game and learning-progress teachers
@@ -224,7 +229,7 @@ this section should be read before designing any loop.
 - **Verification signal:** environment reward (TD-errors derived from it).
 - **What changes:** the task distribution (a sampling policy over existing levels) and agent weights.
 - **Results that matter:** Significant sample-efficiency and generalisation gains on Procgen, matching the previous state of the art in test return; combined with the previous leading method it raises the state of the art to **over 76% improvement in test return** relative to standard RL baselines.
-- **Limitations / criticisms:** Needs a large pool of levels to replay; TD-error is a proxy for learning potential that conflates stochasticity with learnability — the problem [GroundingAleatoric] (see `adjacent.md`) attacks.
+- **Limitations / criticisms:** Needs a large pool of levels to replay; TD-error is a proxy for learning potential that conflates stochasticity with learnability — the problem that *Grounding Aleatoric Uncertainty for UED* (arXiv:2207.05219, in `adjacent.md`) attacks.
 - **Relevance to this FYP (1–5) and why:** **5.** ARC-AGI-3 gives a fixed pool of environments and levels; PLR is exactly the algorithm for that setting, needs no environment generator at all, and costs almost nothing on top of ordinary training. It is the strongest candidate for the FYP's *cheap teacher* baseline.
 - **Reusable structure:** Score-and-replay curriculum using a signal the learner already produces; the level-scoring/staleness bookkeeping generalises directly to ARC-AGI-3 game-level pairs.
 - **BibTeX:** 
