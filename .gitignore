@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Secrets — never commit API keys
+.env
+
+# ARC toolkit working dirs (downloaded game code, recordings)
+environment_files/
+recordings/
+
+# Large run artifacts: raw frames are reproducible from the trajectory logs
+data/frames/

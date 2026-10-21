@@ -1,0 +1,523 @@
+{
+  "n_games": 25,
+  "split_seed": 20261021,
+  "forced_dev": [
+    "ls20",
+    "ft09",
+    "vc33"
+  ],
+  "split": {
+    "dev": [
+      "bp35-0a0ad940",
+      "cd82-fb555c5d",
+      "dc22-fdcac232",
+      "ft09-0d8bbf25",
+      "g50t-5849a774",
+      "ka59-38d34dbb",
+      "lp85-305b61c3",
+      "ls20-9607627b",
+      "m0r0-492f87ba",
+      "re86-8af5384d",
+      "sb26-7fbdac44",
+      "sp80-589a99af",
+      "tr87-cd924810",
+      "vc33-5430563c"
+    ],
+    "test": [
+      "ar25-0c556536",
+      "cn04-2fe56bfb",
+      "lf52-271a04aa",
+      "r11l-495a7899",
+      "s5i5-18d95033",
+      "sc25-635fd71a",
+      "sk48-d8078629",
+      "su15-1944f8ab",
+      "tn36-ef4dde99",
+      "tu93-0768757b",
+      "wa30-ee6fef47"
+    ]
+  },
+  "games": [
+    {
+      "game_id": "ar25-0c556536",
+      "short_id": "ar25",
+      "title": "AR25",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 32,
+      "baseline_actions_all_levels": [
+        32,
+        50,
+        75,
+        37,
+        89,
+        159,
+        233,
+        73
+      ]
+    },
+    {
+      "game_id": "bp35-0a0ad940",
+      "short_id": "bp35",
+      "title": "BP35",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 9,
+      "human_baseline_actions_level1": 21,
+      "baseline_actions_all_levels": [
+        21,
+        48,
+        44,
+        38,
+        33,
+        87,
+        86,
+        131,
+        163
+      ]
+    },
+    {
+      "game_id": "cd82-fb555c5d",
+      "short_id": "cd82",
+      "title": "CD82",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 55,
+      "baseline_actions_all_levels": [
+        55,
+        8,
+        41,
+        21,
+        23,
+        23
+      ]
+    },
+    {
+      "game_id": "cn04-2fe56bfb",
+      "short_id": "cn04",
+      "title": "CN04",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 29,
+      "baseline_actions_all_levels": [
+        29,
+        54,
+        85,
+        300,
+        208,
+        113
+      ]
+    },
+    {
+      "game_id": "dc22-fdcac232",
+      "short_id": "dc22",
+      "title": "DC22",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 59,
+      "baseline_actions_all_levels": [
+        59,
+        102,
+        67,
+        98,
+        324,
+        578
+      ]
+    },
+    {
+      "game_id": "ft09-0d8bbf25",
+      "short_id": "ft09",
+      "title": "FT09",
+      "tags": [],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 43,
+      "baseline_actions_all_levels": [
+        43,
+        12,
+        23,
+        28,
+        65,
+        37
+      ]
+    },
+    {
+      "game_id": "g50t-5849a774",
+      "short_id": "g50t",
+      "title": "G50T",
+      "tags": [
+        "keyboard"
+      ],
+      "n_levels": 7,
+      "human_baseline_actions_level1": 78,
+      "baseline_actions_all_levels": [
+        78,
+        175,
+        179,
+        230,
+        96,
+        54,
+        67
+      ]
+    },
+    {
+      "game_id": "ka59-38d34dbb",
+      "short_id": "ka59",
+      "title": "KA59",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 7,
+      "human_baseline_actions_level1": 28,
+      "baseline_actions_all_levels": [
+        28,
+        109,
+        51,
+        51,
+        33,
+        132,
+        326
+      ]
+    },
+    {
+      "game_id": "lf52-271a04aa",
+      "short_id": "lf52",
+      "title": "LF52",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 10,
+      "human_baseline_actions_level1": 32,
+      "baseline_actions_all_levels": [
+        32,
+        81,
+        60,
+        71,
+        205,
+        148,
+        244,
+        109,
+        164,
+        225
+      ]
+    },
+    {
+      "game_id": "lp85-305b61c3",
+      "short_id": "lp85",
+      "title": "LP85",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 17,
+      "baseline_actions_all_levels": [
+        17,
+        38,
+        31,
+        16,
+        41,
+        60,
+        26,
+        159
+      ]
+    },
+    {
+      "game_id": "ls20-9607627b",
+      "short_id": "ls20",
+      "title": "LS20",
+      "tags": [
+        "keyboard"
+      ],
+      "n_levels": 7,
+      "human_baseline_actions_level1": 22,
+      "baseline_actions_all_levels": [
+        22,
+        123,
+        73,
+        84,
+        96,
+        192,
+        186
+      ]
+    },
+    {
+      "game_id": "m0r0-492f87ba",
+      "short_id": "m0r0",
+      "title": "M0R0",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 30,
+      "baseline_actions_all_levels": [
+        30,
+        111,
+        203,
+        26,
+        500,
+        237
+      ]
+    },
+    {
+      "game_id": "r11l-495a7899",
+      "short_id": "r11l",
+      "title": "R11L",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 22,
+      "baseline_actions_all_levels": [
+        22,
+        33,
+        51,
+        26,
+        52,
+        49
+      ]
+    },
+    {
+      "game_id": "re86-8af5384d",
+      "short_id": "re86",
+      "title": "RE86",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 26,
+      "baseline_actions_all_levels": [
+        26,
+        42,
+        86,
+        108,
+        189,
+        139,
+        424,
+        241
+      ]
+    },
+    {
+      "game_id": "s5i5-18d95033",
+      "short_id": "s5i5",
+      "title": "S5I5",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 20,
+      "baseline_actions_all_levels": [
+        20,
+        89,
+        106,
+        54,
+        162,
+        38,
+        86,
+        83
+      ]
+    },
+    {
+      "game_id": "sb26-7fbdac44",
+      "short_id": "sb26",
+      "title": "SB26",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 18,
+      "baseline_actions_all_levels": [
+        18,
+        28,
+        18,
+        19,
+        31,
+        23,
+        58,
+        18
+      ]
+    },
+    {
+      "game_id": "sc25-635fd71a",
+      "short_id": "sc25",
+      "title": "SC25",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 36,
+      "baseline_actions_all_levels": [
+        36,
+        6,
+        32,
+        83,
+        143,
+        50
+      ]
+    },
+    {
+      "game_id": "sk48-d8078629",
+      "short_id": "sk48",
+      "title": "SK48",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 8,
+      "human_baseline_actions_level1": 61,
+      "baseline_actions_all_levels": [
+        61,
+        177,
+        101,
+        103,
+        230,
+        181,
+        125,
+        92
+      ]
+    },
+    {
+      "game_id": "sp80-589a99af",
+      "short_id": "sp80",
+      "title": "SP80",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 39,
+      "baseline_actions_all_levels": [
+        39,
+        58,
+        25,
+        148,
+        96,
+        152
+      ]
+    },
+    {
+      "game_id": "su15-1944f8ab",
+      "short_id": "su15",
+      "title": "SU15",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 9,
+      "human_baseline_actions_level1": 22,
+      "baseline_actions_all_levels": [
+        22,
+        42,
+        26,
+        115,
+        36,
+        31,
+        8,
+        40,
+        41
+      ]
+    },
+    {
+      "game_id": "tn36-ef4dde99",
+      "short_id": "tn36",
+      "title": "TN36",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 7,
+      "human_baseline_actions_level1": 32,
+      "baseline_actions_all_levels": [
+        32,
+        72,
+        26,
+        40,
+        30,
+        55,
+        62
+      ]
+    },
+    {
+      "game_id": "tr87-cd924810",
+      "short_id": "tr87",
+      "title": "TR87",
+      "tags": [
+        "keyboard"
+      ],
+      "n_levels": 6,
+      "human_baseline_actions_level1": 54,
+      "baseline_actions_all_levels": [
+        54,
+        58,
+        40,
+        45,
+        71,
+        146
+      ]
+    },
+    {
+      "game_id": "tu93-0768757b",
+      "short_id": "tu93",
+      "title": "TU93",
+      "tags": [
+        "keyboard_click"
+      ],
+      "n_levels": 9,
+      "human_baseline_actions_level1": 19,
+      "baseline_actions_all_levels": [
+        19,
+        16,
+        34,
+        42,
+        123,
+        80,
+        14,
+        23,
+        111
+      ]
+    },
+    {
+      "game_id": "vc33-5430563c",
+      "short_id": "vc33",
+      "title": "VC33",
+      "tags": [
+        "click"
+      ],
+      "n_levels": 7,
+      "human_baseline_actions_level1": 7,
+      "baseline_actions_all_levels": [
+        7,
+        18,
+        44,
+        61,
+        131,
+        34,
+        152
+      ]
+    },
+    {
+      "game_id": "wa30-ee6fef47",
+      "short_id": "wa30",
+      "title": "WA30",
+      "tags": [
+        "keyboard"
+      ],
+      "n_levels": 9,
+      "human_baseline_actions_level1": 71,
+      "baseline_actions_all_levels": [
+        71,
+        119,
+        183,
+        98,
+        368,
+        68,
+        79,
+        442,
+        415
+      ]
+    }
+  ]
+}

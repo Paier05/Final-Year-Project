@@ -1,0 +1,60 @@
+# Issue #8 — ARC-AGI-3 Level 1 experiment configuration.
+# Every setting here is logged into the report. Both rounds use identical
+# settings; the only difference between Round 0 and Round 1 is the skill library.
+
+model:
+  # OpenAI-compatible chat-completions endpoint.
+  # The key is read from the ARC_MODEL_API_KEY environment variable or .env,
+  # never from this file.
+  base_url: "https://model.chengqi.uk/v1"
+  model: "Qwen/Qwen3.8-27B"
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 1024
+  # Qwen3.8 exposes thinking control. "off" disables reasoning; otherwise one of
+  # low / medium / xhigh is sent as reasoning_effort.
+  thinking: "low"
+  request_timeout_s: 180
+  # Transient-error retries (per call). A 401/403/quota error is NOT retried --
+  # it aborts the run loudly, per the user's "tell me and stop" instruction.
+  max_transient_retries: 2
+
+observation:
+  # Pass the rendered frame as an image in addition to the text rendering.
+  # Qwen3.8-27B is a VLM, so this is the issue's optional second configuration.
+  send_image: false
+  # Last N (action, effect) pairs shown to the model.
+  history_n: 10
+  # Cap on objects listed in the text observation, to bound prompt size.
+  max_objects: 40
+  # Cap on cells enumerated in a frame diff before it is summarised instead.
+  max_diff_cells: 40
+
+budget:
+  # Issue default: 200 actions for Level 1.
+  max_actions: 200
+  wall_clock_s: 1200
+  # Resets are allowed and counted; this caps runaway reset loops.
+  max_resets: 10
+  # Per-episode token ceiling. Hitting it ends the episode as "budget".
+  max_tokens_per_episode: 600000
+
+run:
+  seeds: [0, 1, 2]
+  # Level 1 only.
+  target_level: 1
+
+split:
+  # Fixed, committed split seed. Changing this invalidates the skill library.
+  seed: 20261021
+  # Issue requires these three in dev.
+  forced_dev: ["ls20", "ft09", "vc33"]
+  # Fraction of the remaining games that also go to dev ("~half the rest").
+  dev_fraction_of_rest: 0.5
+
+limits:
+  # Global guard rails. If the endpoint starts rate-limiting or the spend
+  # ceiling is reached, the whole experiment stops and reports, rather than
+  # grinding on. Requested explicitly by the user.
+  global_token_cap: 40000000
+  abort_after_consecutive_rate_limits: 3
