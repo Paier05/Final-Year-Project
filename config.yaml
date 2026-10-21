@@ -56,5 +56,13 @@ limits:
   # Global guard rails. If the endpoint starts rate-limiting or the spend
   # ceiling is reached, the whole experiment stops and reports, rather than
   # grinding on. Requested explicitly by the user.
-  global_token_cap: 40000000
+  #
+  # Sizing, measured not guessed: a real ls20 step is a 2918-char system prompt
+  # plus a 3341-char user message, about 1.6k input tokens per step. At the
+  # 200-action budget that is ~320k input tokens per episode, and the full
+  # specified sweep is 25 games x 3 seeds x 2 rounds = 150 episodes, i.e. very
+  # roughly 50M input + 10M output tokens if every episode runs to budget.
+  # The cap below allows that; lower it (or cut seeds / max_actions) to spend
+  # less. Episodes that solve early cost far less than the worst case.
+  global_token_cap: 80000000
   abort_after_consecutive_rate_limits: 3

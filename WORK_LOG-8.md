@@ -92,26 +92,126 @@ Deliverables: `results/summary.csv`, `results/figures/` (script-generated), a de
   full harness, the learning pipeline, and the analysis scripts — so that a valid key
   turns the experiment into a single `run.py` invocation.
 
+### 2026-10-21 — Toolkit verified against the real API (no guessed method names)
+
+- **What I did:** Installed `arc-agi` 0.9.9 into `.venv` and introspected the real API
+  surface instead of trusting the docs summary. Enumerated the public games and probed
+  one game (`ft09`) end to end: reset, one step, frame shape, click coordinate space.
+- **Why:** The issue explicitly says "Do not guess method names." It also needs a
+  programmatic game list and a human baseline for the level score.
+- **Result / what I found:**
+  - **Real API:** `Arcade(arc_api_key="", arc_base_url="https://three.arcprize.org")`;
+    `arcade.get_environments() -> list[EnvironmentInfo]`;
+    `arcade.make(game_id, seed=0, scorecard_id=None) -> EnvironmentWrapper`;
+    `env.reset() -> FrameDataRaw`;
+    `env.step(action: GameAction, data: dict|None, reasoning: dict|None) -> FrameDataRaw`;
+    plus `open_scorecard`/`close_scorecard`/`get_scorecard`.
+  - **`FrameDataRaw`** fields: `game_id`, `state` (`GameState` =
+    NOT_PLAYED/NOT_FINISHED/WIN/GAME_OVER), `levels_completed`, `win_levels`,
+    `action_input`, `guid`, `full_reset`, `available_actions: list[int]`, and a `frame`
+    property returning `list[ndarray]`.
+  - **Frame format:** a list of layers; `ft09` returns 1 layer of shape `(64, 64)`,
+    dtype `int8`, colour values observed in `0..12` (ARC's 16-colour palette).
+  - **Actions:** `GameAction.RESET=0, ACTION1..ACTION7=1..7`. `available_actions` is
+    per-frame and authoritative — `ft09` reports `[6]` (click-only) even though its
+    `tags` list is empty, so the harness keys off `available_actions`, not `tags`.
+  - **Click schema:** `ACTION6` takes `data={"x": ..., "y": ...}` in *screen*
+    coordinates. `camera._calculate_scale_and_offset()` returns `(2, 0, 0)` for ft09, so
+    the 32x32 world is rendered at 2x into the 64x64 frame and screen coords map 1:1 onto
+    frame pixel indices. The harness therefore exposes `x, y in 0..63`, matching exactly
+    what the model sees in the observation.
+  - **Human baselines exist in the API:** `EnvironmentInfo.baseline_actions` is a
+    per-level list, so `baseline_actions[0]` is the level-1 human baseline. This makes the
+    issue's `min(1, human/agent)^2` score computable for **all 25 games** — nothing needs
+    to be marked N/A. Level-1 baselines range from 7 (vc33) to 71 (wa30), so the default
+    200-action budget is roughly 3x-28x the human baseline.
+  - **25 public games**, and all three issue-mandated dev games are present:
+    `ls20-9607627b`, `ft09-0d8bbf25`, `vc33-5430563c`.
+  - **Worth flagging:** `arcade.make()` *downloads game code and executes it locally*
+    (`LocalEnvironmentWrapper` loaded `environment_files/ft09/0d8bbf25/ft09.py`). That is
+    the official toolkit doing its documented job, and the issue instructs installing it,
+    so I proceeded — but it does mean running third-party code, which brushes against the
+    workflow's "read, don't run" guardrail. Noting it rather than passing over it.
+  - Side benefit: because environments run locally, stepping costs no ARC API calls and
+    is fast. The experiment's cost is almost entirely the model endpoint.
+- **Next step:** Freeze the game list and the dev/test split, then build the harness.
+
+
+### 2026-10-21 — Built the full pipeline; verified it with an offline policy
+
+- **What I did:** Built `harness/`, `learning/`, `analysis/` and `run.py`, froze
+  the game list and split, and then verified the whole thing end to end with
+  `run.py --stub` — a random-but-legal policy that drives the *real* prompt and the
+  *real* ARC environment with no model calls.
+- **Why:** The model credential is blocked, but nothing else is. Building and
+  verifying everything that does not need the model means a working key turns the
+  experiment into a single command instead of a day of debugging.
+- **Result / what I found:**
+  - Split frozen in `results/games.json` from committed seed 20261021:
+    **dev 14** (bp35, cd82, dc22, ft09, g50t, ka59, lp85, ls20, m0r0, re86, sb26,
+    sp80, tr87, vc33) and **test 11** (ar25, cn04, lf52, r11l, s5i5, sc25, sk48,
+    su15, tn36, tu93, wa30). The three mandated dev games are in dev.
+  - **The self-test found a real bug before any spend:** `GameAction(6)` raises
+    `ValueError: 6 is not a valid GameAction`, because enum members are keyed
+    internally by `(value, kind)` tuples. The library's own `GameAction.from_id()`
+    is the correct accessor. I would not have caught this without running the loop.
+  - Verified: trajectory records carry every field the issue lists; frames save as
+    a `(201, 64, 64)` int16 array; the GAME_OVER auto-reset path really executed on
+    vc33 (4 counted resets); the parser behaves correctly on 14 cases including 7
+    that must fail; the miner produced 6 validated skills with held-out precision;
+    Round 1 skill injection, module execution and the unknown-module refusal all
+    work; all six figures render and are legible.
+  - **Verified the abort path against the live endpoint:** `run.py --stage preflight`
+    stopped cleanly on the 401 with an actionable message, which is exactly the
+    "tell me and stop" behaviour the user asked for.
+  - **Cost, measured rather than guessed.** A real ls20 step is a 2918-char system
+    prompt + 3341-char user message, ~1.6k input tokens/step. At 200 actions that is
+    ~320k input tokens per episode; the full spec is 150 episodes, so worst case is
+    roughly **50M input + 10M output tokens**. I raised `global_token_cap` from 40M
+    to 80M so the cap does not abort a legitimate full run, and documented the
+    arithmetic in `config.yaml` next to the number.
+  - **Wall clock is the harder limit:** up to 30,000 sequential model calls is on
+    the order of 1-3 days. `run.py` is therefore resumable (completed game/seed
+    pairs are skipped) and sharddable via `--games`/`--seeds`. I did *not* reduce
+    seeds or the action budget — scaling the experiment down is the user's call, so
+    the defaults ship at the issue's full specification and the trade-off is
+    documented in REPORT.md §7.1.
+  - Deleted every self-test artifact (figures, summary, skills, trajectories) before
+    committing, so no stub-derived number can be mistaken for a result. `data/` is
+    gitignored; it is far too large for the repo but is written and replayable.
+- **Next step:** Report the credential blocker to the user with the cost numbers
+  attached, and leave the branch in a state where one working key unblocks everything.
+
+
 ## Open questions / risks
 
-- **Model credentials (blocking the runs).** The endpoint/key pair supplied does not
-  authenticate. Needed before Round 0 can execute. Unknown until resolved: what model
-  ids the gateway actually serves (`/v1/models` is behind the same auth), whether
-  `Qwen/Qwen3.8-27B` is the right id string there, and whether it accepts image input —
-  which decides whether the issue's optional "also pass the rendered frame as an image"
-  flag can be exercised at all.
-- **Rate/spend limits.** The user asked to be told and to stop if limits blow up. The
-  harness therefore needs hard per-run token and wall-clock caps and must fail loudly
-  rather than silently retry, so a 429/quota wall halts the experiment instead of
-  burning budget.
-- **Cost is unbounded until measured.** "Every public game × 3 seeds × 200 actions ×
-  2 rounds" is on the order of 10^4–10^5 model calls depending on how many public games
-  exist. The real number must be estimated from the game count before launching, not
-  after.
-- **ARC anonymous key.** If the anonymous key is rate-limited or excludes some public
-  games, the "every public game" acceptance criterion may need a registered ARC key.
-- **Human baselines.** The level score `min(1, human/agent)^2` needs a human baseline
-  per game. If ARC does not expose one, those scores get marked N/A, as the issue allows.
+- **Model credentials — still blocking, and the only blocker.** Re-tested at the end
+  of the session: `https://model.chengqi.uk/v1` returns `401 {"error":"Invalid API
+  key"}` for the supplied key, while an unauthenticated request returns `{"error":
+  "Missing API key"}`. The gateway works; the key does not. Needed before either
+  round can run. Still unknown until a valid key exists: what model ids the gateway
+  actually serves, whether `Qwen/Qwen3.8-27B` is the right id string there, and
+  whether it accepts image input (which decides whether the `send_image`
+  configuration can be exercised at all).
+- **Cost and wall clock are real risks, now quantified.** ~50M input + ~10M output
+  tokens and 1-3 days sequential for the full two-round sweep. The user should
+  decide whether to run the full specification or shard/reduce it. The harness
+  aborts loudly on repeated 429s, billing errors and the token cap rather than
+  grinding, per the user's instruction.
+- **`experiments/` is still untracked** in the working tree. It holds issue #4's
+  `mini_r_zero` artifacts. I have not touched, staged or deleted any of it. The user
+  should decide whether it gets committed, gitignored, or removed.
+- **The toolkit executes downloaded game code.** `arcade.make()` fetches each game
+  and runs it locally via `LocalEnvironmentWrapper`. That is the official toolkit
+  behaving as documented and the issue instructs installing it, so I proceeded — but
+  it is third-party code execution and is flagged here deliberately rather than
+  passed over.
+- **Object ids are not stable across steps**, since components are re-sorted by size
+  every frame. The system prompt warns the model explicitly, but this is the Round 0
+  perception's clearest weakness and is listed as next step #3 in REPORT.md.
+- **Unverifiable until a run happens:** whether the mined skills are good enough to
+  move the test-split number at all. The pipeline is built and self-tested, but the
+  scientific question of the issue is genuinely open.
 
 ## Summary (fill in at the end)
 
