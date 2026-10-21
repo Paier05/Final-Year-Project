@@ -310,7 +310,9 @@ def run_episode(
                 continue
 
             # ---- execute the game action ---------------------------------
-            action = GameAction(decision.action_id)
+            # GameAction members are keyed by (value, kind) internally, so
+            # GameAction(6) raises; from_id is the library's own accessor.
+            action = GameAction.from_id(decision.action_id)
             data = decision.args or None
             if action == GameAction.RESET:
                 frame = env.reset()

@@ -10,5 +10,8 @@ __pycache__/
 environment_files/
 recordings/
 
-# Large run artifacts: raw frames are reproducible from the trajectory logs
-data/frames/
+# Run artifacts. Trajectories and frames are written here and are required to
+# be replayable, but they are far too large for git; regenerate with run.py.
+data/
+results/episodes_stub.jsonl
+results/summary_stub.csv

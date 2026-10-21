@@ -101,18 +101,18 @@ def stage_preflight(config: dict[str, Any]) -> None:
     print("OK:", json.dumps(info)[:500])
 
 
-def _append_episode(row: dict[str, Any]) -> None:
+def _append_episode(row: dict[str, Any], path: str = EPISODES_PATH) -> None:
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    with open(EPISODES_PATH, "a", encoding="utf-8") as handle:
+    with open(path, "a", encoding="utf-8") as handle:
         handle.write(json.dumps(row) + "\n")
 
 
-def _completed_keys(round_index: int) -> set[tuple[str, int]]:
+def _completed_keys(round_index: int, path: str = EPISODES_PATH) -> set[tuple[str, int]]:
     """(game, seed) pairs already recorded for this round, so a run resumes."""
     done: set[tuple[str, int]] = set()
-    if not os.path.exists(EPISODES_PATH):
+    if not os.path.exists(path):
         return done
-    with open(EPISODES_PATH, encoding="utf-8") as handle:
+    with open(path, encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if not line:
@@ -129,14 +129,23 @@ def stage_round(
     only_games: list[str] | None = None,
     only_seeds: list[int] | None = None,
     resume: bool = True,
+    stub: bool = False,
 ) -> None:
     import arc_agi
 
     games_file = games_mod.load_games_file()
-    client = make_client(config)
-    print(f"Preflight against {client.base_url} ...")
-    client.preflight()
-    print("Credentials OK.\n")
+    if stub:
+        # Harness verification only: no model is called, and these numbers are
+        # NOT experimental results. See --stub in the CLI help.
+        from harness.stub_model import StubClient
+
+        client = StubClient(seed=0)
+        print("*** STUB MODE: random policy, no model calls. Not a result. ***\n")
+    else:
+        client = make_client(config)
+        print(f"Preflight against {client.base_url} ...")
+        client.preflight()
+        print("Credentials OK.\n")
 
     skills_block = tools_block = None
     module_runner = None
@@ -160,7 +169,10 @@ def stage_round(
     all_games = [g["game_id"] for g in games_file["games"]]
     target_games = only_games or all_games
     seeds = only_seeds or list(config["run"]["seeds"])
-    done = _completed_keys(round_index) if resume else set()
+    episodes_path = (
+        os.path.join(RESULTS_DIR, "episodes_stub.jsonl") if stub else EPISODES_PATH
+    )
+    done = _completed_keys(round_index, episodes_path) if resume else set()
 
     arcade = arc_agi.Arcade()
     started = time.monotonic()
@@ -195,7 +207,7 @@ def stage_round(
                 )
                 row = result.as_row()
                 row["skill_calls_by_name"] = result.skill_calls_by_name
-                _append_episode(row)
+                _append_episode(row, episodes_path)
                 n_run += 1
                 print(
                     f"{'SOLVED' if result.solved else 'unsolved'} "
@@ -279,6 +291,12 @@ def main() -> None:
         "--seeds", default=None, help="comma-separated seeds (debug subset)"
     )
     parser.add_argument(
+        "--stub",
+        action="store_true",
+        help="harness self-test: random policy, no model calls, results written "
+        "to results/episodes_stub.jsonl and never reported as findings",
+    )
+    parser.add_argument(
         "--no-resume",
         action="store_true",
         help="re-run episodes already present in results/episodes.jsonl",
@@ -311,6 +329,7 @@ def main() -> None:
         only_games=only_games,
         only_seeds=only_seeds,
         resume=not args.no_resume,
+        stub=args.stub,
     )
 
 
