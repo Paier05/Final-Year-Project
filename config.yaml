@@ -40,7 +40,12 @@ observation:
 budget:
   # Issue default: 200 actions for Level 1.
   max_actions: 200
-  wall_clock_s: 2400
+  # The wall clock is a safety net, not a budget: it must stay above what 200
+  # actions actually take, or episodes end early and unequally. Endpoint latency
+  # has been seen to drift from ~9 s/step to ~18.5 s/step, which made a 2400 s
+  # cap bind at 130 actions on one seed. 5400 s covers 200 actions even at the
+  # slow rate.
+  wall_clock_s: 5400
   # Resets are allowed and counted; this caps runaway reset loops.
   max_resets: 10
   # Per-episode token ceiling. Hitting it ends the episode as "budget".

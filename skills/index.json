@@ -1,0 +1,127 @@
+{
+  "mined_from_round": 0,
+  "dev_games": [
+    "bp35-0a0ad940",
+    "cd82-fb555c5d",
+    "dc22-fdcac232",
+    "ft09-0d8bbf25",
+    "g50t-5849a774",
+    "ka59-38d34dbb",
+    "lp85-305b61c3",
+    "ls20-9607627b",
+    "m0r0-492f87ba",
+    "re86-8af5384d",
+    "sb26-7fbdac44",
+    "sp80-589a99af",
+    "tr87-cd924810",
+    "vc33-5430563c"
+  ],
+  "n_dev_episodes": 3,
+  "n_candidates": 8,
+  "n_kept": 8,
+  "thresholds": {
+    "min_support": 8,
+    "min_precision": 0.6,
+    "min_macro_support": 3,
+    "min_goal_support": 2
+  },
+  "skills": [
+    {
+      "name": "ls20_action1_moves",
+      "kind": "action_effect",
+      "description": "In game LS20, ACTION1 moves the moving object up by 5 cells.",
+      "source_games": [
+        "ls20-9607627b"
+      ],
+      "support": 14,
+      "precision": 1.0,
+      "usage_hint": "Use ACTION1 when you need to move up by 5 cells.",
+      "file": "ls20_action1_moves.json"
+    },
+    {
+      "name": "ls20_action2_effect",
+      "kind": "action_effect",
+      "description": "In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+      "source_games": [
+        "ls20-9607627b"
+      ],
+      "support": 398,
+      "precision": 0.962,
+      "usage_hint": "Expect ACTION2 to recolour lime regions.",
+      "file": "ls20_action2_effect.json"
+    },
+    {
+      "name": "ls20_action3_moves",
+      "kind": "action_effect",
+      "description": "In game LS20, ACTION3 moves the moving object left by 5 cells.",
+      "source_games": [
+        "ls20-9607627b"
+      ],
+      "support": 10,
+      "precision": 1.0,
+      "usage_hint": "Use ACTION3 when you need to move left by 5 cells.",
+      "file": "ls20_action3_moves.json"
+    },
+    {
+      "name": "ls20_action4_moves",
+      "kind": "action_effect",
+      "description": "In game LS20, ACTION4 moves the moving object right by 5 cells.",
+      "source_games": [
+        "ls20-9607627b"
+      ],
+      "support": 9,
+      "precision": 1.0,
+      "usage_hint": "Use ACTION4 when you need to move right by 5 cells.",
+      "file": "ls20_action4_moves.json"
+    },
+    {
+      "name": "bfs_to_target",
+      "kind": "module",
+      "description": "Shortest 4-connected path length between two cells, treating the given colours as impassable. Use it to check reachability before committing to a route.",
+      "source_games": [
+        "derived (general perception primitive)"
+      ],
+      "support": 60,
+      "precision": 1.0,
+      "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"bfs_to_target\",\"params\":{...}}}.",
+      "file": "bfs_to_target.json"
+    },
+    {
+      "name": "grid_region",
+      "kind": "module",
+      "description": "Print raw colour indices for a rectangle of the grid, to pin down an exact click coordinate.",
+      "source_games": [
+        "derived (general perception primitive)"
+      ],
+      "support": 60,
+      "precision": 1.0,
+      "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"grid_region\",\"params\":{...}}}.",
+      "file": "grid_region.json"
+    },
+    {
+      "name": "obstacle_map",
+      "kind": "module",
+      "description": "Classify each colour as wall-like or item-like from how its cells clump, and report which colours touch the border.",
+      "source_games": [
+        "derived (general perception primitive)"
+      ],
+      "support": 60,
+      "precision": 1.0,
+      "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"obstacle_map\",\"params\":{...}}}.",
+      "file": "obstacle_map.json"
+    },
+    {
+      "name": "player_detector",
+      "kind": "module",
+      "description": "Rank which object is most likely the agent-controlled sprite (small, uniquely coloured component).",
+      "source_games": [
+        "derived (general perception primitive)"
+      ],
+      "support": 60,
+      "precision": 1.0,
+      "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"player_detector\",\"params\":{...}}}.",
+      "file": "player_detector.json"
+    }
+  ],
+  "dropped": []
+}

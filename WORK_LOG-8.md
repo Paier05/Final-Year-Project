@@ -183,36 +183,106 @@ Deliverables: `results/summary.csv`, `results/figures/` (script-generated), a de
   attached, and leave the branch in a state where one working key unblocks everything.
 
 
+### 2026-10-27 — Both rounds run on ls20; results, and three harness bugs found by running
+
+- **What I did:** Ran Round 0 (3 seeds), mined skills, ran Round 1 (3 seeds), then
+  re-ran Round 1 twice after discovering the comparison was biased. Generated
+  summary.csv, all figures, and an extra closest-approach metric.
+- **Why:** The user scoped the experiment to one game on cost grounds (full spec
+  measured at ~78M tokens / ~51 h). ls20 was chosen over the alphabetically-first
+  game ar25 because ar25 is in the **test** split, and mining from a test game is
+  forbidden by the design, which would have made Round 1 impossible.
+- **Result / what I found:**
+  - **Solve rate 0/3 in both rounds.** Neither config solved ls20 Level 1 in 200
+    actions (human baseline 22).
+  - Since solve rate cannot separate the rounds, I added a graded metric: closest
+    approach of the mover to the target. Round 0: 16.5, 23.5, 23.5. Round 1: **3.5,
+    23.5, 13.5**. Two of three seeds improved substantially, one not at all.
+  - **Round 0's failure is specific and diagnosable.** The agent inferred the wrong
+    axis for ACTION3/ACTION4, wrote "ACTION2 = LEFT" in its scratchpad, then pressed
+    ACTION2 for 187 of 200 actions. The band's column never moved off 36.0 - ACTION2
+    is vertical. It never revised the belief across 187 contradicting observations.
+    On seeds 1 and 2 its closest approach was at **step 1**: 200 actions of moving
+    away from the goal.
+  - **The skills corrected exactly that misconception.** Mined rules say ACTION1=up5,
+    ACTION3=left5, ACTION4=right5; Round 1's final notes read "CONFIRMED: ACTION1=UP5,
+    ACTION2=DOWN5, ACTION3=LEFT1, ACTION4=RIGHT1". Single-action share fell from
+    83-96% to 54-72%, unique frames rose 142->195 on seed 0, and 43 module calls were
+    made. Seed 0 ended 3.5 cells away, still converging.
+  - **Three harness bugs, all found by running rather than inspection:**
+    1. A dead provider backend produced a *complete fabricated episode* - 200 random
+       fallback actions recorded as a routine `budget_actions` row with zero tokens.
+       That would have entered summary.csv as a real baseline. Now aborts after 5
+       consecutive failures, and preflight probes chat/completions rather than only
+       /models.
+    2. The 600k token cap bound Round 1 at 154-163 actions while Round 0 ran 200,
+       because skill-bearing prompts cost more. Round 1 had ~20% less budget than its
+       own baseline. Discarded those numbers and re-ran.
+    3. After raising the token cap, latency drifted 9s -> 18.5s/step and the 2400s
+       wall clock cut one seed at 130 actions. Raised to 5400s and re-ran that seed.
+    All six final episodes terminate on `budget_actions` at exactly 200 - verified.
+  - **A fourth bug, in the miner:** zero translation rules were produced initially.
+    The text diff is truncated at 40 cells but ls20 changes 52/step, so every step
+    looked truncated; the detector also assumed a single colour when ls20 moves teal
+    and maroon together; and support was inflated by the 187-press loop. Now mined
+    from the saved .npy frames, multi-colour, with per-context support.
+- **Next step:** The in-sample caveat is the big one - skills were mined from ls20 and
+  tested on ls20, so this says the mechanism works, not that it generalises. Held-out
+  games are the missing piece.
+
+
 ## Open questions / risks
 
-- **Model credentials — still blocking, and the only blocker.** Re-tested at the end
-  of the session: `https://model.chengqi.uk/v1` returns `401 {"error":"Invalid API
-  key"}` for the supplied key, while an unauthenticated request returns `{"error":
-  "Missing API key"}`. The gateway works; the key does not. Needed before either
-  round can run. Still unknown until a valid key exists: what model ids the gateway
-  actually serves, whether `Qwen/Qwen3.8-27B` is the right id string there, and
-  whether it accepts image input (which decides whether the `send_image`
-  configuration can be exercised at all).
-- **Cost and wall clock are real risks, now quantified.** ~50M input + ~10M output
-  tokens and 1-3 days sequential for the full two-round sweep. The user should
-  decide whether to run the full specification or shard/reduce it. The harness
-  aborts loudly on repeated 429s, billing errors and the token cap rather than
-  grinding, per the user's instruction.
-- **`experiments/` is still untracked** in the working tree. It holds issue #4's
-  `mini_r_zero` artifacts. I have not touched, staged or deleted any of it. The user
-  should decide whether it gets committed, gitignored, or removed.
-- **The toolkit executes downloaded game code.** `arcade.make()` fetches each game
-  and runs it locally via `LocalEnvironmentWrapper`. That is the official toolkit
-  behaving as documented and the issue instructs installing it, so I proceeded — but
-  it is third-party code execution and is flagged here deliberately rather than
-  passed over.
-- **Object ids are not stable across steps**, since components are re-sorted by size
-  every frame. The system prompt warns the model explicitly, but this is the Round 0
-  perception's clearest weakness and is listed as next step #3 in REPORT.md.
-- **Unverifiable until a run happens:** whether the mined skills are good enough to
-  move the test-split number at all. The pipeline is built and self-tested, but the
-  scientific question of the issue is genuinely open.
+- **The headline caveat: this is in-sample.** Skills were mined from ls20 and
+  re-tested on ls20. It demonstrates the mined-skill mechanism functions; it says
+  **nothing** about generalisation, which is the issue's actual claim ("the test
+  split is the real result"). No number in REPORT.md §4 should be read as evidence
+  of generalisation, and the report says so explicitly.
+- **n=3 on one game.** The improvement appeared on 2 of 3 seeds and was absent on the
+  third. That is a promising signal, not a result. Seed 1 made the *most* module calls
+  (25) and had 53 no-change actions while improving not at all, which hints that
+  module calls may substitute for acting.
+- **24 of 25 games unrun.** Scoped down by the user on cost. The acceptance criterion
+  "every public game for 3 seeds" is not met, and REPORT.md §12 records it as not met
+  rather than quietly reinterpreting the criterion.
+- **Did Round 1 nearly solve, or just wander closer?** Seed 0 reached 3.5 cells and was
+  still converging at the cutoff. A 400-action budget on ls20 would settle this cheaply
+  and is the single most decisive follow-up.
+- **Object ids are not stable across steps** (components are re-sorted by size every
+  frame). This is the most likely root cause of the row/column confusion that sank
+  Round 0, and remains unfixed.
+- **`experiments/` and `.vscode/` are still untracked** in the working tree.
+  `experiments/` holds issue #4's mini_r_zero artifacts. I have not touched, staged or
+  deleted any of it; the user should decide.
+- **The toolkit executes downloaded game code** (`LocalEnvironmentWrapper`). Official
+  documented behaviour, flagged rather than passed over.
 
-## Summary (fill in at the end)
+## Summary
 
-_Not yet complete._
+**What changed.** Built the full experiment: `harness/` (plain-code perception, prompt
+construction, strict-JSON action parsing, budgets, trajectory + frame logging),
+`learning/` (four skill kinds mined from dev trajectories with held-out validation,
+plus four callable code modules), `analysis/` (summary.csv, aggregate.json, seven
+figures), driven by `python run.py --round 0|1`. Froze the 25-game list and the
+dev/test split from a committed seed.
+
+**What was measured.** Round 0 and Round 1 on `ls20`, 3 seeds each, Level 1 only -
+6 episodes, not the 150 the issue specifies. Solve rate **0/3 in both rounds**. Mean
+closest approach to the goal improved from **21.2 to 13.5 cells**, driven by two of
+three seeds; the best Round 1 seed ended **3.5 cells away and still converging**.
+Round 0's failure was traced to a specific, reproducible error: the agent confused
+rows with columns for two actions and then spent 94% of its budget on one action that
+could not work. The mined skills corrected precisely that misconception.
+
+**How it was verified.** No test suite exists, so: an offline stub policy drives the
+real prompt and real environment with no model calls (`run.py --stub`), which caught
+the `GameAction(6)` bug before any spend; the action parser was exercised over 14
+cases including 7 that must fail; trajectory records were checked field-by-field
+against the issue's schema and frames confirmed replayable; the abort path was
+verified against a genuinely dead endpoint; every figure was rendered and inspected;
+and the categorical palette was checked with a CVD validator. Critically, all six
+reported episodes were confirmed to terminate on `budget_actions` at exactly 200,
+after two earlier rounds of results were **discarded** for unequal budgets.
+
+**What it does not show.** Generalisation. Skills were mined from ls20 and tested on
+ls20. Held-out games are the missing experiment.

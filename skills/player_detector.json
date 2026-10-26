@@ -1,0 +1,19 @@
+{
+  "kind": "module",
+  "name": "player_detector",
+  "description": "Rank which object is most likely the agent-controlled sprite (small, uniquely coloured component).",
+  "source_games": [
+    "derived (general perception primitive)"
+  ],
+  "params": {},
+  "returns": "ranked candidate objects with colour, size, bbox",
+  "support": 60,
+  "precision": 1.0,
+  "validation": {
+    "check": "run the module on grids reconstructed from logged dev object lists; require zero exceptions and a useful answer on most frames",
+    "n_checked": 60,
+    "n_hits": 60,
+    "n_errors": 0
+  },
+  "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"player_detector\",\"params\":{...}}}."
+}

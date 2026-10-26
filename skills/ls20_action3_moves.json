@@ -1,0 +1,24 @@
+{
+  "kind": "action_effect",
+  "name": "ls20_action3_moves",
+  "description": "In game LS20, ACTION3 moves the moving object left by 5 cells.",
+  "source_games": [
+    "ls20-9607627b"
+  ],
+  "action": "ACTION3",
+  "effect": {
+    "translation": [
+      0,
+      -5
+    ]
+  },
+  "support": 10,
+  "precision": 1.0,
+  "validation": {
+    "check": "replay logged (action, frame_diff) pairs and recompute the translation",
+    "holdout_seed": 2,
+    "n_checked": 2,
+    "n_hits": 2
+  },
+  "usage_hint": "Use ACTION3 when you need to move left by 5 cells."
+}
