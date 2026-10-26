@@ -26,7 +26,7 @@ from typing import Any
 import numpy as np
 
 from harness.perception import colour_name
-from harness.trajectory import iter_trajectories
+from harness.trajectory import frame_hash, frames_path, iter_trajectories
 from learning.modules import MODULES, run_module
 
 SKILLS_DIR = "skills"
@@ -69,37 +69,98 @@ def _signature(record: dict[str, Any]) -> str:
     return bucket
 
 
-def _translation(record: dict[str, Any]) -> tuple[int, int] | None:
-    """Detect a pure translation of one colour blob from the diff.
+def _load_frames_by_hash(round_index: int, game_id: str, seed: int) -> dict[str, Any]:
+    """Map frame_hash -> grid, from the .npy frames saved for replay.
 
-    An object moving by (dr, dc) shows up as k cells going colour->background
-    and the same k cells going background->colour, with the two centroids
-    offset by exactly the move. This is what makes "ACTION1 moves the X object
-    one cell up" learnable from logged data alone.
+    The text diff in a record is truncated at `observation.max_diff_cells` so
+    the prompt stays bounded, which means it cannot be trusted for geometry:
+    ls20 changes 52 cells a step against a 40-cell cap, and every translation
+    was being discarded as `truncated`. The saved frames are untruncated, which
+    is what they are for.
+    """
+    path = frames_path(round_index, game_id, seed)
+    frames = None
+    if os.path.exists(path):
+        frames = list(np.load(path))
+    elif os.path.exists(path.replace(".npy", ".npz")):
+        archive = np.load(path.replace(".npy", ".npz"))
+        frames = [archive[k] for k in archive.files]
+    if not frames:
+        return {}
+    return {frame_hash(np.asarray(f)): np.asarray(f) for f in frames}
+
+
+def _translation_from_frames(
+    record: dict[str, Any], frames: dict[str, Any]
+) -> tuple[int, int] | None:
+    """Exact translation between a record's before/after frames."""
+    before = frames.get(record.get("frame_hash", ""))
+    after = frames.get(record.get("next_frame_hash", ""))
+    if before is None or after is None or before.shape != after.shape:
+        return None
+    mask = before != after
+    if not mask.any():
+        return None
+    rows, cols = np.nonzero(mask)
+    cells = [
+        {
+            "row": int(r),
+            "col": int(c),
+            "from": int(before[r, c]),
+            "to": int(after[r, c]),
+        }
+        for r, c in zip(rows, cols)
+    ]
+    return _translation({"frame_diff": {"changed": cells, "truncated": False}})
+
+
+def _translation(record: dict[str, Any]) -> tuple[int, int] | None:
+    """Detect a rigid translation from the diff.
+
+    A blob of colour c moving by (dr, dc) leaves k cells where `from == c` and
+    arrives at k cells where `to == c`, with the two centroids offset by exactly
+    the move. This is what makes "ACTION1 moves the X object one cell up"
+    learnable from logged data alone.
+
+    Each colour is measured independently and the move is only accepted if every
+    moving colour agrees on the same offset. That matters: real games move
+    multi-coloured sprites as one piece (ls20 scrolls a teal band and a maroon
+    band together), and an earlier single-colour-only version of this check
+    silently refused every such case and fell back to a far weaker rule.
     """
     diff = record.get("frame_diff") or {}
     cells = diff.get("changed")
     if not cells or diff.get("truncated"):
         return None
-    vacated = [c for c in cells if c["to"] != c["from"] and c["from"] != 0]
-    filled = [c for c in cells if c["to"] != c["from"] and c["to"] != 0]
-    if not vacated or not filled or len(vacated) != len(filled):
-        return None
-    colours_out = {c["from"] for c in vacated}
-    colours_in = {c["to"] for c in filled}
-    if len(colours_out) != 1 or colours_out != colours_in:
+
+    moved = [c for c in cells if c["to"] != c["from"]]
+    if not moved:
         return None
 
-    vac_r = sum(c["row"] for c in vacated) / len(vacated)
-    vac_c = sum(c["col"] for c in vacated) / len(vacated)
-    fil_r = sum(c["row"] for c in filled) / len(filled)
-    fil_c = sum(c["col"] for c in filled) / len(filled)
-    dr, dc = fil_r - vac_r, fil_c - vac_c
-    # Only accept a clean integer unit-ish move.
-    if abs(dr - round(dr)) > 0.01 or abs(dc - round(dc)) > 0.01:
+    colours = {c["from"] for c in moved if c["from"] != 0} | {
+        c["to"] for c in moved if c["to"] != 0
+    }
+    offsets: set[tuple[int, int]] = set()
+    for colour in colours:
+        vacated = [c for c in moved if c["from"] == colour]
+        filled = [c for c in moved if c["to"] == colour]
+        # A colour that only appears or only vanishes is not translating.
+        if not vacated or not filled or len(vacated) != len(filled):
+            continue
+        vac_r = sum(c["row"] for c in vacated) / len(vacated)
+        vac_c = sum(c["col"] for c in vacated) / len(vacated)
+        fil_r = sum(c["row"] for c in filled) / len(filled)
+        fil_c = sum(c["col"] for c in filled) / len(filled)
+        dr, dc = fil_r - vac_r, fil_c - vac_c
+        if abs(dr - round(dr)) > 0.01 or abs(dc - round(dc)) > 0.01:
+            return None
+        offsets.add((int(round(dr)), int(round(dc))))
+
+    # Every moving colour must agree, or this is not one rigid move.
+    if len(offsets) != 1:
         return None
-    dr, dc = int(round(dr)), int(round(dc))
-    if (dr, dc) == (0, 0) or max(abs(dr), abs(dc)) > 8:
+    dr, dc = offsets.pop()
+    if (dr, dc) == (0, 0) or max(abs(dr), abs(dc)) > 16:
         return None
     return dr, dc
 
@@ -130,20 +191,36 @@ def _progress_steps(records: list[dict[str, Any]]) -> set[int]:
 
 
 def mine_action_effects(
-    episodes: list[tuple[str, int, list[dict[str, Any]]]]
+    episodes: list[tuple[str, int, list[dict[str, Any]]]],
+    round_index: int = 0,
 ) -> list[dict[str, Any]]:
     """Per-(game, action) effect rules with support and held-out precision."""
     # observations[(game, action)] -> list of (episode_key, signature, translation)
     observations: dict[tuple[str, str], list[tuple[tuple[str, int], str, Any]]] = (
         defaultdict(list)
     )
+    # An agent that gets stuck spamming one action produces hundreds of
+    # near-identical records, which would otherwise make a rule mined from that
+    # degenerate loop look like the best-supported rule in the library. Count
+    # each (starting frame, action) context once per episode so support measures
+    # distinct evidence rather than how long the agent perseverated.
+    seen_contexts: set[tuple[str, int, str, str]] = set()
     for game_id, seed, records in episodes:
+        frames = _load_frames_by_hash(round_index, game_id, seed)
         for record in records:
             action = record.get("action")
             if not action or action in ("CALL", "RESET", "AUTO_RESET"):
                 continue
+            context = (game_id, seed, action, record.get("frame_hash", ""))
+            if context in seen_contexts:
+                continue
+            seen_contexts.add(context)
             observations[(game_id, action)].append(
-                ((game_id, seed), _signature(record), _translation(record))
+                (
+                    (game_id, seed),
+                    _signature(record),
+                    _translation_from_frames(record, frames),
+                )
             )
 
     skills: list[dict[str, Any]] = []
@@ -496,7 +573,7 @@ def mine_and_validate(
         )
 
     candidates: list[dict[str, Any]] = []
-    candidates += mine_action_effects(episodes)
+    candidates += mine_action_effects(episodes, round_index=round_index)
     candidates += mine_macros(episodes)
     candidates += mine_goal_hypotheses(episodes)
     candidates += validate_modules(episodes)
