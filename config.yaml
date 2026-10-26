@@ -7,13 +7,20 @@ model:
   # The key is read from the ARC_MODEL_API_KEY environment variable or .env,
   # never from this file.
   base_url: "https://model.chengqi.uk/v1"
-  model: "Qwen/Qwen3.8-27B"
+  model: "Qwen/Qwen3.8-27B-FP8"
   temperature: 0.2
   top_p: 0.9
-  max_tokens: 1024
+  max_tokens: 600
   # Qwen3.8 exposes thinking control. "off" disables reasoning; otherwise one of
   # low / medium / xhigh is sent as reasoning_effort.
-  thinking: "low"
+  #
+  # Measured on a real ls20 step, same prompt, same endpoint:
+  #   thinking "low": 22.5 s, 956 output tokens, and the model writes paragraphs
+  #                   of prose before the JSON (it nearly hit max_tokens).
+  #   thinking "off":  6.1 s, 180 output tokens, clean JSON as the first token.
+  # 3.7x faster and 5x cheaper in output for a better-formatted answer, so "off"
+  # is the setting both rounds run with. Qwen3.8-27B overthinks by default.
+  thinking: "off"
   request_timeout_s: 180
   # Transient-error retries (per call). A 401/403/quota error is NOT retried --
   # it aborts the run loudly, per the user's "tell me and stop" instruction.
@@ -33,7 +40,7 @@ observation:
 budget:
   # Issue default: 200 actions for Level 1.
   max_actions: 200
-  wall_clock_s: 1200
+  wall_clock_s: 2400
   # Resets are allowed and counted; this caps runaway reset loops.
   max_resets: 10
   # Per-episode token ceiling. Hitting it ends the episode as "budget".
