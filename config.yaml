@@ -44,7 +44,14 @@ budget:
   # Resets are allowed and counted; this caps runaway reset loops.
   max_resets: 10
   # Per-episode token ceiling. Hitting it ends the episode as "budget".
-  max_tokens_per_episode: 600000
+  #
+  # Must stay above what a full 200-action episode actually costs, or it becomes
+  # the binding constraint instead of max_actions -- and it binds UNEQUALLY,
+  # because Round 1 prompts carry the skill library and so cost more per step.
+  # Measured: Round 0 used ~535k for 200 actions; Round 1 hit 600k at only ~160
+  # actions, handing Round 1 a 20% smaller action budget and quietly invalidating
+  # the comparison. 1.2M leaves headroom for both rounds at 200 actions.
+  max_tokens_per_episode: 1200000
 
 run:
   seeds: [0, 1, 2]
