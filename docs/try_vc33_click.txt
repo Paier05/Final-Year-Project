@@ -1,0 +1,34 @@
+STATUS: step 4 | actions used 4/200 | resets 0 | engine state NOT_FINISHED | levels completed 0
+AVAILABLE ACTIONS: ACTION6
+
+OBSERVATION
+GRID: 64 rows x 64 cols (row 0 = top, col 0 = left)
+COLOUR COUNTS: green(3)=2580, black(0)=1216, grey(5)=168, orange(7)=59, maroon(9)=32, yellow(4)=21, lime(11)=20
+BACKGROUND (most common colour): green(3)
+OBJECTS: 11 non-background connected components
+  id=0 colour=black(0) size=848 bbox=rows1-27,cols32-63 centroid=(13.8,47.2)
+  id=1 colour=black(0) size=368 bbox=rows32-63,cols52-63 centroid=(48.1,57.3)
+  id=2 colour=grey(5) size=96 bbox=rows28-31,cols40-63 centroid=(29.5,51.5)
+  id=3 colour=grey(5) size=72 bbox=rows28-31,cols20-37 centroid=(29.5,28.5)
+  id=4 colour=orange(7) size=59 bbox=rows0-0,cols0-58 centroid=(0.0,29.0)
+  id=5 colour=maroon(9) size=16 bbox=rows24-27,cols60-63 centroid=(25.5,61.5)
+  id=6 colour=maroon(9) size=16 bbox=rows32-35,cols60-63 centroid=(33.5,61.5)
+  id=7 colour=yellow(4) size=16 bbox=rows44-49,cols46-49 centroid=(46.5,48.0)
+  id=8 colour=lime(11) size=12 bbox=rows44-49,cols50-51 centroid=(46.5,50.5)
+  id=9 colour=lime(11) size=8 bbox=rows28-31,cols38-39 centroid=(29.5,38.5)
+  id=10 colour=yellow(4) size=5 bbox=rows0-0,cols59-63 centroid=(0.0,61.0)
+
+DIFF: 1 cells changed, within rows0-0,cols59-59
+  1 cells orange(7) -> yellow(4)
+  (0,59): orange -> yellow
+
+HISTORY (most recent 4 of 4 actions):
+  step 0: ACTION6 -> 1 cells changed
+  step 1: ACTION6 -> 2 cells changed
+  step 2: ACTION6 -> 1 cells changed
+  step 3: ACTION6 -> 1 cells changed
+
+SCRATCHPAD (your notes from last step; rewrite it in your reply)
+(empty)
+
+Choose your next action. JSON only.
