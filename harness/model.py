@@ -159,10 +159,16 @@ class ModelClient:
     request_timeout_s: int = 180
     max_transient_retries: int = 2
     abort_after_consecutive_rate_limits: int = 3
+    # If the endpoint fails this many calls in a row, stop the experiment. A
+    # dead backend otherwise produces episodes made entirely of harness
+    # fallback actions, which look like legitimate "unsolved" results and
+    # silently poison the dataset. Failing loudly is the whole point.
+    abort_after_consecutive_call_failures: int = 5
     global_token_cap: int = 40_000_000
 
     usage: Usage = field(default_factory=Usage)
     _consecutive_rate_limits: int = 0
+    _consecutive_call_failures: int = 0
     _session: requests.Session | None = None
 
     def __post_init__(self) -> None:
@@ -220,7 +226,29 @@ class ModelClient:
                 f"Model {self.model!r} is not served by {self.base_url}. "
                 f"Available: {', '.join(str(i) for i in ids[:40])}"
             )
-        return {"models_endpoint": 200, "ids": ids}
+
+        # A healthy /models proves the key is valid, NOT that inference works.
+        # These are different services behind the same gateway, and the gateway
+        # has been seen serving /models fine while its upstream model server was
+        # refusing every chat request with a 500. Probe the capability we
+        # actually need, so a dead backend costs seconds rather than a wasted
+        # sweep of fallback-only episodes.
+        try:
+            probe = self.complete(
+                [{"role": "user", "content": "Reply with the single word OK."}],
+                max_tokens=8,
+            )
+        except (ModelCallError, AbortExperiment) as error:
+            raise AbortExperiment(
+                f"{self.base_url} lists {self.model} and accepts the key, but "
+                f"chat completions are failing: {error}\n"
+                "The gateway is up but its model backend is not. Nothing to fix "
+                "on our side; wait for the provider or use another endpoint."
+            ) from error
+
+        # The probe must not count toward the failure streak of the real run.
+        self._consecutive_call_failures = 0
+        return {"models_endpoint": 200, "ids": ids, "probe": probe.text[:40]}
 
     # -- completion ---------------------------------------------------------
 
@@ -239,6 +267,18 @@ class ModelClient:
         else:
             body["chat_template_kwargs"] = {"enable_thinking": False}
         return body
+
+    def _call_failed(self, message: str) -> ModelCallError:
+        """Record a failed call; escalate to an abort if they keep coming."""
+        self._consecutive_call_failures += 1
+        if self._consecutive_call_failures >= self.abort_after_consecutive_call_failures:
+            raise AbortExperiment(
+                f"{self._consecutive_call_failures} model calls failed in a row. "
+                f"The endpoint looks unhealthy, and continuing would fill the "
+                f"results with harness-fallback actions that masquerade as real "
+                f"episodes. Last error: {message}"
+            )
+        return ModelCallError(message)
 
     def complete(
         self, messages: list[dict[str, Any]], max_tokens: int | None = None
@@ -269,7 +309,7 @@ class ModelClient:
             except requests.RequestException as error:
                 attempt += 1
                 if attempt > self.max_transient_retries:
-                    raise ModelCallError(
+                    raise self._call_failed(
                         f"Network failure after {attempt} attempts: {error}"
                     ) from error
                 self.usage.transient_retries += 1
@@ -316,25 +356,34 @@ class ModelClient:
             if status >= 500:
                 attempt += 1
                 if attempt > self.max_transient_retries:
-                    raise ModelCallError(f"Server error {status}: {text_body[:200]}")
+                    raise self._call_failed(
+                        f"Server error {status}: {text_body[:200]}"
+                    )
                 self.usage.transient_retries += 1
                 time.sleep(min(2**attempt, 10))
                 continue
 
             if status >= 400:
-                raise ModelCallError(f"Request rejected ({status}): {text_body[:300]}")
+                raise self._call_failed(
+                    f"Request rejected ({status}): {text_body[:300]}"
+                )
 
             self._consecutive_rate_limits = 0
             try:
                 payload = response.json()
             except ValueError as error:
-                raise ModelCallError(
+                raise self._call_failed(
                     f"Endpoint returned non-JSON: {text_body[:200]}"
                 ) from error
 
             choices = payload.get("choices") or []
             if not choices:
-                raise ModelCallError(f"No choices in response: {text_body[:200]}")
+                raise self._call_failed(
+                    f"No choices in response: {text_body[:200]}"
+                )
+
+            # A real answer: the endpoint is healthy again.
+            self._consecutive_call_failures = 0
             message = choices[0].get("message") or {}
             content = message.get("content") or ""
             # Some gateways put thinking in a separate field; the action JSON is
