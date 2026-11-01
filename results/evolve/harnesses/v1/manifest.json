@@ -1,0 +1,39 @@
+{
+  "version": "v1",
+  "parent": "v0",
+  "round": 1,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "bfs_to_target",
+    "collect_items",
+    "grid_region",
+    "obstacle_map",
+    "player_detector",
+    "player_position"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r1-e1",
+      "source": "meta",
+      "what": "add skill collect_items",
+      "rationale": "The player needs to know where the maroon collectibles are to plan an efficient route. This skill groups nearby maroon cells so the player can target them."
+    },
+    {
+      "id": "r1-e2",
+      "source": "meta",
+      "what": "add skill player_position",
+      "rationale": "The player keeps getting confused about its own position. This skill gives a clear, consistent way to find where the player is."
+    },
+    {
+      "id": "r1-e3",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The player is confused about the game dynamics and keeps wasting actions. This prompt clearly states what has been established and gives a clear strategy."
+    }
+  ]
+}

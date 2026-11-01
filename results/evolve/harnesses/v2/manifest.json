@@ -1,0 +1,39 @@
+{
+  "version": "v2",
+  "parent": "v1",
+  "round": 2,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "collect_items",
+    "grid_region",
+    "obstacle_map",
+    "plan_route",
+    "player_detector",
+    "player_position"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r2-e1",
+      "source": "rule",
+      "what": "delete skill bfs_to_target",
+      "rationale": "never called in 6 evaluated episodes"
+    },
+    {
+      "id": "r2-e2",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The player's current strategy is flawed because it tries to reach the bottom-left maroon cluster by moving left, but this cluster is still 1-6 rows above the player. The player needs to move up first to align with the maroon items' rows, then move horizontally to collect them. This edit explicitly states that moving left/right at rows 61-62 is useless and that the player must move up first."
+    },
+    {
+      "id": "r2-e3",
+      "source": "meta",
+      "what": "add skill plan_route",
+      "rationale": "This skill helps the player plan an efficient route by first moving up/down to align with the maroon items' rows, then moving horizontally to collect them. It addresses the player's current flaw of wasting actions moving left/right without first moving up."
+    }
+  ]
+}

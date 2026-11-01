@@ -1,0 +1,275 @@
+{
+ "note": "post hoc; not used by the gate. See analysis/ls20_subgoals.py.",
+ "versions": [
+  {
+   "version": "v0",
+   "decision": "baseline",
+   "episodes": [
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 30,
+     "rotated": false,
+     "first_rotated_action": null,
+     "actions_rotated": 0,
+     "closest_to_goal_while_rotated": null,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.0877
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": true,
+     "first_rotated_action": 34,
+     "actions_rotated": 10,
+     "closest_to_goal_while_rotated": 35,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": false,
+     "first_rotated_action": null,
+     "actions_rotated": 0,
+     "closest_to_goal_while_rotated": null,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.4386
+    }
+   ]
+  },
+  {
+   "version": "v1",
+   "decision": "accepted",
+   "episodes": [
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": true,
+     "first_rotated_action": 103,
+     "actions_rotated": 46,
+     "closest_to_goal_while_rotated": 15,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 20,
+     "rotated": true,
+     "first_rotated_action": 180,
+     "actions_rotated": 3,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": false,
+     "first_rotated_action": null,
+     "actions_rotated": 0,
+     "closest_to_goal_while_rotated": null,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.2632
+    }
+   ]
+  },
+  {
+   "version": "v2",
+   "decision": "accepted",
+   "episodes": [
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": true,
+     "first_rotated_action": 182,
+     "actions_rotated": 2,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": true,
+     "first_rotated_action": 180,
+     "actions_rotated": 21,
+     "closest_to_goal_while_rotated": 15,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 30,
+     "rotated": true,
+     "first_rotated_action": 196,
+     "actions_rotated": 5,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.4737
+    }
+   ]
+  },
+  {
+   "version": "v3",
+   "decision": "rejected",
+   "episodes": [
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": false,
+     "first_rotated_action": null,
+     "actions_rotated": 0,
+     "closest_to_goal_while_rotated": null,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.4386
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": true,
+     "first_rotated_action": 166,
+     "actions_rotated": 13,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": true,
+     "first_rotated_action": 26,
+     "actions_rotated": 54,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.4737
+    }
+   ]
+  },
+  {
+   "version": "v4",
+   "decision": "rejected",
+   "episodes": [
+    {
+     "actions": 176,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": true,
+     "first_rotated_action": 56,
+     "actions_rotated": 25,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 117,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": true,
+     "first_rotated_action": 69,
+     "actions_rotated": 18,
+     "closest_to_goal_while_rotated": 25,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 149,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 5,
+     "rotated": true,
+     "first_rotated_action": 30,
+     "actions_rotated": 7,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.4737
+    }
+   ]
+  },
+  {
+   "version": "v5",
+   "decision": "rejected",
+   "episodes": [
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 15,
+     "rotated": true,
+     "first_rotated_action": 119,
+     "actions_rotated": 30,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 0,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 30,
+     "rotated": true,
+     "first_rotated_action": 56,
+     "actions_rotated": 28,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 1,
+     "gate_score": 0.4737
+    },
+    {
+     "actions": 200,
+     "cleared": false,
+     "start_distance_to_goal": 35,
+     "closest_to_goal": 30,
+     "rotated": true,
+     "first_rotated_action": 9,
+     "actions_rotated": 53,
+     "closest_to_goal_while_rotated": 30,
+     "actions_on_goal": 0,
+     "episode": 2,
+     "gate_score": 0.4737
+    }
+   ]
+  }
+ ]
+}

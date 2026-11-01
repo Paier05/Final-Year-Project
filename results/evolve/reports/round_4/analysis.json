@@ -1,0 +1,427 @@
+{
+  "version": "v2",
+  "summary": {
+    "score_mean": 0.4737,
+    "score_worst": 0.4737,
+    "clear_rate": 0.0,
+    "avg_steps_to_clear": null,
+    "mean_closest_approach": 1.5
+  },
+  "episodes": [
+    {
+      "episode": 0,
+      "score": 0.4737,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 78,
+      "turns_with_no_action": 8,
+      "cell_errors": 2,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 79,
+        "ACTION2": 12,
+        "ACTION3": 92,
+        "ACTION4": 17
+      },
+      "action_sequence": "A3x2 A1x3 A2x1 A4x1 A3x1 A1x1 A3x1 A4x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A3x1 A4x1 A1x2 A2x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x2 A2x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A1x1 A3x1 A1x1 A3x1 A4x1 A3x3 A4x3 A1x9 A3x1 A4x1 A3x13 A1x6 A3x1 A1x1 A3x1 A1x1 A3x21 A1x1 A3x32 A4x1 A1x2 A3x1 A4x1 A2x1 A1x22 A3x1 A4x1 A2x1 A1x2 A2x1 A1x1 A3x1 A1x10 A2x1 A3x1 A4x1 A1x6 A3x1 A1x1",
+      "final_notes": "Player at rows 61-62, cols 23-54. Maroon items at rows 11-13, 17-19, 55-60. Only 2 actions left. Trying ACTION3 (left) to reach maroon at cols 3-8."
+    },
+    {
+      "episode": 1,
+      "score": 0.4737,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 84,
+      "turns_with_no_action": 5,
+      "cell_errors": 3,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 27,
+        "ACTION2": 8,
+        "ACTION3": 150,
+        "ACTION4": 15
+      },
+      "action_sequence": "A3x2 A1x2 A2x1 A4x1 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x3 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A1x1 A4x1 A1x1 A3x1 A1x2 A3x1 A1x1 A3x1 A1x2 A3x1 A1x1 A3x73 A1x1 A3x50 A1x5 A3x10 A4x6 A3x2",
+      "final_notes": "KEY FINDINGS:\n- Player: lime bar at rows 61-62\n- ACTION1=UP, ACTION2=DOWN, ACTION3=RIGHT, ACTION4=LEFT\n- Actions move ~4-5 cells per action\n- Maroon items: top(rows11-13,cols35-37), middle(rows27-29,cols19-23), bottom-left(rows55-60,cols3-8)\n- Cyan at rows 61-62, cols 56-63 (deadly)\n- Green wall rows 8-49, cols 14-53 blocks upward in middle\n- Grey wall rows 53-62, cols 1-10 on left side\n- Strategy: move LEFT to reach bottom-left maroon, then UP\n- Turn 82: moving left to approach bottom-left maroon"
+    },
+    {
+      "episode": 2,
+      "score": 0.4737,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 42,
+      "turns_with_no_action": 2,
+      "cell_errors": 0,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 10,
+        "ACTION3": 190
+      },
+      "action_sequence": "A3x1 A1x2 A3x14 A1x1 A3x4 A1x1 A3x170 A1x6 A3x1",
+      "final_notes": "Player: lime bar at rows 61-62, cols 39-54 (before last action)\nACTION1=up 1, ACTION2=down 1, ACTION3=left 1, ACTION4=right 1\nGoal: collect all maroon (9) items\nMaroon locations:\n- Top: rows 11-13, cols 35-37\n- Mid: rows 27-29, cols 19-23\n- Lower-left: rows 55-60, cols 3-8\nOnly 1 action left - used ACTION3 (left) to get closer to lower-left maroon"
+    }
+  ],
+  "skill_stats": {
+    "collect_items": {
+      "calls": 134,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 9,
+      "lifetime_calls": 378,
+      "source_hash": "8e5cacf91b7a"
+    },
+    "grid_region": {
+      "calls": 55,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 12,
+      "lifetime_calls": 124,
+      "source_hash": "e3eed522331a"
+    },
+    "obstacle_map": {
+      "calls": 4,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 12,
+      "lifetime_calls": 9,
+      "source_hash": "6fb17248a6d4"
+    },
+    "plan_route": {
+      "calls": 8,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 6,
+      "lifetime_calls": 16,
+      "source_hash": "7cd447ba0d41"
+    },
+    "player_detector": {
+      "calls": 1,
+      "errors": 0,
+      "episodes_used": 1,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 12,
+      "lifetime_calls": 7,
+      "source_hash": "a945430da87b"
+    },
+    "player_position": {
+      "calls": 428,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 9,
+      "lifetime_calls": 1075,
+      "source_hash": "af2da1a9761d"
+    }
+  },
+  "inline_helpers": [
+    {
+      "name": "get_player",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    lime_rows, lime_cols = np.where(g == 11)\n    if len(lime_rows) == 0:\n        return None\n    return {'row_min': lime_rows.min(), 'row_max': lime_rows.max(), 'col_min': lime_cols.min(), 'col_max': lime_cols.max(), 'centroid': [lime_rows.mean(), lime_cols.mean()]}",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 6,
+      "source": "def get_player():\n    g = grid()\n    lime_rows, lime_cols = np.where(g == 11)\n    if len(lime_rows) == 0:\n        return None\n    return {'row_min': lime_rows.min(), 'row_max': lime_rows.max(), 'col_min': lime_cols.min(), 'col_max': lime_cols.max(), 'centroid': [lime_rows.mean(), lime_cols.mean()]}"
+    }
+  ],
+  "action_effects": {
+    "ACTION1": {
+      "n": 116,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.57
+        },
+        {
+          "effect": "rigid move (drow=-5, dcol=0)",
+          "share": 0.28
+        },
+        {
+          "effect": "no change",
+          "share": 0.14
+        }
+      ]
+    },
+    "ACTION2": {
+      "n": 20,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.85
+        },
+        {
+          "effect": "rigid move (drow=5, dcol=0)",
+          "share": 0.15
+        }
+      ]
+    },
+    "ACTION3": {
+      "n": 432,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.84
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-5)",
+          "share": 0.16
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=15)",
+          "share": 0.01
+        }
+      ]
+    },
+    "ACTION4": {
+      "n": 32,
+      "effects": [
+        {
+          "effect": "rigid move (drow=0, dcol=5)",
+          "share": 0.94
+        },
+        {
+          "effect": "other change",
+          "share": 0.06
+        }
+      ]
+    }
+  },
+  "common_errors": [
+    {
+      "error": "TypeError: list indices must be integers or slices, not str",
+      "count": 2
+    },
+    {
+      "error": "ValueError: ACTION6 is not available; available: ACTION1, ACTION2, ACTION3, ACTION4",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: f-string: unmatched ')'",
+      "count": 1
+    },
+    {
+      "error": "TypeError: 'NoneType' object is not subscriptable",
+      "count": 1
+    }
+  ],
+  "excerpts": {
+    "best_episode": [
+      {
+        "turn": 40,
+        "reply": "Let me analyze the situation:\n\n**Observation:**\n- Player is at rows 61-62, cols 39-54 (lime bar)\n- Maroon items at:\n  - Top: rows 11-13, cols 35-37\n  - Mid: rows 27-29, cols 19-23\n  - Lower-left: rows 55-60, cols 3-8\n- Green wall (id=0) at rows 8-49, cols 14-53 - this is a large green area blocking upward movement\n- I've been moving up but the green wall is in the way\n\n**Key insight:** The green area (id=0, size=892) spans rows 8-49, cols 14-53. This is a massive green wall. The player is at cols 39-54, which overlaps with this wall. I need to find a way around it.\n\nLooking at the green wall bbox: rows 8-49, cols 14-53. The player is at cols 39-54. So the wall blocks cols 14-53. The player's right edge is at col 54, which is just past the wall's right edge (col 53). \n\nWait - the wall goes to col 53, and the player is at cols 39-54. So the player's rightmost column (54) is just outside the wall. But the player is 16 cells wide (cols 39-54), so most of it is inside the wall's column range.\n\nI need to move RIGHT to get past the wall (col 53), then move up, then come back left. Or move LEFT to get past col 14.\n\nActually, let me reconsider. The green wall is at cols 14-53. If I move right to get to col 54+, I can go up. But the player is 16 cells wide. If the player's left edge is at col 54, the right edge would be at col 69, which is off-grid.\n\nLet me think about this differently. ",
+        "actions": [],
+        "error": null,
+        "stdout": "Green wall gaps (rows 8-49, cols 14-53):\n  Row 9: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 10: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 11: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 12: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 13: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 14: gaps at cols [33, 34, 35, 36, 37, 38, 39]\n  Row 15: gaps at cols [33, 34, 35, 36, 37, 38, "
+      },
+      {
+        "turn": 41,
+        "reply": "Let me analyze the situation:\n\n**Observation:**\n- Player (lime) is at rows 61-62, cols 39-54\n- I've been moving left (ACTION3) and up (ACTION1)\n- The green wall has gaps at specific locations\n- Maroon items are at: top (rows 11-13, cols 35-37), mid (rows 27-29, cols 19-23), lower-left (rows 55-60, cols 3-8)\n\n**Key insight from turn 39:** When I moved up (ACTION1), the maroon items at rows 27-29, cols 19-23 seemed to change (15x 3->9, 15x 9->3). This suggests the maroon items might be moving or the player is interacting with them.\n\nWait, looking more carefully at turn 39's ACTION1 results:\n- First ACTION1: 52 cells changed in rows40-62,cols19-34 (15x 3->9, 15x 9->3, 10x 3->12)\n- This looks like the player moved up and the maroon items at rows 27-29, cols 19-23 are being affected\n\nActually, I think the maroon items are static and the player is moving. The \"3->9\" and \"9->3\" changes suggest the player (lime=11) is moving through areas where maroon (9) and green (3) are.\n\nLet me check: the player is at rows 61-62, cols 39-54. The nearest maroon is at rows 55-60, cols 3-8 (lower-left). I need to move left and up to reach it.\n\nBut wait - I only have 1 action left (199/200 used). Let me use it wisely.\n\nThe lower-left maroon is at rows 55-60, cols 3-8. Player is at rows 61-62, cols 39-54. I need to move left about 31-51 cells and up about 1-6 cells.\n\nWith only 1 action, I should move le",
+        "actions": [
+          "ACTION3 -> 52 cells changed in rows25-62,cols14-39 (15x 3->9, 15x 9->3, 10x 3->12)"
+        ],
+        "error": null,
+        "stdout": "Result: {'action': 'ACTION3', 'n_changed': 52, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'game_over': False, 'effect': '52 cells changed in rows25-62,cols14-39 (15x 3->9, 15x 9->3, 10x 3->12)'}\nStatus: {'actions_used': 200, 'actions_left': 0, 'turn': 41, 'turn_actions_left': 5, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'available_actions': [1, 2, 3, 4], 'resets': 1}\nPlayer position: {'"
+      }
+    ],
+    "worst_episode": [
+      {
+        "turn": 76,
+        "reply": "Let me analyze the situation:\n\n**Observation:**\n- Player (lime) is at rows 61-62, cols 23-54 (wide bar)\n- Maroon items at: rows 11-13 (cols 35-37), rows 17-19 (cols 34-38), rows 55-60 (cols 3-8), rows 59-60 (cols 7-8)\n- I've been moving up with ACTION1 but it seems to be oscillating (green/maroon swapping)\n- Only 2 actions left after this turn (198/200 used, 6 available this turn)\n\n**Problem:** I'm stuck at the bottom. The player is a wide bar (cols 23-54) and I need to get to the maroon items. The ACTION1 moves seem to be causing oscillation rather than actual upward movement.\n\n**Key insight:** The player is at rows 61-62. The nearest maroon items are at rows 55-60 (cols 3-8). I need to move LEFT to align with those items, then UP.\n\nBut wait - I only have 2 actions left. Let me think about what's most useful.\n\nActually, looking more carefully: I have 6 actions available this turn, and 198/200 used. So I have 2 actions remaining total. Let me use them wisely.\n\nThe maroon at rows 55-60, cols 3-8 is closest. Player is at cols 23-54. I need to move left significantly. But each ACTION3 moves 5 cells left.\n\nLet me try ACTION3 (left) to move toward the maroon items at cols 3-8.\n\n```python\n# Check current state and try to move left toward maroon items\np = player_position()\nprint(f\"Player: {p}\")\n\nitems = collect_items()\nprint(f\"Items: {items}\")\n\n# Try moving left toward maroon at cols ",
+        "actions": [
+          "ACTION3 -> 2 cells changed in rows61-62,cols23-23 (2x 11->3)"
+        ],
+        "error": null,
+        "stdout": "Player: {'row_min': 61, 'row_max': 62, 'col_min': 23, 'col_max': 54, 'centroid': [61.5, 38.5]}\nItems: [[(11, 35), (11, 36), (11, 37), (12, 37), (13, 35), (13, 37)], [(17, 34), (17, 35), (17, 36), (17, 37), (18, 34), (18, 35), (18, 36), (18, 37), (19, 34), (19, 35), (19, 36), (19, 37)], [(17, 38), (18, 38), (19, 38)], [(55, 3), (55, 4), (55, 5), (55, 6), (56, 3), (56, 4), (56, 5), (56, 6), (57, 3),"
+      },
+      {
+        "turn": 77,
+        "reply": "Let me analyze the situation:\n\n**OBSERVE:** Player is at rows 61-62, cols 24-54 (centroid 61.5, 39.0). I have only 2 actions left (199/200 used). Maroon items are at:\n- Rows 11-13, cols 35-37 (top area)\n- Rows 17-19, cols 34-38 (middle area)  \n- Rows 55-60, cols 3-8 (bottom-left area)\n\n**CHECK:** The player is at the bottom (rows 61-62). The nearest maroon items are at rows 55-60, cols 3-8. I need to move left and up to reach them.\n\n**HYPOTHESISE:** With only 2 actions left, I can't reach the maroon items at rows 55-60 (need to move up ~5-6 rows and left ~20 cols). Each action moves 5 cells. I'm stuck.\n\n**PLAN:** With 2 actions remaining, I should try to make the most progress. Let me try ACTION1 (up) to move toward the maroon items at rows 55-60.\n\n```python\n# Only 2 actions left. Try to move up toward maroon items at rows 55-60\nresult1 = action(1)  # Move up 5 cells\nprint(f\"ACTION1: {result1['n_changed']} cells changed\")\n\n# Check player position\npp = player_position()\nprint(f\"Player after ACTION1: {pp}\")\n\n# Try one more action - move left toward cols 3-8\nresult2 = action(3)  # Move left 5 cells\nprint(f\"ACTION3: {result2['n_changed']} cells changed\")\n\npp2 = player_position()\nprint(f\"Player after ACTION3: {pp2}\")\n\n# Check if we collected any maroon\nitems = collect_items()\nprint(f\"Remaining maroon items: {items}\")\n\nnotes = \"Turn 77: Used last 2 actions (ACTION1 up, ACTION3 left).",
+        "actions": [
+          "ACTION1 -> no change"
+        ],
+        "error": null,
+        "stdout": "ACTION1: 0 cells changed\nPlayer after ACTION1: {'row_min': 61, 'row_max': 62, 'col_min': 24, 'col_max': 54, 'centroid': [61.5, 39.0]}\n"
+      }
+    ]
+  },
+  "history": [
+    {
+      "version": "v0",
+      "parent": null,
+      "round": 0,
+      "score_mean": 0.3333,
+      "score_worst": 0.0877,
+      "clear_rate": 0.0,
+      "decision": "baseline",
+      "edits": [],
+      "dropped_at_validate": []
+    },
+    {
+      "version": "v1",
+      "parent": "v0",
+      "round": 1,
+      "score_mean": 0.4035,
+      "score_worst": 0.2632,
+      "clear_rate": 0.0,
+      "decision": "accepted",
+      "edits": [
+        {
+          "source": "meta",
+          "what": "add skill collect_items",
+          "rationale": "The player needs to know where the maroon collectibles are to plan an efficient route. This skill groups nearby maroon cells so the player can target them."
+        },
+        {
+          "source": "meta",
+          "what": "add skill player_position",
+          "rationale": "The player keeps getting confused about its own position. This skill gives a clear, consistent way to find where the player is."
+        },
+        {
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player is confused about the game dynamics and keeps wasting actions. This prompt clearly states what has been established and gives a clear strategy."
+        }
+      ],
+      "dropped_at_validate": []
+    },
+    {
+      "version": "v2",
+      "parent": "v1",
+      "round": 2,
+      "score_mean": 0.4737,
+      "score_worst": 0.4737,
+      "clear_rate": 0.0,
+      "decision": "accepted",
+      "edits": [
+        {
+          "source": "rule",
+          "what": "delete skill bfs_to_target",
+          "rationale": "never called in 6 evaluated episodes"
+        },
+        {
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player's current strategy is flawed because it tries to reach the bottom-left maroon cluster by moving left, but this cluster is still 1-6 rows above the player. The player needs to move up first "
+        },
+        {
+          "source": "meta",
+          "what": "add skill plan_route",
+          "rationale": "This skill helps the player plan an efficient route by first moving up/down to align with the maroon items' rows, then moving horizontally to collect them. It addresses the player's current flaw of wa"
+        }
+      ],
+      "dropped_at_validate": []
+    },
+    {
+      "version": "v3",
+      "parent": "v2",
+      "round": 3,
+      "score_mean": 0.462,
+      "score_worst": 0.4386,
+      "clear_rate": 0.0,
+      "decision": "rejected",
+      "edits": [
+        {
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player is confused about the movement mechanics and is wasting actions. The 'knowledge' prompt incorrectly states that actions move 5 cells, which is not supported by the action effects data. The "
+        }
+      ],
+      "dropped_at_validate": [
+        {
+          "what": "edit skill plan_route",
+          "why": "edited skill raises where the parent did not: episode 0 turn 0"
+        }
+      ]
+    }
+  ],
+  "recent_rejected_children": [
+    {
+      "version": "v3",
+      "score_mean": 0.462,
+      "gate": {
+        "gain": -0.0117,
+        "drop": 0.0351,
+        "delta": 0.1,
+        "decision": "rejected",
+        "reason": "no dev gain (-0.0117)",
+        "compared_to": "v2"
+      },
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4386,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 56,
+          "turns_with_no_action": 13,
+          "cell_errors": 6,
+          "parse_failures": 0,
+          "action_counts": {
+            "ACTION1": 22,
+            "ACTION2": 6,
+            "ACTION3": 162,
+            "ACTION4": 10
+          },
+          "action_sequence": "A2x1 A1x1 A3x1 A4x1 A1x2 A2x1 A3x1 A4x1 A1x3 A2x1 A3x1 A4x1 A3x1 A4x1 A1x6 A2x1 A3x1 A4x1 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A4x1 A3x24 A4x2 A3x30 A1x2 A3x4 A1x2 A3x10 A1x1 A3x56 A1x1 A3x30",
+          "final_notes": "Player: rows 61-62, wide bar. ACTION1=up, ACTION2=down, ACTION3=LEFT, ACTION4=RIGHT.\nMaroon items: rows55-60/cols3-8 (size20), rows47-49/cols19-23 (size15), rows11-13/cols35-37 (size5), rows59-60/cols7-8 (size4).\nCyan obstacles at rows61-62, cols56-57,59-60,62-63 - AVOID!\nGrey barrier at row 60 spans cols 12-63. Gaps at cols 0,3,4,7,8,11.\nStrategy: Move LEFT to col 11, then UP through gap, then collect maroon items.\nTurn 55: Moved left 6 more. Checking new position."
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 38,
+          "turns_with_no_action": 3,
+          "cell_errors": 1,
+          "parse_failures": 0,
+          "action_counts": {
+            "ACTION1": 19,
+            "ACTION3": 181
+          },
+          "action_sequence": "A1x7 A3x156 A1x6 A3x24 A1x6 A3x1",
+          "final_notes": "DYNAMICS:\n- Player: lime bar (2 rows), moves 1 cell per action\n- ACTION1=up, ACTION2=down, ACTION3=left, ACTION4=right\n- Maroon(9)=collectibles, Cyan(8)=deadly, Green(3)=trail\n- Goal: collect all maroon items\n\nCURRENT SITUATION:\n- Player was at rows 61-62, cols 32-54\n- Moving up to get above grey wall at row 60\n- Grey wall at row 60 spans cols 12-63, gaps at cols 0-11\n\nMAROON ITEMS:\n- rows 59-60, cols 7-8 (size 4)\n- rows 55-60, cols 3-8 (size 20)\n- rows 47-49, cols 19-23 (size 15)\n- rows 11-13, cols 35-37 (size 5)\n\nSTRATEGY: Move up above grey wall, then navigate to nearest maroon items"
+        },
+        {
+          "episode": 2,
+          "score": 0.4737,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 59,
+          "turns_with_no_action": 6,
+          "cell_errors": 1,
+          "parse_failures": 0,
+          "action_counts": {
+            "ACTION1": 79,
+            "ACTION2": 13,
+            "ACTION3": 96,
+            "ACTION4": 12
+          },
+          "action_sequence": "A3x23 A1x14 A3x1 A2x1 A1x1 A4x1 A2x1 A4x1 A2x2 A3x1 A4x1 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A3x1 A4x1 A2x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x18 A2x1 A3x1 A4x1 A1x1 A3x1 A2x1 A4x1 A2x1 A4x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A3x2 A4x1 A1x1 A2x1 A1x7 A3x1 A4x1 A3x6 A1x1 A3x6 A1x3 A3x6 A1x17 A3x24 A1x3 A3x4 A1x2 A3x4 A1x2 A3x4 A1x1 A3x6",
+          "final_notes": "Player: 2-row lime bar. Actions: 1=up, 2=down, 3=left, 4=right.\nMaroon items: rows 55-60 cols 3-8 (size 20), rows 17-19 cols 34-38 (size 15), rows 11-13 cols 35-37 (size 5), rows 59-60 cols 7-8 (size 4).\nStrategy: Move up to rows 59-60, then left to cols 7-8 to collect nearest maroon items.\nActions left: ~1 (used 6 this turn)"
+        }
+      ]
+    }
+  ]
+}

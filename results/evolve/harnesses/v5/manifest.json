@@ -1,0 +1,40 @@
+{
+  "version": "v5",
+  "parent": "v2",
+  "round": 5,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "collect_items",
+    "find_gaps",
+    "grid_region",
+    "obstacle_map",
+    "plan_route",
+    "player_detector",
+    "player_position"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r5-e1",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The previous prompt incorrectly stated that actions move 5 cells and that green is a static wall. The evidence shows actions move 1 cell and that green causes 'other change' effects (swaps). This correction is crucial for the player to understand that it must navigate through gaps in the green structure rather than trying to push through it or move around it at the bottom."
+    },
+    {
+      "id": "r5-e2",
+      "source": "meta",
+      "what": "edit skill plan_route",
+      "rationale": "The previous plan_route skill assumed 5-cell moves, which is incorrect. This edit corrects it to 1-cell moves, ensuring the planned route is accurate and the player doesn't overshoot or undershoot targets."
+    },
+    {
+      "id": "r5-e3",
+      "source": "meta",
+      "what": "add skill find_gaps",
+      "rationale": "The player is struggling to navigate the green structure. This skill helps the player identify gaps in the green cells, which are the only paths through the structure to reach the maroon items."
+    }
+  ]
+}

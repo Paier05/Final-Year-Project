@@ -1,0 +1,1245 @@
+{
+  "experiment": "issue #9: evo-harness on ls20 level 1",
+  "created": "2026-11-01T18:27:26",
+  "config": {
+    "game": "ls20-9607627b",
+    "episodes_per_round": 3,
+    "budget": {
+      "max_actions": 200,
+      "actions_per_turn": 6,
+      "max_turns": 200,
+      "wall_clock_s": 5400,
+      "max_tokens_per_episode": 1200000,
+      "max_resets": 10,
+      "cell_time_limit_s": 10
+    },
+    "gate": {
+      "delta": 0.1
+    },
+    "rules": {
+      "promote_min_episodes": 2,
+      "promote_min_calls": 6,
+      "max_promotions": 3,
+      "delete_min_episodes": 6
+    },
+    "validate": {
+      "max_system_chars": 14000,
+      "max_prompt_chars": 3000,
+      "min_steps": 3,
+      "max_steps": 10,
+      "max_step_chars": 400,
+      "max_skill_lines": 80,
+      "test_state_fractions": [
+        0.0,
+        0.5,
+        0.9
+      ]
+    },
+    "player_model": "Qwen/Qwen3.8-27B-FP8",
+    "meta_model": "Qwen/Qwen3.8-27B-FP8",
+    "meta_enabled": true
+  },
+  "versions": [
+    {
+      "version": "v0",
+      "parent": null,
+      "round": 0,
+      "harness_path": "results/evolve/harnesses/v0",
+      "evaluated_at": "2026-11-01T18:57:47",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.0877,
+          "progress": 0.1754,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 23.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 59,
+          "resets_used": 1,
+          "tokens_in": 250534,
+          "tokens_out": 41708,
+          "wall_time_s": 1345.2,
+          "parse_failures": 1,
+          "cell_errors": 4,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_0/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_0/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 69,
+          "resets_used": 1,
+          "tokens_in": 279658,
+          "tokens_out": 50253,
+          "wall_time_s": 1565.5,
+          "parse_failures": 0,
+          "cell_errors": 0,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_0/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_0/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.4386,
+          "progress": 0.8772,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 3.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 82,
+          "resets_used": 1,
+          "tokens_in": 331675,
+          "tokens_out": 60682,
+          "wall_time_s": 1815.4,
+          "parse_failures": 1,
+          "cell_errors": 1,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_0/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_0/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 1014510,
+      "skill_usage": {
+        "player_detector": {
+          "calls": 5,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "obstacle_map": {
+          "calls": 1,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "bfs_to_target": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "e752fbb21ac7"
+        },
+        "grid_region": {
+          "calls": 27,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        }
+      },
+      "score_mean": 0.3333,
+      "score_worst": 0.0877,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 9.5,
+      "edits_accepted": [],
+      "edits_dropped": [],
+      "accepted": true,
+      "gate": {
+        "decision": "baseline",
+        "reason": "v0 is the starting parent"
+      }
+    },
+    {
+      "version": "v1",
+      "parent": "v0",
+      "round": 1,
+      "harness_path": "results/evolve/harnesses/v1",
+      "evaluated_at": "2026-11-01T19:22:56",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 61,
+          "resets_used": 1,
+          "tokens_in": 261772,
+          "tokens_out": 42124,
+          "wall_time_s": 1377.1,
+          "parse_failures": 0,
+          "cell_errors": 0,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_1/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_1/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 66,
+          "resets_used": 1,
+          "tokens_in": 286115,
+          "tokens_out": 44907,
+          "wall_time_s": 1439.8,
+          "parse_failures": 0,
+          "cell_errors": 0,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_1/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_1/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.2632,
+          "progress": 0.5263,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 13.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 53,
+          "resets_used": 1,
+          "tokens_in": 232693,
+          "tokens_out": 34424,
+          "wall_time_s": 1170.7,
+          "parse_failures": 0,
+          "cell_errors": 2,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_1/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_1/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 902035,
+      "skill_usage": {
+        "bfs_to_target": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "e752fbb21ac7"
+        },
+        "grid_region": {
+          "calls": 15,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "obstacle_map": {
+          "calls": 1,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "player_detector": {
+          "calls": 1,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "collect_items": {
+          "calls": 156,
+          "errors": 0,
+          "source_hash": "8e5cacf91b7a"
+        },
+        "player_position": {
+          "calls": 307,
+          "errors": 0,
+          "source_hash": "af2da1a9761d"
+        }
+      },
+      "score_mean": 0.4035,
+      "score_worst": 0.2632,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 5.5,
+      "edits_accepted": [
+        {
+          "id": "r1-e1",
+          "source": "meta",
+          "what": "add skill collect_items",
+          "rationale": "The player needs to know where the maroon collectibles are to plan an efficient route. This skill groups nearby maroon cells so the player can target them.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7407 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 5 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        },
+        {
+          "id": "r1-e2",
+          "source": "meta",
+          "what": "add skill player_position",
+          "rationale": "The player keeps getting confused about its own position. This skill gives a clear, consistent way to find where the player is.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7496 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        },
+        {
+          "id": "r1-e3",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player is confused about the game dynamics and keeps wasting actions. This prompt clearly states what has been established and gives a clear strategy.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7721 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt"
+        }
+      ],
+      "edits_dropped": [],
+      "gate": {
+        "gain": 0.0702,
+        "drop": -0.1755,
+        "delta": 0.1,
+        "decision": "accepted",
+        "reason": "gain +0.0702 > 0 and drop -0.1755 <= 0.1",
+        "compared_to": "v0"
+      },
+      "accepted": true,
+      "meta_analysis": [
+        "The player is wasting its entire 200-action budget on movement (ACTION2/3/4) without ever collecting the maroon items or reaching the goal. The evidence shows the player is a 2-row lime bar at the bottom (rows 61-62) that moves 1 cell per action, leaving a green trail. The player is confused about its position and the goal, spending 59-82 turns just moving around. The key issue is that the player doesn't have a clear strategy for collecting items and reaching the goal efficiently."
+      ]
+    },
+    {
+      "version": "v2",
+      "parent": "v1",
+      "round": 2,
+      "harness_path": "results/evolve/harnesses/v2",
+      "evaluated_at": "2026-11-01T19:57:53",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 78,
+          "resets_used": 1,
+          "tokens_in": 347157,
+          "tokens_out": 61453,
+          "wall_time_s": 1851.8,
+          "parse_failures": 0,
+          "cell_errors": 2,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_2/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_2/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 84,
+          "resets_used": 1,
+          "tokens_in": 373445,
+          "tokens_out": 69313,
+          "wall_time_s": 2037.4,
+          "parse_failures": 0,
+          "cell_errors": 3,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_2/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_2/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 42,
+          "resets_used": 1,
+          "tokens_in": 189401,
+          "tokens_out": 28261,
+          "wall_time_s": 980.1,
+          "parse_failures": 1,
+          "cell_errors": 0,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_2/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_2/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 1069030,
+      "skill_usage": {
+        "collect_items": {
+          "calls": 134,
+          "errors": 0,
+          "source_hash": "8e5cacf91b7a"
+        },
+        "grid_region": {
+          "calls": 55,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "obstacle_map": {
+          "calls": 4,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "player_detector": {
+          "calls": 1,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "player_position": {
+          "calls": 428,
+          "errors": 0,
+          "source_hash": "af2da1a9761d"
+        },
+        "plan_route": {
+          "calls": 8,
+          "errors": 0,
+          "source_hash": "7cd447ba0d41"
+        }
+      },
+      "score_mean": 0.4737,
+      "score_worst": 0.4737,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 1.5,
+      "edits_accepted": [
+        {
+          "id": "r2-e1",
+          "source": "rule",
+          "what": "delete skill bfs_to_target",
+          "rationale": "never called in 6 evaluated episodes",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7430 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 5 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "delete",
+          "target": "skill"
+        },
+        {
+          "id": "r2-e2",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player's current strategy is flawed because it tries to reach the bottom-left maroon cluster by moving left, but this cluster is still 1-6 rows above the player. The player needs to move up first to align with the maroon items' rows, then move horizontally to collect them. This edit explicitly states that moving left/right at rows 61-62 is useless and that the player must move up first.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8068 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt"
+        },
+        {
+          "id": "r2-e3",
+          "source": "meta",
+          "what": "add skill plan_route",
+          "rationale": "This skill helps the player plan an efficient route by first moving up/down to align with the maroon items' rows, then moving horizontally to collect them. It addresses the player's current flaw of wasting actions moving left/right without first moving up.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8306 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        }
+      ],
+      "edits_dropped": [],
+      "gate": {
+        "gain": 0.0702,
+        "drop": -0.2105,
+        "delta": 0.1,
+        "decision": "accepted",
+        "reason": "gain +0.0702 > 0 and drop -0.2105 <= 0.1",
+        "compared_to": "v1"
+      },
+      "accepted": true,
+      "meta_analysis": [
+        "The player is stuck in a loop of moving left (ACTION3) without ever moving up (ACTION1) to reach the maroon items. In all three episodes, the player spent the majority of its 200 actions on ACTION3 (159, 133, and 183 respectively) while barely using ACTION1 (26, 19, and 9). The maroon items are located at rows 11-13, 27-29, and 47-49, all significantly above the player's starting position at rows 61-62. The player's strategy is flawed because it tries to reach the bottom-left maroon cluster (rows 55-60) by moving left, but this cluster is still 1-6 rows above the player. The player needs to move up first to align with the maroon items' rows, then move horizontally to collect them."
+      ]
+    },
+    {
+      "version": "v3",
+      "parent": "v2",
+      "round": 3,
+      "harness_path": "results/evolve/harnesses/v3",
+      "evaluated_at": "2026-11-01T20:24:32",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4386,
+          "progress": 0.8772,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 3.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 56,
+          "resets_used": 1,
+          "tokens_in": 246785,
+          "tokens_out": 46741,
+          "wall_time_s": 1458.8,
+          "parse_failures": 1,
+          "cell_errors": 6,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_3/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_3/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 38,
+          "resets_used": 1,
+          "tokens_in": 171637,
+          "tokens_out": 28778,
+          "wall_time_s": 987.7,
+          "parse_failures": 0,
+          "cell_errors": 1,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_3/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_3/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 59,
+          "resets_used": 1,
+          "tokens_in": 264862,
+          "tokens_out": 50790,
+          "wall_time_s": 1551.8,
+          "parse_failures": 0,
+          "cell_errors": 1,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_3/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_3/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 809593,
+      "skill_usage": {
+        "collect_items": {
+          "calls": 88,
+          "errors": 0,
+          "source_hash": "8e5cacf91b7a"
+        },
+        "grid_region": {
+          "calls": 27,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "obstacle_map": {
+          "calls": 3,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "plan_route": {
+          "calls": 8,
+          "errors": 0,
+          "source_hash": "7cd447ba0d41"
+        },
+        "player_detector": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "player_position": {
+          "calls": 340,
+          "errors": 0,
+          "source_hash": "af2da1a9761d"
+        }
+      },
+      "score_mean": 0.462,
+      "score_worst": 0.4386,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 2.17,
+      "edits_accepted": [
+        {
+          "id": "r3-e1",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The player is confused about the movement mechanics and is wasting actions. The 'knowledge' prompt incorrectly states that actions move 5 cells, which is not supported by the action effects data. The player is also not accounting for the fact that it is a 2-row bar, which affects its position and movement. This edit corrects the movement mechanics and provides a clearer strategy.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7821 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt"
+        }
+      ],
+      "edits_dropped": [
+        {
+          "id": "r3-e2",
+          "source": "meta",
+          "what": "edit skill plan_route",
+          "stage": "replay",
+          "reason": "edited skill raises where the parent did not: episode 0 turn 0",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7821 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "edited skill raises where the parent did not: episode 0 turn 0"
+            }
+          ],
+          "op": "edit",
+          "target": "skill"
+        }
+      ],
+      "gate": {
+        "gain": -0.0117,
+        "drop": 0.0351,
+        "delta": 0.1,
+        "decision": "rejected",
+        "reason": "no dev gain (-0.0117)",
+        "compared_to": "v2"
+      },
+      "accepted": false,
+      "meta_analysis": [
+        "The player is stuck in a loop of oscillating between ACTION1 (up) and ACTION3 (left) without making net progress. The 'knowledge' prompt incorrectly states that ACTION1 moves 5 cells up, but the action effects show it often results in 'other change' (oscillation) or no change, and the player is frequently at the bottom edge where ACTION1 has no effect. The player is also wasting actions moving left/right when it should be focusing on vertical movement to reach the maroon items. The 'plan_route' skill is flawed because it assumes simple 5-cell moves and doesn't account for the player's current position relative to the maroon items or the fact that the player is a 2-row bar."
+      ]
+    },
+    {
+      "version": "v4",
+      "parent": "v2",
+      "round": 4,
+      "harness_path": "results/evolve/harnesses/v4",
+      "evaluated_at": "2026-11-01T22:53:08",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_turns",
+          "actions_used": 176,
+          "turns": 200,
+          "resets_used": 4,
+          "tokens_in": 868159,
+          "tokens_out": 174942,
+          "wall_time_s": 5348.5,
+          "parse_failures": 4,
+          "cell_errors": 15,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_4/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_4/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_wall_clock",
+          "actions_used": 117,
+          "turns": 182,
+          "resets_used": 1,
+          "tokens_in": 815820,
+          "tokens_out": 176684,
+          "wall_time_s": 5408.5,
+          "parse_failures": 1,
+          "cell_errors": 13,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_4/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_4/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_turns",
+          "actions_used": 149,
+          "turns": 200,
+          "resets_used": 2,
+          "tokens_in": 843146,
+          "tokens_out": 168387,
+          "wall_time_s": 5217.9,
+          "parse_failures": 3,
+          "cell_errors": 9,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_4/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_4/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 3047138,
+      "skill_usage": {
+        "collect_items": {
+          "calls": 18,
+          "errors": 0,
+          "source_hash": "8e5cacf91b7a"
+        },
+        "grid_region": {
+          "calls": 422,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "obstacle_map": {
+          "calls": 8,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "plan_route": {
+          "calls": 3,
+          "errors": 0,
+          "source_hash": "7cd447ba0d41"
+        },
+        "player_detector": {
+          "calls": 3,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "player_position": {
+          "calls": 1169,
+          "errors": 0,
+          "source_hash": "af2da1a9761d"
+        },
+        "verify_move": {
+          "calls": 501,
+          "errors": 0,
+          "source_hash": "39c8ad823466"
+        }
+      },
+      "score_mean": 0.4737,
+      "score_worst": 0.4737,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 1.5,
+      "edits_accepted": [
+        {
+          "id": "r4-e1",
+          "source": "meta",
+          "what": "add skill verify_move",
+          "rationale": "The player is repeating actions that don't work (e.g., ACTION3 when blocked). This skill forces the player to check if the action actually moved the player before deciding to repeat it or change strategy. It addresses the 'oscillation' problem seen in the episodes.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8617 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 7 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        },
+        {
+          "id": "r4-e2",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The previous knowledge prompt was too vague about obstacles and encouraged blind movement. This version explicitly states that actions can be blocked and instructs the player to use verify_move() and check for walls. It also corrects the movement distance to 1 cell per action, which is supported by the 'rigid move' data (drow=5 is likely a misinterpretation of the grid scale or a specific game mechanic, but the 'other change' dominance suggests blocking is the main issue).",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7611 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt"
+        }
+      ],
+      "edits_dropped": [
+        {
+          "id": "r4-e3",
+          "source": "meta",
+          "what": "delete skill plan_route",
+          "stage": "replay",
+          "reason": "behaviour changed: episode 0 diverges at turn 0",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7373 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "behaviour changed: episode 0 diverges at turn 0"
+            }
+          ],
+          "op": "delete",
+          "target": "skill"
+        }
+      ],
+      "gate": {
+        "gain": 0.0,
+        "drop": 0.0,
+        "delta": 0.1,
+        "decision": "rejected",
+        "reason": "no dev gain (+0.0000)",
+        "compared_to": "v2"
+      },
+      "accepted": false,
+      "meta_analysis": [
+        "The player is failing because it is trapped in a local loop, oscillating between ACTION1 (up) and ACTION3 (left) without making net progress. The action effects data shows that ACTION3 is 84% 'other change' (likely hitting a wall or converting to trail) and ACTION1 is 57% 'other change'. The player is not checking if it is actually moving before repeating the action. Additionally, the `plan_route` skill is flawed: it assumes a grid of 5x5 steps and ignores obstacles, leading to invalid plans that the player then tries to execute blindly. The player needs a skill that verifies movement and a prompt that explicitly forbids repeating an action that results in 'no change' or 'other change' without a change in strategy."
+      ]
+    },
+    {
+      "version": "v5",
+      "parent": "v2",
+      "round": 5,
+      "harness_path": "results/evolve/harnesses/v5",
+      "evaluated_at": "2026-11-01T23:25:04",
+      "episodes": [
+        {
+          "episode": 0,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 58,
+          "resets_used": 1,
+          "tokens_in": 265727,
+          "tokens_out": 43763,
+          "wall_time_s": 1406.4,
+          "parse_failures": 0,
+          "cell_errors": 4,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_5/episode_0.jsonl",
+          "frames": "results/evolve/frames/round_5/episode_0.npz"
+        },
+        {
+          "episode": 1,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 73,
+          "resets_used": 1,
+          "tokens_in": 334149,
+          "tokens_out": 62436,
+          "wall_time_s": 1849.1,
+          "parse_failures": 0,
+          "cell_errors": 4,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_5/episode_1.jsonl",
+          "frames": "results/evolve/frames/round_5/episode_1.npz"
+        },
+        {
+          "episode": 2,
+          "score": 0.4737,
+          "progress": 0.9474,
+          "solved": false,
+          "steps_to_clear": null,
+          "closest_approach": 1.5,
+          "start_distance": 28.5,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 47,
+          "resets_used": 1,
+          "tokens_in": 214609,
+          "tokens_out": 34257,
+          "wall_time_s": 1165.6,
+          "parse_failures": 0,
+          "cell_errors": 2,
+          "timeouts": 0,
+          "trajectory": "results/evolve/trajectories/round_5/episode_2.jsonl",
+          "frames": "results/evolve/frames/round_5/episode_2.npz"
+        }
+      ],
+      "n_episodes": 3,
+      "tokens": 954941,
+      "skill_usage": {
+        "collect_items": {
+          "calls": 23,
+          "errors": 0,
+          "source_hash": "8e5cacf91b7a"
+        },
+        "grid_region": {
+          "calls": 128,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "obstacle_map": {
+          "calls": 2,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "plan_route": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "c6a17784df59"
+        },
+        "player_detector": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "player_position": {
+          "calls": 175,
+          "errors": 0,
+          "source_hash": "af2da1a9761d"
+        },
+        "find_gaps": {
+          "calls": 29,
+          "errors": 1,
+          "source_hash": "e0ca748b89cd"
+        }
+      },
+      "score_mean": 0.4737,
+      "score_worst": 0.4737,
+      "score_best": 0.4737,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps_to_clear": null,
+      "mean_closest_approach": 1.5,
+      "edits_accepted": [
+        {
+          "id": "r5-e1",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The previous prompt incorrectly stated that actions move 5 cells and that green is a static wall. The evidence shows actions move 1 cell and that green causes 'other change' effects (swaps). This correction is crucial for the player to understand that it must navigate through gaps in the green structure rather than trying to push through it or move around it at the bottom.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7471 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt"
+        },
+        {
+          "id": "r5-e2",
+          "source": "meta",
+          "what": "edit skill plan_route",
+          "rationale": "The previous plan_route skill assumed 5-cell moves, which is incorrect. This edit corrects it to 1-cell moves, ensuring the planned route is accurate and the player doesn't overshoot or undershoot targets.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7471 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 8 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "edit",
+          "target": "skill"
+        },
+        {
+          "id": "r5-e3",
+          "source": "meta",
+          "what": "add skill find_gaps",
+          "rationale": "The player is struggling to navigate the green structure. This skill helps the player identify gaps in the green cells, which are the only paths through the structure to reach the maroon items.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7724 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 7 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 3 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        }
+      ],
+      "edits_dropped": [],
+      "gate": {
+        "gain": 0.0,
+        "drop": 0.0,
+        "delta": 0.1,
+        "decision": "rejected",
+        "reason": "no dev gain (+0.0000)",
+        "compared_to": "v2"
+      },
+      "accepted": false,
+      "meta_analysis": [
+        "The player is failing because it misunderstands the movement mechanics and the nature of the obstacles. The action effects data shows that ACTION1 (up) and ACTION3 (left) frequently result in 'other change' (swapping colors) rather than rigid movement, indicating the player is interacting with or being blocked by the green 'wall' (which is actually a trail or interactive element). The player wastes the entire 200-action budget oscillating or moving horizontally at the bottom (rows 61-62) where there are no items, instead of navigating the vertical gaps in the green structure to reach the maroon items at rows 11-13, 27-29, and 55-60. The current 'knowledge' prompt incorrectly asserts that actions move 5 cells and that the green is a static wall, leading to the player's confusion and inefficient pathing."
+      ]
+    }
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "parent_before": null,
+      "child": "v0",
+      "decision": "baseline",
+      "parent_after": "v0"
+    },
+    {
+      "round": 1,
+      "parent_before": "v0",
+      "child": "v1",
+      "decision": "accepted",
+      "parent_after": "v1"
+    },
+    {
+      "round": 2,
+      "parent_before": "v1",
+      "child": "v2",
+      "decision": "accepted",
+      "parent_after": "v2"
+    },
+    {
+      "round": 3,
+      "parent_before": "v2",
+      "child": "v3",
+      "decision": "rejected",
+      "parent_after": "v2"
+    },
+    {
+      "round": 4,
+      "parent_before": "v2",
+      "child": "v4",
+      "decision": "rejected",
+      "parent_after": "v2"
+    },
+    {
+      "round": 5,
+      "parent_before": "v2",
+      "child": "v5",
+      "decision": "rejected",
+      "parent_after": "v2"
+    }
+  ],
+  "updated": "2026-11-01T23:25:04"
+}
