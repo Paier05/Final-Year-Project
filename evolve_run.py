@@ -19,8 +19,25 @@ import time
 
 import yaml
 
-from harness.model import AbortExperiment
+from harness.model import AbortExperiment, load_api_key
 from evolve import loop
+
+
+def redact(text: str) -> str:
+    """Strip the endpoint URL and key from anything printed (the issue treats
+    both as credentials; harness.model's errors include the URL)."""
+    for name, placeholder in (("QWEN_BASE_URL", "<QWEN_BASE_URL>"), ("QWEN_API_KEY", "<QWEN_API_KEY>")):
+        try:
+            secret = load_api_key(name)
+        except AbortExperiment:
+            continue
+        if secret:
+            text = str(text).replace(secret.rstrip("/"), placeholder)
+    return text
+
+
+def log(message: str) -> None:
+    print(redact(message), flush=True)
 
 
 def load_config(path: str) -> dict:
@@ -32,7 +49,10 @@ def stage_preflight(cfg: dict) -> None:
     for section in ("player", "meta"):
         client = loop.make_client(cfg, section)
         # Print the model id only; the endpoint URL is a credential here.
-        info = client.preflight()
+        try:
+            info = client.preflight()
+        except AbortExperiment as error:
+            raise AbortExperiment(redact(str(error))) from None
         print(f"{section}: {client.model} OK (probe reply {info.get('probe')!r})")
 
 
@@ -63,7 +83,11 @@ def main() -> None:
     cfg = load_config(args.config)
 
     if args.stage == "preflight":
-        stage_preflight(cfg)
+        try:
+            stage_preflight(cfg)
+        except AbortExperiment as error:
+            print(f"*** PREFLIGHT FAILED: {error}", file=sys.stderr)
+            raise SystemExit(2)
         return
     if args.stage == "pilot":
         stage_pilot(cfg, args.root or os.path.join("data", "evolve_pilot"))
@@ -88,15 +112,19 @@ def main() -> None:
     else:
         root = args.root or os.path.join("results", "evolve")
         print("preflight ...")
-        stage_preflight(cfg)
+        try:
+            stage_preflight(cfg)
+        except AbortExperiment as error:
+            print(f"*** PREFLIGHT FAILED: {error}", file=sys.stderr)
+            raise SystemExit(2)
         player_factory = lambda k: loop.make_client(cfg, "player")  # noqa: E731
         meta_factory = (lambda: loop.make_client(cfg, "meta")) if cfg["meta"]["enabled"] else None
 
     started = time.monotonic()
     try:
-        archive = loop.run(cfg, loop.Paths(root), rounds, player_factory, meta_factory)
+        archive = loop.run(cfg, loop.Paths(root), rounds, player_factory, meta_factory, log=log)
     except AbortExperiment as error:
-        print(f"\n*** RUN STOPPED: {error}", file=sys.stderr)
+        print(f"\n*** RUN STOPPED: {redact(str(error))}", file=sys.stderr)
         raise SystemExit(2)
     print(f"\ndone in {(time.monotonic() - started) / 60:.1f} min")
     for entry in archive["versions"]:

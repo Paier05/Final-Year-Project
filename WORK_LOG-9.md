@@ -163,6 +163,31 @@ non-clear.
 - **Next step:** Real pilot: one v0 episode with Qwen3.8-27B, to measure cost and
   see whether it handles code-acting at all.
 
+### 2026-11-01 — Blocked: the model backend is down; figures built meanwhile
+
+- **What I did:** Ran `evolve_run.py --stage preflight`. Started a background probe
+  of `chat/completions` once a minute for up to an hour. Meanwhile built
+  `analysis/evolution.py` (score per round, approach curves per version, movement
+  traces per version) on top of #8's figure code, rendered it from the stub archive
+  and looked at it. Added credential redaction to `evolve_run.py`.
+- **Why:** Nothing can be measured until inference works; the figures and the
+  redaction do not need it.
+- **Result / what I found:**
+  - **Blocker:** the gateway lists `Qwen/Qwen3.8-27B-FP8` and accepts the key, but
+    every chat call returns `500 ... dial tcp 127.0.0.1:1086: connect: connection
+    refused`: the provider's upstream model server is not running. This is the
+    same failure mode #8 hit. #8's preflight hardening caught it in seconds, before
+    any episode could be recorded.
+  - **The endpoint URL was being printed.** `harness.model`'s abort messages embed
+    the base URL, and the issue treats `QWEN_BASE_URL` as a credential. #9's driver
+    now redacts both the URL and the key from everything it prints. Nothing in
+    `results/evolve/` ever contained them.
+  - Figures: the score chart's legend first collided with the "clear ≥ 0.5" line;
+    moved it below the plot. Gate decision is encoded by colour **and** marker
+    shape, with every mean direct-labelled, because the green slot is below 3:1
+    contrast (palette validator WARN, all other checks pass).
+- **Next step:** Wait for the backend; then the pilot.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
