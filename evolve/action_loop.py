@@ -12,6 +12,7 @@ cell can observe is deterministic.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -273,6 +274,11 @@ class SkillCounter:
     calls: dict[str, int] = field(default_factory=dict)
     errors: dict[str, int] = field(default_factory=dict)
     last_error: dict[str, str] = field(default_factory=dict)
+    # (skill, fingerprint of its return value) per call, in call order. This is
+    # what merge-equivalence compares: two skills that leave the actions
+    # unchanged can still return different values, and a cell that only prints
+    # or stores a result would hide that from an action-only comparison.
+    trace: list[tuple[str, str]] = field(default_factory=list)
 
     def snapshot(self) -> tuple[dict[str, int], dict[str, int]]:
         return dict(self.calls), dict(self.errors)
@@ -304,14 +310,35 @@ def _counted(name: str, fn: Callable[..., Any], counter: SkillCounter) -> Callab
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         counter.calls[name] = counter.calls.get(name, 0) + 1
         try:
-            return fn(*args, **kwargs)
+            result = fn(*args, **kwargs)
         except Exception as error:  # TurnOver/timeout are BaseException: not counted
             counter.errors[name] = counter.errors.get(name, 0) + 1
             counter.last_error[name] = f"{type(error).__name__}: {error}"
+            counter.trace.append((name, f"raised {type(error).__name__}"))
             raise
+        counter.trace.append((name, fingerprint(result)))
+        return result
 
     wrapper.skill_name = name  # type: ignore[attr-defined]
     return wrapper
+
+
+def fingerprint(value: Any) -> str:
+    """Order-stable short hash of a skill's return value."""
+    def default(item: Any) -> Any:
+        if isinstance(item, np.ndarray):
+            return {"ndarray": item.tolist(), "shape": list(item.shape)}
+        if isinstance(item, (np.integer, np.floating, np.bool_)):
+            return item.item()
+        if isinstance(item, (set, frozenset)):
+            return sorted(item, key=repr)
+        return repr(item)
+
+    try:
+        text = json.dumps(value, sort_keys=True, default=default)
+    except (TypeError, ValueError):
+        text = repr(value)
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
 
 
 def build_sandbox(
