@@ -206,11 +206,10 @@ class EpisodeAPI:
         return self.grid.copy()
 
     def objects_fn(self, g: Any = None) -> list[dict[str, Any]]:
+        # Keep "id": the observation lists objects as id=N, so the player's code
+        # must be able to read the same field.
         target = self.grid if g is None else np.asarray(g)
-        objs = connected_components(target)
-        for obj in objs:
-            obj.pop("id", None)
-        return objs
+        return connected_components(target)
 
     @staticmethod
     def diff_fn(a: Any, b: Any) -> list[tuple[int, int, int, int]]:

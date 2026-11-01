@@ -41,8 +41,9 @@ SANDBOX API (preloaded; your code runs in a persistent Python namespace)
   nothing.
 - grid() -> numpy int array (rows x cols) of colour indices, current frame.
 - objects(g=None) -> list of connected components of `g` (default: the current
-  frame), background excluded, largest first. Each is {{"colour",
-  "colour_name", "bbox": [r0, c0, r1, c1], "size", "centroid": [r, c]}}.
+  frame), background excluded, largest first. Each is {{"id", "colour",
+  "colour_name", "bbox": [r0, c0, r1, c1], "size", "centroid": [r, c]}};
+  "id" is the same number the observation shows and changes between frames.
 - diff(a, b) -> list of (row, col, old, new) for every cell that differs.
 - status() -> dict: actions_used, actions_left, turn, turn_actions_left, state,
   levels_completed, available_actions, resets.

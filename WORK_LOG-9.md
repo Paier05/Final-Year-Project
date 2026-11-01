@@ -251,6 +251,30 @@ non-clear.
   branch.
 - **Next step:** Still waiting for the model backend.
 
+### 2026-11-01 — Backend back; pilot started
+
+- **What I did:** The user reported the model is up. `--stage preflight` now passes
+  for both roles (`player: Qwen/Qwen3.8-27B-FP8 OK`, `meta: Qwen/Qwen3.8-27B-FP8 OK`).
+  Started the pilot, one real v0 episode written to `data/evolve_pilot/` (gitignored,
+  outside the experiment tree). Also made the pilot's error path redact the endpoint
+  like the main run already does.
+- **Why:** The pilot measures tokens and wall time per episode before 18 episodes
+  are committed to, and shows whether Qwen handles code-acting at all.
+- **Result: the pilot found an API bug, so I stopped it after 2 turns.** Qwen does
+  write code blocks (no parse failures; about 3k tokens in, 300–500 out, 8–12 s
+  per turn). But both cells died with `KeyError: 'id'`. The observation lists
+  objects as `id=N ...` (#8's `describe_grid`), and v0's system prompt talks about
+  ids, but `objects()` removed the `id` field. So the model was told about a field
+  the API didn't give it. Because the error came before its `notes = ...` line,
+  its notes were lost as well.
+- **Fix:** `objects()` now keeps `id`, and the API doc lists it. This is the fixed
+  action loop, not the harness under evolution, so it applies to every version
+  equally. v0's prompts, steps and skills are unchanged, but the rendered system
+  prompt grows by one line of API doc. Checked that `objects()`'s ids equal the
+  observation's ids on the start frame and after 1 and 3 actions. The self-test
+  still passes.
+- **Next step:** Re-run the pilot from scratch (the 2 aborted turns don't count).
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky

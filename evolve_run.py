@@ -90,7 +90,11 @@ def main() -> None:
             raise SystemExit(2)
         return
     if args.stage == "pilot":
-        stage_pilot(cfg, args.root or os.path.join("data", "evolve_pilot"))
+        try:
+            stage_pilot(cfg, args.root or os.path.join("data", "evolve_pilot"))
+        except AbortExperiment as error:
+            print(f"*** PILOT STOPPED: {redact(str(error))}", file=sys.stderr)
+            raise SystemExit(2)
         return
     if args.stage == "figures":
         from analysis.evolution import build_all
