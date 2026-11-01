@@ -133,6 +133,36 @@ non-clear.
     20/20 **and** the skill really ran (15 calls), so the check is not vacuous.
 - **Next step:** Meta harness: Analyze, Propose, Validate, Write, Gate, archive.
 
+### 2026-11-01 — Meta harness built; offline end-to-end run; a merge-check hole found and closed
+
+- **What I did:** Built `evolve/edits.py`, `analyze.py`, `propose.py` (rules + Meta
+  LLM), `validate.py`, `loop.py` (Write, Gate, `archive.json`, `CHANGELOG.md`,
+  parallel evaluation, resume), `config_evolve.yaml`, `evolve_run.py`, and an
+  offline self-test `python -m evolve.selftest`. Ran the full loop with the stub
+  player + stub Meta LLM for 2 rounds (`evolve_run.py --stub`).
+- **Why:** Everything except the model can be verified for free; a bug found here
+  does not cost an 18-episode run.
+- **Result / what I found:**
+  - Stub run, 2 rounds, 0.9 min: v0 evaluated, then each round analyzed →
+    proposed (rule + meta) → validated → wrote vN → evaluated in parallel → gated.
+    Round 2's rules deleted the three skills never called in 6 episodes (v0's 3 +
+    rejected v1's 3), and promoted the stub's inline helper. The skill that calls
+    `open()` was dropped at the AST stage. Both children were rejected with gain
+    0.0000, which is correct: the stub ignores the prompt, so nothing changed.
+  - **The self-test caught a real hole in merge-equivalence.** A merge that
+    replaced `player_detector` with `return []` *passed*, because the stub stores
+    that skill's result without acting on it, and I was comparing only actions.
+    Same actions is not same behaviour. Fixed: every skill call's return value is
+    now fingerprinted during replay, and a merge must reproduce the originals'
+    return values call by call on the recorded inputs. Re-run: the bad merge is
+    dropped ("call 0 of 3 returns a different value"); the exact-duplicate merge
+    still passes.
+  - Step indices in edits refer to the parent's numbering and are resolved through
+    stable step ids. The Meta LLM will mis-count shifting indices, and a dropped
+    edit would otherwise silently re-target every later one.
+- **Next step:** Real pilot: one v0 episode with Qwen3.8-27B, to measure cost and
+  see whether it handles code-acting at all.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky

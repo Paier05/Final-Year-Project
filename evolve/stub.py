@@ -96,11 +96,6 @@ class StubMeta:
                     "rationale": "stub: step edit",
                 },
                 {
-                    "op": "add", "target": "prompt", "name": "strategy",
-                    "content": "STRATEGY\n- Stub strategy line.",
-                    "rationale": "stub: prompt add",
-                },
-                {
                     "op": "add", "target": "skill", "name": "count_colour",
                     "content": 'def count_colour(c, g=None):\n    """Number of cells of colour c."""\n'
                                '    g = grid() if g is None else np.asarray(g)\n    return int((g == c).sum())\n',
@@ -116,6 +111,11 @@ class StubMeta:
                 {
                     "op": "delete", "target": "prompt", "name": "format",
                     "rationale": "stub: must be dropped, format is core",
+                },
+                {
+                    "op": "add", "target": "prompt", "name": "strategy",
+                    "content": "STRATEGY\n- Stub strategy line.",
+                    "rationale": "stub: prompt add",
                 },
             ]
         }

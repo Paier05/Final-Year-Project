@@ -53,6 +53,7 @@ class ReplayResult:
     skill_errors: dict[str, int] = field(default_factory=dict)
     skills_failed_to_load: dict[str, str] = field(default_factory=dict)
     first_divergence: int | None = None
+    trace: list[tuple[str, str]] = field(default_factory=list)
 
     @property
     def n_reproduced(self) -> int:
@@ -105,6 +106,7 @@ def replay(
             break
     result.skill_calls = dict(counter.calls)
     result.skill_errors = dict(counter.errors)
+    result.trace = list(counter.trace)
     return result
 
 
