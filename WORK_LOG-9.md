@@ -188,6 +188,21 @@ non-clear.
     contrast (palette validator WARN, all other checks pass).
 - **Next step:** Wait for the backend; then the pilot.
 
+### 2026-11-01 — One name for the model key (user request)
+
+- **What I did:** At the user's request, pointed #8's code at `QWEN_API_KEY` instead
+  of `ARC_MODEL_API_KEY`: the default in `harness/model.py` `load_api_key()`, its
+  error message, the comment in `config.yaml`, and the reproduce line in
+  `REPORT.md`. Removed the now-duplicate `ARC_MODEL_API_KEY` line from the
+  gitignored `.env`.
+- **Why:** Both names held the same key; `.env` had it twice. One name now serves
+  #8's `run.py` and #9's `evolve_run.py`.
+- **Result:** No reference to `ARC_MODEL_API_KEY` remains. `run.py --stage
+  preflight` loads the key and the gateway accepts it (it then stops on the same
+  backend outage as #9). The base URL for #8 still comes from `config.yaml`, which
+  was not part of the request.
+- **Next step:** Still waiting for the backend.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky

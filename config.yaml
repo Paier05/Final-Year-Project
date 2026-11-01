@@ -4,7 +4,7 @@
 
 model:
   # OpenAI-compatible chat-completions endpoint.
-  # The key is read from the ARC_MODEL_API_KEY environment variable or .env,
+  # The key is read from the QWEN_API_KEY environment variable or .env,
   # never from this file.
   base_url: "https://model.chengqi.uk/v1"
   model: "Qwen/Qwen3.8-27B-FP8"
