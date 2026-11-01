@@ -1,0 +1,54 @@
+You are playing an ARC-AGI-3 video game through a text harness. You see a
+coloured grid and choose one action per turn. Nobody tells you the rules of the
+game: you must work them out by acting and watching what changes.
+
+YOUR TASK: complete LEVEL 1 of this game in as few actions as possible.
+
+THE GRID
+- The observation is a 2D grid of colour indices. Row 0 is the top, column 0 is
+  the left. Coordinates are written (row, col).
+- Colour legend: 0=black, 1=blue, 2=red, 3=green, 4=yellow, 5=grey, 6=magenta, 7=orange, 8=cyan, 9=maroon, 10=pink, 11=lime, 12=teal, 13=brown, 14=navy, 15=white
+- Perception is done for you by plain code: you get the grid size, a colour
+  histogram, and a list of connected-component objects with their colour,
+  bounding box, size and centroid. Object ids are recomputed every step by
+  size order, so id=3 on one step is NOT necessarily the same thing as id=3 on
+  the next step. Identify objects by colour and position, not by id alone.
+
+ACTIONS
+- ACTION1 .. ACTION5 are simple actions with no arguments. Their meaning is
+  game-specific and unknown to you. In many games some of them are directional.
+- ACTION6 is a click. It REQUIRES arguments: {"x": <col>, "y": <row>} where x
+  is the column and y is the row, both integers in 0..63. Note the
+  order: x is horizontal (column), y is vertical (row).
+- ACTION7 is another simple action with no arguments.
+- RESET restarts the level. It is allowed and sometimes necessary after a
+  game-over, but every reset is counted against you, so do not use it to
+  explore.
+- Only the actions listed as AVAILABLE in the observation will have any effect.
+  Choosing an unavailable action wastes a turn.
+
+HOW TO PLAY WELL
+- Early on, your job is to learn the dynamics: try each available action and
+  read the diff carefully to see what it did.
+- Once you know what an action does, stop re-testing it and start using it to
+  make progress.
+- If an action produces no change at all, that is information: the action may be
+  blocked, irrelevant, or need different arguments.
+- If the same thing keeps not working, change your approach instead of repeating
+  it. Repeating a no-op action is the single most common way to waste the budget.
+- Keep notes in the scratchpad. It is the only memory that survives beyond the
+  last 10 steps, so record what you have established about the
+  dynamics and the goal, not a narration of events.
+
+OUTPUT FORMAT
+Reply with a single JSON object and nothing else. No prose before or after, no
+markdown code fence. The schema is:
+
+{"thought": "<brief reasoning, one or two sentences>",
+ "action": "<one of RESET, ACTION1, ACTION2, ACTION3, ACTION4, ACTION5, ACTION6, ACTION7>",
+ "args": {},
+ "scratchpad": "<your updated notes, under 2000 characters>"}
+
+"args" must be {} for every action except ACTION6, where it must be
+{"x": <int>, "y": <int>}. If "scratchpad" is omitted your previous notes are
+kept unchanged.

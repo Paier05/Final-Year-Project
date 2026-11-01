@@ -1,0 +1,92 @@
+STATUS: step 12 | actions used 12/200 | resets 0 | engine state NOT_FINISHED | levels completed 0
+AVAILABLE ACTIONS: ACTION1, ACTION2, ACTION3, ACTION4
+
+OBSERVATION
+GRID: 64 rows x 64 cols (row 0 = top, col 0 = left)
+COLOUR COUNTS: yellow(4)=2609, green(3)=916, grey(5)=439, lime(11)=60, maroon(9)=45, cyan(8)=12, teal(12)=10, black(0)=3, blue(1)=2
+BACKGROUND (most common colour): yellow(4)
+OBJECTS: 19 non-background connected components
+  id=0 colour=green(3) size=892 bbox=rows8-49,cols14-53 centroid=(34.6,35.1)
+  id=1 colour=grey(5) size=208 bbox=rows0-51,cols0-3 centroid=(25.5,1.5)
+  id=2 colour=grey(5) size=112 bbox=rows60-63,cols12-63 centroid=(61.5,38.1)
+  id=3 colour=grey(5) size=76 bbox=rows53-62,cols1-10 centroid=(57.6,5.6)
+  id=4 colour=lime(11) size=60 bbox=rows61-62,cols25-54 centroid=(61.5,39.5)
+  id=5 colour=grey(5) size=43 bbox=rows9-15,cols33-39 centroid=(12.0,36.0)
+  id=6 colour=green(3) size=24 bbox=rows61-62,cols13-24 centroid=(61.5,18.5)
+  id=7 colour=maroon(9) size=20 bbox=rows55-60,cols3-8 centroid=(56.7,4.7)
+  id=8 colour=maroon(9) size=15 bbox=rows47-49,cols34-38 centroid=(48.0,36.0)
+  id=9 colour=teal(12) size=10 bbox=rows45-46,cols34-38 centroid=(45.5,36.0)
+  id=10 colour=maroon(9) size=5 bbox=rows11-13,cols35-37 centroid=(11.6,36.4)
+  id=11 colour=maroon(9) size=4 bbox=rows59-60,cols7-8 centroid=(59.5,7.5)
+  id=12 colour=cyan(8) size=4 bbox=rows61-62,cols56-57 centroid=(61.5,56.5)
+  id=13 colour=cyan(8) size=4 bbox=rows61-62,cols59-60 centroid=(61.5,59.5)
+  id=14 colour=cyan(8) size=4 bbox=rows61-62,cols62-63 centroid=(61.5,62.5)
+  id=15 colour=black(0) size=3 bbox=rows31-32,cols21-22 centroid=(31.7,21.3)
+  id=16 colour=maroon(9) size=1 bbox=rows13-13,cols35-35 centroid=(13.0,35.0)
+  id=17 colour=blue(1) size=1 bbox=rows32-32,cols20-20 centroid=(32.0,20.0)
+  id=18 colour=blue(1) size=1 bbox=rows33-33,cols21-21 centroid=(33.0,21.0)
+
+DIFF: 52 cells changed, within rows45-62,cols24-38
+  15 cells maroon(9) -> green(3)
+  15 cells green(3) -> maroon(9)
+  10 cells teal(12) -> green(3)
+  10 cells green(3) -> teal(12)
+  2 cells lime(11) -> green(3)
+  (45,29): teal -> green
+  (45,30): teal -> green
+  (45,31): teal -> green
+  (45,32): teal -> green
+  (45,33): teal -> green
+  (45,34): green -> teal
+  (45,35): green -> teal
+  (45,36): green -> teal
+  (45,37): green -> teal
+  (45,38): green -> teal
+  (46,29): teal -> green
+  (46,30): teal -> green
+  (46,31): teal -> green
+  (46,32): teal -> green
+  (46,33): teal -> green
+  (46,34): green -> teal
+  (46,35): green -> teal
+  (46,36): green -> teal
+  (46,37): green -> teal
+  (46,38): green -> teal
+  (47,29): maroon -> green
+  (47,30): maroon -> green
+  (47,31): maroon -> green
+  (47,32): maroon -> green
+  (47,33): maroon -> green
+  (47,34): green -> maroon
+  (47,35): green -> maroon
+  (47,36): green -> maroon
+  (47,37): green -> maroon
+  (47,38): green -> maroon
+  (48,29): maroon -> green
+  (48,30): maroon -> green
+  (48,31): maroon -> green
+  (48,32): maroon -> green
+  (48,33): maroon -> green
+  (48,34): green -> maroon
+  (48,35): green -> maroon
+  (48,36): green -> maroon
+  (48,37): green -> maroon
+  (48,38): green -> maroon
+  (cell list truncated)
+
+HISTORY (most recent 10 of 12 actions):
+  step 2: ACTION3 -> 52 cells changed
+  step 3: ACTION4 -> 52 cells changed
+  step 4: ACTION1 -> 52 cells changed
+  step 5: ACTION2 -> 52 cells changed
+  step 6: ACTION3 -> 52 cells changed
+  step 7: ACTION4 -> 52 cells changed
+  step 8: ACTION1 -> 52 cells changed
+  step 9: ACTION2 -> 52 cells changed
+  step 10: ACTION3 -> 52 cells changed
+  step 11: ACTION4 -> 52 cells changed
+
+SCRATCHPAD (your notes from last step; rewrite it in your reply)
+(empty)
+
+Choose your next action. JSON only.

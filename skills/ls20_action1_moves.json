@@ -1,0 +1,24 @@
+{
+  "kind": "action_effect",
+  "name": "ls20_action1_moves",
+  "description": "In game LS20, ACTION1 moves the moving object up by 5 cells.",
+  "source_games": [
+    "ls20-9607627b"
+  ],
+  "action": "ACTION1",
+  "effect": {
+    "translation": [
+      -5,
+      0
+    ]
+  },
+  "support": 14,
+  "precision": 1.0,
+  "validation": {
+    "check": "replay logged (action, frame_diff) pairs and recompute the translation",
+    "holdout_seed": 2,
+    "n_checked": 2,
+    "n_hits": 2
+  },
+  "usage_hint": "Use ACTION1 when you need to move up by 5 cells."
+}

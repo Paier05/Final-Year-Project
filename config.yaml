@@ -1,0 +1,87 @@
+# Issue #8 — ARC-AGI-3 Level 1 experiment configuration.
+# Every setting here is logged into the report. Both rounds use identical
+# settings; the only difference between Round 0 and Round 1 is the skill library.
+
+model:
+  # OpenAI-compatible chat-completions endpoint.
+  # The key is read from the QWEN_API_KEY environment variable or .env,
+  # never from this file.
+  base_url: "https://model.chengqi.uk/v1"
+  model: "Qwen/Qwen3.8-27B-FP8"
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 600
+  # Qwen3.8 exposes thinking control. "off" disables reasoning; otherwise one of
+  # low / medium / xhigh is sent as reasoning_effort.
+  #
+  # Measured on a real ls20 step, same prompt, same endpoint:
+  #   thinking "low": 22.5 s, 956 output tokens, and the model writes paragraphs
+  #                   of prose before the JSON (it nearly hit max_tokens).
+  #   thinking "off":  6.1 s, 180 output tokens, clean JSON as the first token.
+  # 3.7x faster and 5x cheaper in output for a better-formatted answer, so "off"
+  # is the setting both rounds run with. Qwen3.8-27B overthinks by default.
+  thinking: "off"
+  request_timeout_s: 180
+  # Transient-error retries (per call). A 401/403/quota error is NOT retried --
+  # it aborts the run loudly, per the user's "tell me and stop" instruction.
+  max_transient_retries: 2
+
+observation:
+  # Pass the rendered frame as an image in addition to the text rendering.
+  # Qwen3.8-27B is a VLM, so this is the issue's optional second configuration.
+  send_image: false
+  # Last N (action, effect) pairs shown to the model.
+  history_n: 10
+  # Cap on objects listed in the text observation, to bound prompt size.
+  max_objects: 40
+  # Cap on cells enumerated in a frame diff before it is summarised instead.
+  max_diff_cells: 40
+
+budget:
+  # Issue default: 200 actions for Level 1.
+  max_actions: 200
+  # The wall clock is a safety net, not a budget: it must stay above what 200
+  # actions actually take, or episodes end early and unequally. Endpoint latency
+  # has been seen to drift from ~9 s/step to ~18.5 s/step, which made a 2400 s
+  # cap bind at 130 actions on one seed. 5400 s covers 200 actions even at the
+  # slow rate.
+  wall_clock_s: 5400
+  # Resets are allowed and counted; this caps runaway reset loops.
+  max_resets: 10
+  # Per-episode token ceiling. Hitting it ends the episode as "budget".
+  #
+  # Must stay above what a full 200-action episode actually costs, or it becomes
+  # the binding constraint instead of max_actions -- and it binds UNEQUALLY,
+  # because Round 1 prompts carry the skill library and so cost more per step.
+  # Measured: Round 0 used ~535k for 200 actions; Round 1 hit 600k at only ~160
+  # actions, handing Round 1 a 20% smaller action budget and quietly invalidating
+  # the comparison. 1.2M leaves headroom for both rounds at 200 actions.
+  max_tokens_per_episode: 1200000
+
+run:
+  seeds: [0, 1, 2]
+  # Level 1 only.
+  target_level: 1
+
+split:
+  # Fixed, committed split seed. Changing this invalidates the skill library.
+  seed: 20261021
+  # Issue requires these three in dev.
+  forced_dev: ["ls20", "ft09", "vc33"]
+  # Fraction of the remaining games that also go to dev ("~half the rest").
+  dev_fraction_of_rest: 0.5
+
+limits:
+  # Global guard rails. If the endpoint starts rate-limiting or the spend
+  # ceiling is reached, the whole experiment stops and reports, rather than
+  # grinding on. Requested explicitly by the user.
+  #
+  # Sizing, measured not guessed: a real ls20 step is a 2918-char system prompt
+  # plus a 3341-char user message, about 1.6k input tokens per step. At the
+  # 200-action budget that is ~320k input tokens per episode, and the full
+  # specified sweep is 25 games x 3 seeds x 2 rounds = 150 episodes, i.e. very
+  # roughly 50M input + 10M output tokens if every episode runs to budget.
+  # The cap below allows that; lower it (or cut seeds / max_actions) to spend
+  # less. Episodes that solve early cost far less than the worst case.
+  global_token_cap: 80000000
+  abort_after_consecutive_rate_limits: 3

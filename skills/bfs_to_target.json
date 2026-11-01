@@ -1,0 +1,25 @@
+{
+  "kind": "module",
+  "name": "bfs_to_target",
+  "description": "Shortest 4-connected path length between two cells, treating the given colours as impassable. Use it to check reachability before committing to a route.",
+  "source_games": [
+    "derived (general perception primitive)"
+  ],
+  "params": {
+    "from_row": "int",
+    "from_col": "int",
+    "to_row": "int",
+    "to_col": "int",
+    "blocked_colours": "list[int], optional"
+  },
+  "returns": "path length in steps, or UNREACHABLE",
+  "support": 60,
+  "precision": 1.0,
+  "validation": {
+    "check": "run the module on grids reconstructed from logged dev object lists; require zero exceptions and a useful answer on most frames",
+    "n_checked": 60,
+    "n_hits": 60,
+    "n_errors": 0
+  },
+  "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"bfs_to_target\",\"params\":{...}}}."
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "action_effect",
+  "name": "ls20_action2_effect",
+  "description": "In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+  "source_games": [
+    "ls20-9607627b"
+  ],
+  "action": "ACTION2",
+  "effect": {
+    "signature": "tiny:11->3"
+  },
+  "support": 398,
+  "precision": 0.962,
+  "validation": {
+    "check": "replay logged (action, frame_diff) pairs and recompute the effect signature",
+    "holdout_seed": 2,
+    "n_checked": 131,
+    "n_hits": 126
+  },
+  "usage_hint": "Expect ACTION2 to recolour lime regions."
+}

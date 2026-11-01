@@ -1,0 +1,24 @@
+{
+  "kind": "module",
+  "name": "grid_region",
+  "description": "Print raw colour indices for a rectangle of the grid, to pin down an exact click coordinate.",
+  "source_games": [
+    "derived (general perception primitive)"
+  ],
+  "params": {
+    "row0": "int",
+    "col0": "int",
+    "row1": "int",
+    "col1": "int"
+  },
+  "returns": "hex digit map of the region",
+  "support": 60,
+  "precision": 1.0,
+  "validation": {
+    "check": "run the module on grids reconstructed from logged dev object lists; require zero exceptions and a useful answer on most frames",
+    "n_checked": 60,
+    "n_hits": 60,
+    "n_errors": 0
+  },
+  "usage_hint": "Call it with {\"action\":\"CALL\",\"args\":{\"module\":\"grid_region\",\"params\":{...}}}."
+}

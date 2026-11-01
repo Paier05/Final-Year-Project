@@ -1,0 +1,7 @@
+game,short_id,seed,round,split,solved,end_reason,actions_used,resets_used,steps,human_baseline_actions,level_score,tokens_in,tokens_out,wall_time_s,parse_failures,parse_failure_rate,fallback_actions,module_calls,levels_completed,final_state,error,tokens_total
+ls20-9607627b,ls20,0,0,dev,0,budget_actions,200,1,200,22,,490811,42407,1106.3,0,0.0,0,0,0,NOT_FINISHED,,533218
+ls20-9607627b,ls20,1,0,dev,0,budget_actions,200,1,200,22,,492645,43989,1161.8,0,0.0,0,0,0,NOT_FINISHED,,536634
+ls20-9607627b,ls20,2,0,dev,0,budget_actions,200,1,200,22,,491020,47522,1268.7,0,0.0,0,0,0,NOT_FINISHED,,538542
+ls20-9607627b,ls20,0,1,dev,0,budget_actions,200,1,213,22,,757416,88207,2134.0,0,0.0,0,13,0,NOT_FINISHED,,845623
+ls20-9607627b,ls20,1,1,dev,0,budget_actions,200,1,225,22,,775828,68306,1838.9,0,0.0,0,25,0,NOT_FINISHED,,844134
+ls20-9607627b,ls20,2,1,dev,0,budget_actions,200,1,205,22,,707115,49035,1252.0,0,0.0,0,5,0,NOT_FINISHED,,756150

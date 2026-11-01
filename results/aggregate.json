@@ -1,0 +1,66 @@
+{
+  "by_round_split": [
+    {
+      "round": 0,
+      "split": "dev",
+      "n_episodes": 3,
+      "n_games": 1,
+      "solve_rate": 0.0,
+      "n_solved": 0,
+      "mean_actions_when_solved": null,
+      "mean_level_score_when_solved": null,
+      "mean_resets": 1.0,
+      "tokens_total": 1608394,
+      "wall_time_h": 0.98,
+      "parse_failure_rate": 0.0,
+      "module_calls": 0,
+      "n_errors": 0
+    },
+    {
+      "round": 1,
+      "split": "dev",
+      "n_episodes": 3,
+      "n_games": 1,
+      "solve_rate": 0.0,
+      "n_solved": 0,
+      "mean_actions_when_solved": null,
+      "mean_level_score_when_solved": null,
+      "mean_resets": 1.0,
+      "tokens_total": 2445907,
+      "wall_time_h": 1.45,
+      "parse_failure_rate": 0.0,
+      "module_calls": 43,
+      "n_errors": 0
+    }
+  ],
+  "by_round": [
+    {
+      "round": 0,
+      "n_episodes": 3,
+      "solve_rate": 0.0,
+      "tokens_total": 1608394,
+      "wall_time_h": 0.98
+    },
+    {
+      "round": 1,
+      "n_episodes": 3,
+      "solve_rate": 0.0,
+      "tokens_total": 2445907,
+      "wall_time_h": 1.45
+    }
+  ],
+  "per_game": [
+    {
+      "game": "ls20-9607627b",
+      "short_id": "ls20",
+      "split": "dev",
+      "human_baseline_actions": 22,
+      "round0_solved": 0,
+      "round0_seeds": 3,
+      "round0_mean_actions_when_solved": null,
+      "round1_solved": 0,
+      "round1_seeds": 3,
+      "round1_mean_actions_when_solved": null
+    }
+  ]
+}
