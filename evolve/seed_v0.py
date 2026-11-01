@@ -10,8 +10,10 @@ Kept from #8:
   play well), minus the JSON output format, which code-acting replaces;
 - the 4 validated code modules of learning/modules.py, as Python functions
   that return data instead of text;
-- the mined ls20 action-effect rules from skills/index.json, rendered exactly
-  as #8 Round 1 rendered them, as the `knowledge` prompt.
+- the mined ls20 action-effect rules from #8's skills/index.json, rendered
+  exactly as #8 Round 1 rendered them, as the `knowledge` prompt. The text is
+  frozen below (KNOWLEDGE_V0) rather than read at run time, so v0 does not
+  depend on #8's result files and cannot change if they are re-mined.
 
 Added because code-acting needs it: the sandbox API description (fixed, in
 evolve/harness.py), the 6-step turn procedure, and the code-block reply format.
@@ -19,11 +21,7 @@ evolve/harness.py), the 6-step turn procedure, and the code-block reply format.
 
 from __future__ import annotations
 
-import json
-import os
-
 from harness.model import PALETTE_LEGEND
-from harness.prompt import SKILLS_HEADER, render_skills_block
 from evolve.harness import Harness
 
 SYSTEM_V0 = f"""\
@@ -200,31 +198,30 @@ def grid_region(row0, col0, row1, col1, g=None):
 }
 
 
-def knowledge_from_issue8(index_path: str = os.path.join("skills", "index.json")) -> str:
-    """#8's mined action-effect rules, rendered as #8 Round 1 rendered them."""
-    if not os.path.exists(index_path):
-        return ""
-    with open(index_path, encoding="utf-8") as handle:
-        index = json.load(handle)
-    rules = [s for s in index.get("skills", []) if s.get("kind") == "action_effect"]
-    if not rules:
-        return ""
-    # #8's header says the skills came from "a different set of games". For
-    # ls20 that was never true (they were mined from ls20 itself), so the
-    # header is restated accurately rather than copied.
-    header = SKILLS_HEADER.replace(
-        "from previous play on a *different* set of games",
-        "from previous play on this game",
-    )
-    return f"{header}\n{render_skills_block(rules)}".strip()
+# #8's four action-effect rules (skills/index.json on PR #10's branch, commit
+# 0600274), rendered with harness.prompt.render_skills_block exactly as #8's
+# Round 1 player saw them. One deliberate change: #8's header said the rules
+# came "from previous play on a *different* set of games", which was never true
+# for ls20 (they were mined from ls20 itself), so it says "on this game".
+KNOWLEDGE_V0 = """LEARNED SKILL LIBRARY
+These were mined automatically from previous play on this game
+and then validated against the recorded data. They are hypotheses, not
+guarantees: a skill can be wrong for this particular game. Use them as a
+starting point and trust the diff you actually observe over any skill text.
+
+Action-effect rules (what an action tends to do):
+  - ls20_action1_moves: In game LS20, ACTION1 moves the moving object up by 5 cells. [support=14, precision=1.00]
+      how to use: Use ACTION1 when you need to move up by 5 cells.
+  - ls20_action2_effect: In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells. [support=398, precision=0.96]
+      how to use: Expect ACTION2 to recolour lime regions.
+  - ls20_action3_moves: In game LS20, ACTION3 moves the moving object left by 5 cells. [support=10, precision=1.00]
+      how to use: Use ACTION3 when you need to move left by 5 cells.
+  - ls20_action4_moves: In game LS20, ACTION4 moves the moving object right by 5 cells. [support=9, precision=1.00]
+      how to use: Use ACTION4 when you need to move right by 5 cells."""
 
 
 def build_v0() -> Harness:
-    prompts = {"system": SYSTEM_V0}
-    knowledge = knowledge_from_issue8()
-    if knowledge:
-        prompts["knowledge"] = knowledge
-    prompts["format"] = FORMAT_V0
+    prompts = {"system": SYSTEM_V0, "knowledge": KNOWLEDGE_V0, "format": FORMAT_V0}
     return Harness(
         version="v0",
         parent=None,

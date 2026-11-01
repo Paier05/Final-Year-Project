@@ -45,6 +45,8 @@ non-clear.
    client and figure code, and #8 has not been merged (no PR open). Branching from
    `main` would mean re-creating all of it. When #8 merges, this branch rebases cleanly
    because it only adds files on top.
+   *Superseded 2026-11-01 at the user's request: the branch was rebuilt on `main`
+   with only the #8 code #9 imports. See the progress entry "Branch rebuilt on main".*
 2. **v0 = the current harness, ported to code-acting.** #8's harness emits one JSON
    action per turn; #9's loop runs code. v0 therefore keeps #8's rules, its observation
    format, its 4 validated code modules (as Python skill functions) and its mined
@@ -187,6 +189,54 @@ non-clear.
     shape, with every mean direct-labelled, because the green slot is below 3:1
     contrast (palette validator WARN, all other checks pass).
 - **Next step:** Wait for the backend; then the pilot.
+
+### 2026-11-01 — One name for the model key (user request)
+
+- **What I did:** At the user's request, pointed #8's code at `QWEN_API_KEY` instead
+  of `ARC_MODEL_API_KEY`: the default in `harness/model.py` `load_api_key()`, its
+  error message, the comment in `config.yaml`, and the reproduce line in
+  `REPORT.md`. Removed the now-duplicate `ARC_MODEL_API_KEY` line from the
+  gitignored `.env`.
+- **Why:** Both names held the same key; `.env` had it twice. One name now serves
+  #8's `run.py` and #9's `evolve_run.py`.
+- **Result:** No reference to `ARC_MODEL_API_KEY` remains. `run.py --stage
+  preflight` loads the key and the gateway accepts it (it then stops on the same
+  backend outage as #9). The base URL for #8 still comes from `config.yaml`, which
+  was not part of the request.
+- **Next step:** Still waiting for the backend.
+
+### 2026-11-01 — Branch rebuilt on main with only what #9 needs; PR #10 opened for #8
+
+- **What I did:** At the user's request ("leave only the files #9 needs ... the result
+  of #8 is not needed, just leave the function"):
+  1. Committed the `QWEN_API_KEY` rename on **#8's** branch, where those files live,
+     and opened **PR #10** for issue #8 with all of #8's results.
+  2. Rebuilt this branch from `main`: this work log's first commit, then one commit
+     bringing in the **14 #8 modules #9 imports** (6 in `harness/`, 3 in `learning/`,
+     5 in `analysis/`, plus #8's `.gitignore`), byte-identical to PR #10, then #9's
+     own commits cherry-picked unchanged. The old branch is kept locally as
+     `backup/9-before-clean`.
+  3. Froze v0's `knowledge` prompt into `evolve/seed_v0.py` (`KNOWLEDGE_V0`) instead
+     of reading #8's `skills/index.json` at run time.
+- **Why rebuild rather than delete:** deleting #8's results in a new commit on this
+  branch would have deleted them from `main` too, once #8 merged and then #9 did.
+  Rebuilding means #8's results never enter this branch's history, so merging it
+  in either order cannot remove them; the shared modules are identical on both
+  sides, so they merge without conflict.
+- **Result / what I found:**
+  - Left out of this branch (all still in PR #10): `run.py`, `config.yaml`,
+    `REPORT.md`, `WORK_LOG-8.md`, `docs/`, `results/` (#8's episodes, summary,
+    figures, game list), `skills/`, and the three #8 modules #9 never imports
+    (`harness/games.py`, `harness/stub_model.py`, `learning/skill_library.py`).
+  - **Freezing the knowledge text mattered beyond tidiness:** the old loader returned
+    `""` when `skills/index.json` was missing, so on a branch without #8's results
+    v0 would have silently lost its `knowledge` prompt rather than failing.
+  - Verified on the rebuilt branch: v0's rendered system prompt has the **same SHA-1**
+    as before (7,228 chars); `python -m evolve.selftest` passes; a fresh 2-round stub
+    run gives the same numbers as before the rebuild (v0 mean 0.1579, worst 0.0877)
+    and exercises all three drop paths (AST violation, core prompt delete, over-cap);
+    the figures render.
+- **Next step:** Still waiting for the model backend.
 
 ## Open questions / risks
 

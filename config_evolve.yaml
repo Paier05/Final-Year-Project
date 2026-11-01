@@ -5,8 +5,9 @@
 # .env), and are never written to logs, archive.json or reports.
 
 game: "ls20-9607627b"
-# Level-1 human baseline for ls20, from results/games.json
-# (EnvironmentInfo.baseline_actions[0]). Used only in the score.
+# Level-1 human baseline for ls20: the arc-agi toolkit's
+# EnvironmentInfo.baseline_actions[0] (recorded in #8's results/games.json,
+# PR #10). Used only in the score.
 human_baseline_actions: 22
 
 rounds: 5
