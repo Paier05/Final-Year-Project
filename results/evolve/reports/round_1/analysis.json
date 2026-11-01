@@ -1,0 +1,286 @@
+{
+  "version": "v0",
+  "summary": {
+    "score_mean": 0.3333,
+    "score_worst": 0.0877,
+    "clear_rate": 0.0,
+    "avg_steps_to_clear": null,
+    "mean_closest_approach": 9.5
+  },
+  "episodes": [
+    {
+      "episode": 0,
+      "score": 0.0877,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 59,
+      "turns_with_no_action": 9,
+      "cell_errors": 4,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 3,
+        "ACTION2": 126,
+        "ACTION3": 1,
+        "ACTION4": 70
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A2x1 A4x1 A2x1 A4x1 A2x1 A4x1 A2x1 A4x1 A2x1 A4x1 A2x1 A4x1 A2x2 A4x1 A2x2 A4x1 A2x2 A4x1 A2x2 A4x1 A2x2 A4x1 A2x2 A4x1 A2x2 A4x1 A2x3 A4x1 A2x2 A4x2 A2x1 A4x1 A2x3 A4x1 A2x3 A4x5 A2x5 A4x1 A2x3 A4x1 A2x3 A4x2 A2x3 A4x1 A2x3 A4x2 A2x2 A4x1 A2x1 A4x1 A2x1 A4x1 A2x1 A4x1 A2x3 A4x1 A2x3 A4x3 A2x3 A4x3 A2x3 A4x3 A2x3 A4x3 A2x3 A4x3 A2x43 A4x7 A2x3 A4x3 A2x6 A4x9",
+      "final_notes": "Game LS20:\n- ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5\n- Player: black(0), Goal: cyan(8)\n- Cyan at rows 61-62, cols 56-57, 59-60\n- Lime trail at rows 61-62 being converted to green as player moves\n- Player appears to be at bottom (rows 61-62)\n- Moving right with ACTION4 to reach cyan goal\n- Turn 58, 6 actions used this turn"
+    },
+    {
+      "episode": 1,
+      "score": 0.4737,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 69,
+      "turns_with_no_action": 9,
+      "cell_errors": 0,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 8,
+        "ACTION2": 57,
+        "ACTION3": 89,
+        "ACTION4": 46
+      },
+      "action_sequence": "A1x1 A3x1 A2x1 A4x1 A1x3 A3x7 A4x1 A2x1 A3x4 A1x1 A3x6 A1x1 A4x1 A3x4 A2x6 A4x9 A2x2 A4x2 A2x2 A4x2 A2x5 A4x1 A2x1 A4x1 A2x1 A4x1 A2x5 A4x1 A2x2 A4x1 A2x3 A4x1 A2x3 A4x1 A2x3 A4x1 A2x3 A4x2 A2x3 A4x2 A2x3 A4x1 A2x4 A4x1 A2x3 A4x1 A2x6 A4x14 A1x1 A4x1 A1x1 A3x67",
+      "final_notes": "LS20: Player=lime bar at bottom (rows 61-62). ACTION1=up5, ACTION3=left5, ACTION4=right5, ACTION2=lime->green. Cyan=deadly. Maroon=collectibles. Goal: collect all maroon. Maroons at (55-60,3-8),(47-49,19-23),(11-13,35-37),(59-60,7-8),(13,35). Moving left to reach left maroons. Lime now at cols ~17-54, need to reach cols 3-8."
+    },
+    {
+      "episode": 2,
+      "score": 0.4386,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 82,
+      "turns_with_no_action": 7,
+      "cell_errors": 1,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 57,
+        "ACTION2": 51,
+        "ACTION3": 47,
+        "ACTION4": 45
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A2x1 A4x4 A1x1 A4x1 A1x4 A4x2 A1x4 A4x1 A1x3 A4x1 A1x6 A2x1 A3x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A2x1 A1x4 A3x2 A1x10 A2x1 A3x1 A4x1 A2x1 A1x7 A3x13 A4x2 A1x1 A4x1 A1x1 A4x1 A1x2 A4x3 A1x1 A3x1 A1x1 A3x10 A1x5 A3x2 A1x1 A3x1 A1x1 A3x1 A4x1 A3x1 A1x1 A2x2 A4x1 A2x2 A4x2 A2x1 A4x1 A2x2 A4x1 A2x1 A4x1 A2x6 A4x1 A3x1 A2x1 A4x1 A2x1 A3x1 A2x1 A3x2 A2x2 A4x1 A2x3 A3x1 A2x2 A3x1 A2x1 A3x1 A2x1 A4x2 A3x1 A4x2 A2x9 A4x1 A2x1 A4x1 A2x1 A4x1 A2x6 A1x1 A3x1 A4x4 A3x1 A4x3 A3x2 A4x2",
+      "final_notes": "A1=up5, A3=left5, A4=down5. A2 eats goal. Player was (45.5,41), goal (61.5,38). Used 2x A4 to go down. Check if closer."
+    }
+  ],
+  "skill_stats": {
+    "bfs_to_target": {
+      "calls": 0,
+      "errors": 0,
+      "episodes_used": 0,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 3,
+      "lifetime_calls": 0,
+      "source_hash": "e752fbb21ac7"
+    },
+    "grid_region": {
+      "calls": 27,
+      "errors": 0,
+      "episodes_used": 3,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 3,
+      "lifetime_calls": 27,
+      "source_hash": "e3eed522331a"
+    },
+    "obstacle_map": {
+      "calls": 1,
+      "errors": 0,
+      "episodes_used": 1,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 3,
+      "lifetime_calls": 1,
+      "source_hash": "6fb17248a6d4"
+    },
+    "player_detector": {
+      "calls": 5,
+      "errors": 0,
+      "episodes_used": 2,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 3,
+      "lifetime_calls": 5,
+      "source_hash": "a945430da87b"
+    }
+  },
+  "inline_helpers": [
+    {
+      "name": "find",
+      "other_names": [],
+      "key": "def _(col):\n    out = []\n    for o in objects(g1):\n        if o['colour'] == col:\n            out.append([round(o['centroid'][0], 1), round(o['centroid'][1], 1)])\n    return out",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 6,
+      "source": "def find(col):\n    out = []\n    for o in objects(g1):\n        if o['colour'] == col:\n            out.append([round(o['centroid'][0], 1), round(o['centroid'][1], 1)])\n    return out"
+    }
+  ],
+  "action_effects": {
+    "ACTION1": {
+      "n": 68,
+      "effects": [
+        {
+          "effect": "rigid move (drow=-5, dcol=0)",
+          "share": 0.46
+        },
+        {
+          "effect": "other change",
+          "share": 0.28
+        },
+        {
+          "effect": "no change",
+          "share": 0.25
+        }
+      ]
+    },
+    "ACTION2": {
+      "n": 234,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.92
+        },
+        {
+          "effect": "rigid move (drow=5, dcol=0)",
+          "share": 0.08
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-15)",
+          "share": 0.0
+        }
+      ]
+    },
+    "ACTION3": {
+      "n": 137,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.77
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-5)",
+          "share": 0.22
+        },
+        {
+          "effect": "rigid move (drow=10, dcol=0)",
+          "share": 0.01
+        }
+      ]
+    },
+    "ACTION4": {
+      "n": 161,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.64
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=5)",
+          "share": 0.34
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-15)",
+          "share": 0.01
+        }
+      ]
+    }
+  },
+  "common_errors": [
+    {
+      "error": "SandboxViolation: line 21: import of 'copy' is not allowed; allowed: collections, functools, heapq, itertools, math, numpy",
+      "count": 1
+    },
+    {
+      "error": "ValueError: ACTION6 is not available; available: ACTION1, ACTION2, ACTION3, ACTION4",
+      "count": 1
+    },
+    {
+      "error": "IndexError: index 64 is out of bounds for axis 0 with size 64",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: unterminated f-string literal (detected at line 14)",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 1
+    }
+  ],
+  "excerpts": {
+    "best_episode": [
+      {
+        "turn": 67,
+        "reply": "Let me analyze the situation:\n\n**Observation:**\n- Lime bar is at rows 61-62, cols 29-54 (52 cells)\n- I've been moving left with ACTION3, converting lime to green\n- Maroon collectibles are at:\n  - (55-60, 3-8) - left side\n  - (47-49, 19-23) - middle\n  - (11-13, 35-37) - top\n  - (59-60, 7-8) - left side\n  - (13, 35) - top\n\n**Current state:**\n- Lime is at cols 29-54, need to reach cols 3-8 for the left maroons\n- That's about 21 more columns to go left\n- Each ACTION3 moves 5 cells left\n- Need about 4-5 more ACTION3 to reach the left maroons\n\n**Plan:**\n- Continue moving left with ACTION3 to reach the left maroons at cols 3-8\n- Then collect them\n\nLet me continue moving left:\n\n```python\n# Continue moving left to reach maroons at cols 3-8\n# Lime currently at cols 29-54, need to reach cols 3-8\n# Each ACTION3 moves 5 cells left\n\nfor i in range(6):\n    r = action(3)\n    print(f\"ACTION3 #{i+1}: {r['n_changed']} cells changed, state={r['state']}\")\n    if r['game_over']:\n        print(\"GAME OVER!\")\n        break\n\n# Check current lime position\ng = grid()\nlime_cells = [(r,c) for r in range(64) for c in range(64) if g[r,c]==11]\nif lime_cells:\n    rows = [r for r,c in lime_cells]\n    cols = [c for r,c in lime_cells]\n    print(f\"Lime: rows {min(rows)}-{max(rows)}, cols {min(cols)}-{max(cols)}, count={len(lime_cells)}\")\nelse:\n    print(\"No lime cells found\")\n\n# Check maroon positions\nmaroon_cells ",
+        "actions": [
+          "ACTION3 -> 2 cells changed in rows61-62,cols29-29 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols30-30 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols31-31 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols32-32 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols33-33 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols34-34 (2x 11->3)"
+        ],
+        "error": null,
+        "stdout": "ACTION3 #1: 2 cells changed, state=NOT_FINISHED\nACTION3 #2: 2 cells changed, state=NOT_FINISHED\nACTION3 #3: 2 cells changed, state=NOT_FINISHED\nACTION3 #4: 2 cells changed, state=NOT_FINISHED\nACTION3 #5: 2 cells changed, state=NOT_FINISHED\nACTION3 #6: 2 cells changed, state=NOT_FINISHED\nLime: rows 61-62, cols 35-54, count=40\nMaroons: 45 cells\n  Group at ~(11,35)-(13,37): 6 cells\n  Group at ~(47,19"
+      },
+      {
+        "turn": 68,
+        "reply": "Let me analyze the situation:\n\n**Observation:**\n- Lime bar is at rows 61-62, cols 35-54 (40 cells)\n- I've been moving left with ACTION3, converting lime to green\n- Maroon collectibles are at: (55-60,3-8), (47-49,19-23), (11-13,35-37), (59-60,7-8), (13,35)\n- I need to reach the left maroons at cols 3-8\n\n**Current state:**\n- Lime is at cols 35-54, need to get to cols 3-8\n- That's about 32 columns to the left\n- Each ACTION3 moves 5 cells left\n- I need about 7 more ACTION3 moves to reach the left maroons\n\n**Plan:**\n- Continue moving left with ACTION3 to reach the maroons at cols 3-8\n- Then collect them\n\nLet me continue moving left:\n\n```python\n# Continue moving left to reach maroons at cols 3-8\n# Lime currently at cols 35-54, need to reach cols 3-8\n# Each ACTION3 moves 5 cells left\n\nfor i in range(6):\n    r = action(3)\n    print(f\"ACTION3 #{i+1}: {r['n_changed']} cells changed, state={r['state']}\")\n\n# Check current lime position\ng = grid()\nlime_cells = [(r,c) for r in range(64) for c in range(64) if g[r,c]==11]\nif lime_cells:\n    rows = [r for r,c in lime_cells]\n    cols = [c for r,c in lime_cells]\n    print(f\"Lime: rows {min(rows)}-{max(rows)}, cols {min(cols)}-{max(cols)}, count={len(lime_cells)}\")\nelse:\n    print(\"No lime found!\")\n\n# Check maroon positions\nmaroon_cells = [(r,c) for r in range(64) for c in range(64) if g[r,c]==9]\nprint(f\"Maroons: {len(maroon_cells)} cells\")\n# Grou",
+        "actions": [
+          "ACTION3 -> 2 cells changed in rows61-62,cols35-35 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols36-36 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols37-37 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols38-38 (2x 11->3)",
+          "ACTION3 -> 2 cells changed in rows61-62,cols39-39 (2x 11->3)"
+        ],
+        "error": null,
+        "stdout": "ACTION3 #1: 2 cells changed, state=NOT_FINISHED\nACTION3 #2: 2 cells changed, state=NOT_FINISHED\nACTION3 #3: 2 cells changed, state=NOT_FINISHED\nACTION3 #4: 2 cells changed, state=NOT_FINISHED\nACTION3 #5: 2 cells changed, state=NOT_FINISHED\n"
+      }
+    ],
+    "worst_episode": [
+      {
+        "turn": 57,
+        "reply": "Let me analyze the situation:\n\n- Player (black) is at approximately (31.7, 21.3)\n- Cyan targets are at (61.5, 56.5) and (61.5, 59.5)\n- I need to go down ~30 rows and right ~35 cols\n- Each ACTION2 = down 5, ACTION4 = right 5\n- I've been doing 3 down + 3 right per turn (15 down, 15 right so far this sequence)\n- But wait - the changes are happening at rows 61-62, cols 29-34. That's the lime trail being converted to green, not the player moving!\n\nLet me re-examine. The player is at (31.7, 21.3) - that's the black object. The changes at rows 61-62 are the lime trail. So the player hasn't actually moved much? Or the player IS moving but the visible change is the trail?\n\nActually, looking more carefully: the player (black) is at rows 31-32, cols 21-22. The lime trail is at rows 61-62. The changes are converting lime to green at the trail location. This suggests the player might be at the bottom (rows 61-62) and the black object at (31,21) might be something else, OR the player moved and left a trail.\n\nWait - the player_detector said Player: bbox=[31, 21, 32, 22]. But the changes are at rows 61-62. Let me check if the player is actually at the bottom.\n\nI need to look at the actual grid to understand where the player is. Let me check the current state more carefully.\n\n```python\n# Check current player position and what's happening\ng = grid()\nobjs = objects(g)\n\n# Find black (player) and c",
+        "actions": [],
+        "error": null,
+        "stdout": "  green(3): size=892, bbox=[8, 14, 49, 53], centroid=[34.6, 34.7]\n  green(3): size=44, bbox=[61, 13, 62, 34], centroid=[61.5, 23.5]\n  lime(11): size=40, bbox=[61, 35, 62, 54], centroid=[61.5, 44.5]\n  cyan(8): size=4, bbox=[61, 56, 62, 57], centroid=[61.5, 56.5]\n  cyan(8): size=4, bbox=[61, 59, 62, 60], centroid=[61.5, 59.5]\n  green(3): size=4, bbox=[61, 62, 62, 63], centroid=[61.5, 62.5]\n  black(0"
+      },
+      {
+        "turn": 58,
+        "reply": "Let me analyze the situation:\n- I'm at turn 58, with 6 actions left\n- The player appears to be at the bottom (rows 61-62) based on the lime trail being converted to green\n- Cyan (goal) is at rows 61-62, cols 56-57 and 59-60\n- I've been moving right with ACTION4, converting lime to green\n- The lime trail is at cols 35-54, and I need to reach cyan at cols 56-57\n\nLooking at the recent actions, I've been moving right (ACTION4) and the lime is being converted to green as I pass through. The lime trail ends at col 54, and cyan starts at col 56. I need to continue moving right to reach the cyan goal.\n\nLet me continue moving right to reach the cyan goal.\n\n```python\n# Continue moving right to reach cyan goal at cols 56-57\n# Current position appears to be around col 34-35 based on recent actions\n# Need to move right about 21-22 more cells to reach col 56\n\n# Let's move right several times\nfor i in range(6):\n    result = action(4)  # ACTION4 = right 5\n    print(f\"Action {i+1}: {result['n_changed']} cells changed\")\n    if result['game_over']:\n        print(\"Game over!\")\n        break\n\n# Check current state\ng = grid()\nprint(\"\\nCurrent objects:\")\nfor obj in objects(g):\n    if obj['colour'] in [0, 8, 11, 3]:  # black, cyan, lime, green\n        print(f\"  {obj['colour_name']}: size={obj['size']}, bbox={obj['bbox']}\")\n\n# Check if we're near the cyan goal\ncyan_cells = [(r,c) for r in range(64) for",
+        "actions": [
+          "ACTION4 -> 2 cells changed in rows61-62,cols35-35 (2x 11->3)",
+          "ACTION4 -> 2 cells changed in rows61-62,cols36-36 (2x 11->3)",
+          "ACTION4 -> 2 cells changed in rows61-62,cols37-37 (2x 11->3)",
+          "ACTION4 -> 2 cells changed in rows61-62,cols38-38 (2x 11->3)",
+          "ACTION4 -> 2 cells changed in rows61-62,cols39-39 (2x 11->3)",
+          "ACTION4 -> 2 cells changed in rows61-62,cols40-40 (2x 11->3)"
+        ],
+        "error": null,
+        "stdout": "Action 1: 2 cells changed\nAction 2: 2 cells changed\nAction 3: 2 cells changed\nAction 4: 2 cells changed\nAction 5: 2 cells changed\nAction 6: 2 cells changed\n\nCurrent objects:\n  green: size=892, bbox=[8, 14, 49, 53]\n  green: size=56, bbox=[61, 13, 62, 40]\n  lime: size=28, bbox=[61, 41, 62, 54]\n  cyan: size=4, bbox=[61, 56, 62, 57]\n  cyan: size=4, bbox=[61, 59, 62, 60]\n  green: size=4, bbox=[61, 62, "
+      }
+    ]
+  },
+  "history": [
+    {
+      "version": "v0",
+      "parent": null,
+      "round": 0,
+      "score_mean": 0.3333,
+      "score_worst": 0.0877,
+      "clear_rate": 0.0,
+      "decision": "baseline",
+      "edits": [],
+      "dropped_at_validate": []
+    }
+  ],
+  "recent_rejected_children": []
+}

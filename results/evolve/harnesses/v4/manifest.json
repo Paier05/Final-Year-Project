@@ -1,0 +1,34 @@
+{
+  "version": "v4",
+  "parent": "v2",
+  "round": 4,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "collect_items",
+    "grid_region",
+    "obstacle_map",
+    "plan_route",
+    "player_detector",
+    "player_position",
+    "verify_move"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r4-e1",
+      "source": "meta",
+      "what": "add skill verify_move",
+      "rationale": "The player is repeating actions that don't work (e.g., ACTION3 when blocked). This skill forces the player to check if the action actually moved the player before deciding to repeat it or change strategy. It addresses the 'oscillation' problem seen in the episodes."
+    },
+    {
+      "id": "r4-e2",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The previous knowledge prompt was too vague about obstacles and encouraged blind movement. This version explicitly states that actions can be blocked and instructs the player to use verify_move() and check for walls. It also corrects the movement distance to 1 cell per action, which is supported by the 'rigid move' data (drow=5 is likely a misinterpretation of the grid scale or a specific game mechanic, but the 'other change' dominance suggests blocking is the main issue)."
+    }
+  ]
+}

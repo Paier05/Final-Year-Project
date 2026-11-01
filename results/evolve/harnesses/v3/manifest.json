@@ -1,0 +1,27 @@
+{
+  "version": "v3",
+  "parent": "v2",
+  "round": 3,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "collect_items",
+    "grid_region",
+    "obstacle_map",
+    "plan_route",
+    "player_detector",
+    "player_position"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r3-e1",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The player is confused about the movement mechanics and is wasting actions. The 'knowledge' prompt incorrectly states that actions move 5 cells, which is not supported by the action effects data. The player is also not accounting for the fact that it is a 2-row bar, which affects its position and movement. This edit corrects the movement mechanics and provides a clearer strategy."
+    }
+  ]
+}
