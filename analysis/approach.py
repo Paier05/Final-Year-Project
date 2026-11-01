@@ -5,10 +5,15 @@ them -- it is 0/3 both times. Distance from the agent-controlled object to the
 goal object is the graded version of the same question, and it does separate
 them.
 
-The metric is Manhattan distance between the size-weighted centroid of the
-mover and that of the target, minimised over the episode. It is computed from
-the logged `objects` lists, so it needs no extra environment access and can be
-recomputed from committed trajectories.
+The metric is Manhattan distance between the centroid of the mover and that of
+the target, minimised over the episode, computed from the saved `.npy` frames.
+
+Frames rather than the logged `objects` list, for two reasons: the object list
+is capped at `observation.max_objects` for prompt size, and -- the case that
+actually bit -- re-deriving the target position per step is wrong once the mover
+reaches it and partly occludes it. The target is therefore read once from frame
+0 as a stable reference. Using the object list instead put Round 1 seed 0 at 3.5
+cells when it was really 1.5.
 
 Colour roles are per game. For ls20 the mover is the teal/maroon band and the
 target is the blue/black cluster; these were read off the trajectories, not
@@ -45,45 +50,51 @@ COLOUR_ROLES: dict[str, tuple[tuple[int, ...], tuple[int, ...]]] = {
 }
 
 
-def _centroid(objects: list[dict[str, Any]], colours: tuple[int, ...]):
-    pts = [o for o in objects if o["colour"] in colours]
-    if not pts:
+def centroid_of(grid: np.ndarray, colours: tuple[int, ...]):
+    """Pixel centroid of every cell whose colour is in `colours`."""
+    mask = np.isin(grid, list(colours))
+    if not mask.any():
         return None
-    total = sum(o["size"] for o in pts)
-    row = sum(o["centroid"][0] * o["size"] for o in pts) / total
-    col = sum(o["centroid"][1] * o["size"] for o in pts) / total
-    return row, col
+    rows, cols = np.nonzero(mask)
+    return float(rows.mean()), float(cols.mean())
 
 
-def approach_curve(records: list[dict[str, Any]], short_id: str) -> list[float]:
-    """Running best (minimum so far) distance to the target, per step."""
+def episode_path(frames: np.ndarray, short_id: str):
+    """(mover centroid per frame, target centroid from frame 0)."""
     roles = COLOUR_ROLES.get(short_id)
     if roles is None:
-        return []
+        return [], None
     mover_colours, target_colours = roles
+    path = []
+    for grid in frames:
+        point = centroid_of(np.asarray(grid), mover_colours)
+        if point is not None:
+            path.append(point)
+    return path, centroid_of(np.asarray(frames[0]), target_colours)
+
+
+def approach_curve(frames: np.ndarray, short_id: str) -> list[float]:
+    """Running best (minimum so far) distance to the target, per frame."""
+    path, target = episode_path(frames, short_id)
+    if target is None:
+        return []
     curve: list[float] = []
     best = None
-    for record in records:
-        objects = record.get("objects") or []
-        mover = _centroid(objects, mover_colours)
-        target = _centroid(objects, target_colours)
-        if mover is not None and target is not None:
-            distance = abs(mover[0] - target[0]) + abs(mover[1] - target[1])
-            best = distance if best is None else min(best, distance)
-        if best is not None:
-            curve.append(best)
+    for row, col in path:
+        distance = abs(row - target[0]) + abs(col - target[1])
+        best = distance if best is None else min(best, distance)
+        curve.append(best)
     return curve
 
 
 def collect(round_index: int, short_id: str = "ls20") -> dict[int, list[float]]:
     out: dict[int, list[float]] = {}
     pattern = os.path.join(
-        "data", "trajectories", f"round{round_index}", f"{short_id}-*", "*.jsonl"
+        "data", "frames", f"round{round_index}", f"{short_id}-*", "*.npy"
     )
     for path in sorted(glob.glob(pattern)):
         seed = int(os.path.basename(path).split(".")[0])
-        records = [json.loads(l) for l in open(path, encoding="utf-8")]
-        curve = approach_curve(records, short_id)
+        curve = approach_curve(np.load(path), short_id)
         if curve:
             out[seed] = curve
     return out

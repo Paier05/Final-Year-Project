@@ -51,12 +51,19 @@ does distinguish them clearly.
 
 | Seed | Round 0 | Round 1 | Change |
 |---|---|---|---|
-| 0 | 16.5 | **3.5** | −13.0 |
+| 0 | 16.5 | **1.5** | −15.0 |
 | 1 | 23.5 | 23.5 | 0.0 |
 | 2 | 23.5 | **13.5** | −10.0 |
-| **Mean** | **21.2** | **13.5** | **−7.7** |
+| **Mean** | **21.2** | **12.8** | **−8.4** |
 
 ![Approach distance](results/figures/approach_distance.png)
+
+Measured from the saved frames. An earlier version of this metric derived the
+target position from each step's logged object list and reported 3.5 for Round 1
+seed 0; that was wrong, because once the mover arrives it partly occludes the
+target and shifts its apparent centroid. The target is now read once from frame
+0 as a stable reference, and the metric and the figures share one
+implementation.
 
 Two observations the figure makes unavoidable:
 
@@ -65,12 +72,29 @@ Two observations the figure makes unavoidable:
    moved away from the goal and never returned. The baseline is not merely
    failing to solve; it is failing to make any progress at all.
 2. **Round 1 improved late.** The drops occur at steps ~140, ~185 and ~191 —
-   seed 0 was still actively converging when the action budget ended, at 3.5
-   cells from the target.
+   seed 0 was still actively converging when the action budget ended, at 1.5
+   cells from the target — effectively adjacent to it.
 
 **But the effect is inconsistent.** Seed 1 showed zero improvement. With n=3 on
 a single game, the honest summary is: *a large improvement on 2 of 3 seeds, no
 effect on the third, in-sample.* That is a promising signal, not a result.
+
+### Where the controlled object actually went
+
+![Movement traces](results/figures/movement_traces.png)
+
+The same six episodes in space rather than in time. Path colour runs light to
+dark with step number; the green ring is the start, the dark square the end, the
+red cross the target.
+
+The contrast needs no statistics. Round 0's paths are short, and seed 0's traces
+a closed loop — it returns to where it began. Round 1's paths are long and
+directed, and seed 0 travels left across the board to finish adjacent to the
+target. Seed 1 barely moves in either round, which is the same story its
+approach-distance line tells.
+
+`analysis/movement.py` also writes animated replays
+(`results/figures/movement_r{round}_seed{seed}.gif`) for step-by-step inspection.
 
 ---
 
@@ -128,7 +152,7 @@ disappeared.
 | Metric | Round 0 (3 seeds) | Round 1 (3 seeds) |
 |---|---|---|
 | Solve rate | 0/3 | 0/3 |
-| Mean closest approach | 21.2 cells | **13.5 cells** |
+| Mean closest approach | 21.2 cells | **12.8 cells** |
 | Most-used action share | 94%, 83%, 96% | **60%, 72%, 54%** |
 | Unique frames visited | 142, 143, 133 | **195, 136, 191** |
 | Module calls | 0 | 13, 25, 5 (**43 total**) |
@@ -298,7 +322,8 @@ defined only for solves.
 
 The failure moved *up* the stack: Round 0 failed on perception and planning;
 Round 1 failed on planning efficiency alone — it knew what to do and ran out of
-actions doing it. Seed 0 needed roughly 10 more actions.
+actions doing it. Seed 0 finished 1.5 cells from the target, so it needed only a
+handful more actions.
 
 ---
 
@@ -307,9 +332,9 @@ actions doing it. Seed 0 needed roughly 10 more actions.
 1. **Run held-out games.** This is the single most important gap. The issue's
    real claim needs test-split games, and nothing here speaks to it. At ~40 min
    per episode, 2–3 test games × 3 seeds is ~6 hours.
-2. **Raise the action budget for `ls20`.** Seed 0 was 3.5 cells away and still
-   converging at the cutoff. A 400-action budget would establish whether Round 1
-   solves it at all — a cheap, decisive experiment.
+2. **Raise the action budget for `ls20`.** Seed 0 was **1.5 cells** away and
+   still converging at the cutoff. A 400-action budget would establish whether
+   Round 1 solves it at all — the cheapest decisive experiment available.
 3. **Stable object tracking.** Object ids are recomputed by size each step, so
    identity is not preserved. This is the most likely root cause of the
    row/column confusion and is the clearest perception fix.
@@ -348,6 +373,7 @@ python run.py --stage skills                         # mine from dev trajectorie
 python run.py --round 1 --games ls20-9607627b
 python run.py --stage analyse                        # summary.csv + figures
 python -m analysis.approach                          # approach-distance figure
+python -m analysis.movement                          # movement traces + animated replays
 ```
 
 `--round` is resumable (completed `game, seed` pairs are skipped); add
