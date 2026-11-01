@@ -124,7 +124,7 @@ def grid_to_png_data_url(grid: np.ndarray, cell_pixels: int = 6) -> str:
 # ---------------------------------------------------------------------------
 
 
-def load_api_key(env_var: str = "ARC_MODEL_API_KEY") -> str:
+def load_api_key(env_var: str = "QWEN_API_KEY") -> str:
     """Read the key from the environment, falling back to a local .env file.
 
     The key is never read from config.yaml so it cannot be committed.
@@ -200,7 +200,7 @@ class ModelClient:
             raise AbortExperiment(
                 f"Model endpoint rejected the API key ({response.status_code}): "
                 f"{response.text[:300]}\n"
-                "Check ARC_MODEL_API_KEY. The experiment cannot run without it."
+                "Check QWEN_API_KEY. The experiment cannot run without it."
             )
         if response.status_code == 429:
             raise AbortExperiment(

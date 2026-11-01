@@ -366,7 +366,7 @@ locally and cost nothing.
 ```bash
 python -m venv .venv
 .venv/Scripts/python -m pip install arc-agi pyyaml pandas matplotlib
-echo ARC_MODEL_API_KEY=sk-... > .env
+echo QWEN_API_KEY=sk-... > .env
 python run.py --stage preflight                      # verify key AND inference
 python run.py --round 0 --games ls20-9607627b
 python run.py --stage skills                         # mine from dev trajectories

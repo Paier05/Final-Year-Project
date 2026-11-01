@@ -230,6 +230,17 @@ Deliverables: `results/summary.csv`, `results/figures/` (script-generated), a de
   tested on ls20, so this says the mechanism works, not that it generalises. Held-out
   games are the missing piece.
 
+### 2026-11-01 — Model key renamed to QWEN_API_KEY; PR opened
+
+- **What I did:** At the user's request (made while working on issue #9), the model
+  key is now read from `QWEN_API_KEY` instead of `ARC_MODEL_API_KEY`:
+  `harness/model.py` `load_api_key()` default and error message, the `config.yaml`
+  comment, and the reproduce line in `REPORT.md`. Then opened the PR for this issue.
+- **Why:** Both variables held the same key. Issue #9 specifies `QWEN_API_KEY`, and
+  #9 builds on this harness, so one name now serves both.
+- **Result:** `run.py --stage preflight` loads the key from `QWEN_API_KEY` and the
+  gateway accepts it. No result in this report changed; only where the key is read.
+
 
 ## Open questions / risks
 
