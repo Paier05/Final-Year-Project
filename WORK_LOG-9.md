@@ -275,6 +275,42 @@ non-clear.
   still passes.
 - **Next step:** Re-run the pilot from scratch (the 2 aborted turns don't count).
 
+### 2026-11-01 — Pilot: v0 plays sensibly, nearly clears; cost measured
+
+- **What I did:** Re-ran the pilot after the `id` fix: one v0 episode, written to
+  `data/evolve_pilot/` (not part of the experiment).
+- **Result:**
+  - **Outcome:** not cleared. It used the full 200-action budget over 141 turns,
+    with 1 reset. Its closest approach was 1.5 cells, against a start distance
+    of 28.5, so progress was 0.947 and the score 0.474.
+  - **Cost:** 596k tokens in, 106k out, 44.8 min. That is about 5k tokens and
+    19 s per turn.
+  - **Clean:** no parse failures and no time-outs.
+  - **Cell errors (13), none of which cost actions:**
+    - 10 calls to actions this game doesn't offer (`ACTION6` ×9, `ACTION7` ×1);
+      the API raises an error and the call is free;
+    - 3 syntax errors.
+  - **Actions:** 15 of the 200 changed nothing.
+  - **Skills:** `grid_region` 39 calls, `player_detector` 3; `obstacle_map` and
+    `bfs_to_target` were never called. No inline helpers were defined.
+  - **Turn shape:** most turns took 1 action (79 turns) or none (29). Only 7
+    used all 6.
+  - **Learning:** within 2 turns it corrected v0's mined rule that ACTION2
+    "recolours lime" to "ACTION2 = down 5".
+- **What it means for the run:**
+  - **Tokens:** 18 episodes at about 0.7M each is about 13M, plus the Meta calls,
+    which is under the 25M global cap. Each episode is under its own 1.2M cap.
+  - **Time:** about 45 min per episode on its own, so about 6 batches of 3
+    parallel episodes, roughly 5 h if parallel play doesn't slow the endpoint.
+  - **Untouched skills:** two of v0's skills went unused. If that holds across
+    round 0, the rule-based delete will start to fire once they have 6 episodes
+    of lifetime non-use.
+- **Risk noted:** the 5400 s per-episode wall-time cap is 2× the pilot's time. If
+  3 parallel episodes slow the endpoint enough, episodes could be cut by wall time
+  rather than actions. That would make results depend on server load, so I'll
+  check `end_reason` after round 0.
+- **Next step:** `python evolve_run.py --rounds 5`.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
