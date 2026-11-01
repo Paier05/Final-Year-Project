@@ -432,6 +432,45 @@ non-clear.
 - **Next step:** waiting for the user to restart; I don't restart after a
   memory stop on my own.
 
+### 2026-11-01 — Resumed; rounds 4–5 done; figures and results committed
+
+- **Resume (user's go-ahead):**
+  - Free RAM was 6.2 GB at restart.
+  - The loop reused round 4's saved analysis, validation and `harnesses/v4/`; no
+    Meta call was repeated.
+  - It re-ran v4's 3 episodes from scratch, and the run finished with exit 0
+    (122 min for the resumed part).
+- **Round 4 (v4):** 0.474 ×3, but the episodes ended on caps, not actions:
+  - 2 hit the 200-turn cap and 1 the 90-minute cap;
+  - they used 117–176 actions and 3.05M tokens, about 3× any other version;
+  - `verify_move` (501 calls) turned play into about 1 action per turn.
+  - **Rejected:** gain +0.000; a tie is not a gain.
+- **Round 5 (v5):**
+  - Edits: 3 Meta edits, all passed — `knowledge` again says 1-cell moves,
+    `plan_route` moved to 1-cell moves, and an added `find_gaps`.
+  - Scores 0.474 ×3. **Rejected:** gain +0.000.
+- **Final:** v2 is the best version and the final parent.
+- **Totals:**
+  - **Player:** 7.80M tokens over 18 episodes.
+  - **Meta LLM:** 66.6k tokens over 5 calls.
+  - **Outside the experiment:** the pilot (0.70M) and the play lost to the
+    memory stop (about 1.2M).
+  - **Overall:** about 9.8M against the 25M cap.
+- **Figures:**
+  - Built with #8's functions via `analysis/evolution.py`.
+  - Fixed two labels that called #8's target "the goal", and removed label
+    overlaps.
+  - `analysis/ls20_subgoals.py` wrote `subgoals.json` and
+    `real_goal_by_version.png`.
+- **Checked before committing `results/evolve/`** (9.7 MB, 118 files): scanned
+  it and the code for the API key, the endpoint URL, its host, and `sk-…`
+  patterns, with no hits.
+- **Checked:**
+  - `steps.json` is identical in v0–v5; only the `knowledge` prompt and the
+    skills ever changed.
+  - The one inline-helper group per round had 2 calls, below the promotion
+    threshold.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
@@ -442,5 +481,43 @@ non-clear.
 - **The progress term uses ls20-specific colour roles** (mover = teal, target =
   blue/black, from #8's `analysis/approach.py`). The player never sees it; only the
   gate uses it. It is evaluation knowledge, not harness knowledge.
+  *Resolved as a finding:* that "target" is the rotation switch, not the goal (see
+  "Rounds 2–3"). A follow-up run should measure progress to the real goal and
+  rotation, e.g. with `analysis/ls20_subgoals.py`.
+- **The Meta LLM can write false game facts into `knowledge`,** and Validate cannot
+  catch them; only the gate can, and at n=3 with a saturated score it barely does.
+  A follow-up could have Validate test factual claims against recorded transitions.
 
-## Summary (fill in at the end)
+## Summary
+
+- **Ran:** round 0 plus 5 evolution rounds on ls20 Level 1 with
+  Qwen3.8-27B-FP8 as player and Meta LLM, 3 episodes per version and 200
+  actions per episode. All 5 rounds completed. The run was interrupted once,
+  by the machine running low on memory, and resumed from saved state.
+- **Result:** no version cleared Level 1 (0/18 episodes). The gate accepted v1
+  and v2 and rejected v3–v5. The best version is v2: mean 0.474 and worst 0.474,
+  against v0's 0.333 and 0.088.
+- **What the gain means:** the gate's progress term (my implementation of
+  "progress toward the goal") measured distance to #8's target, which is
+  ls20's rotation switch, not the goal. v2's gain is "touches the switch in every
+  episode"; reaching the goal did not improve. No episode in any version stood
+  on the goal, and the closest any came while correctly rotated was 15 cells.
+- **Why nobody cleared:**
+  - The goal blocks a wrongly rotated player. Players reach the square below it,
+    get blocked, read it as a wall, and never connect "blocked" with "rotate
+    first".
+  - From round 1 the Meta LLM also wrote a wrong player identification (the
+    lime action counter) into the harness. From round 4 it added a wrong
+    movement rule (1 cell, not 5), traced to an unclear "other change" label in
+    Analyze's action-effect summary.
+- **Edits:**
+  - 14 proposed: 13 Meta, 1 rule-based.
+  - 12 passed Validate. 2 were dropped, both Meta: a skill that raised
+    `TypeError`, and a delete of a skill the parent's episodes call.
+  - 6 are in the accepted versions: 3 adds, 2 edits, 1 delete, 0 merges.
+  - No round ever changed the 6-step procedure.
+- **Outputs:**
+  - Results are in `results/evolve/` (archive, changelog, every harness,
+    reports, trajectories, frames, figures, subgoals).
+  - Code is in `evolve/`, `evolve_run.py`, `analysis/evolution.py` and
+    `analysis/ls20_subgoals.py`.
