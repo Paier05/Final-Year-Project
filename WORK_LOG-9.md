@@ -406,6 +406,32 @@ non-clear.
     within one move of the goal, yet scored 0.439 and 0.263 because they were
     far from the switch.
 
+### 2026-11-01 — Round 3 rejected; round 4 interrupted (machine low on memory)
+
+- **Round 3:** v3 scored 0.439, 0.474, 0.474, so mean 0.462. **Rejected**
+  (gain −0.012); v2 stays the parent.
+- **Round 4:**
+  - **Edits:** the Meta LLM proposed 3. Two passed: add `verify_move`, and a
+    `knowledge` rewrite that now wrongly claims moves are 1 cell, not 5. The
+    third, deleting `plan_route`, was dropped because v2's episodes call it and
+    replay diverges at turn 0.
+  - **Play:** v4's players took about 1 action per turn (earlier versions: about
+    3), so they will likely hit the 200-turn or 90-minute cap before 200 actions.
+- **Interrupted at about 21:05:** Claude Code stopped the run's background shell
+  because the machine was critically low on memory. Free RAM was 2.2 / 15.7 GB
+  afterwards, and no single process stood out. v4's episodes were at turns 81–86
+  (59–86 actions); none had finished. No run process was left behind.
+- **State on disk:**
+  - Rounds 0–3 are complete in `archive.json`.
+  - For round 4, `analysis.json`, `validation.json` and `harnesses/v4/` are
+    saved.
+- **Resuming** (`--rounds 5`) reuses all of that, including the Meta LLM's
+  edits, and restarts v4's 3 episodes from scratch. Their trajectory files are
+  opened with `"w"`, so partial lines are overwritten, not mixed in. About 255
+  turns, roughly 1.2M tokens, of v4 play are lost.
+- **Next step:** waiting for the user to restart; I don't restart after a
+  memory stop on my own.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
