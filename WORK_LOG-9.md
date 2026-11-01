@@ -1,7 +1,7 @@
 # Work Log — Issue #9: 5-generation evo-harness run on ls20 (level 1 only) with Qwen3.8-27B
 
 **Issue:** https://github.com/Paier05/Final-Year-Project/issues/9
-**Branch:** `experiment/9-evo-harness-ls20-5-rounds`
+**Branch:** `experiment/9-evo-harness-ls20` (renamed from `experiment/9-evo-harness-ls20-5-rounds` on 2026-11-01; see the progress log)
 **Started:** 2026-11-01
 
 ## Understanding the issue
@@ -236,6 +236,19 @@ non-clear.
     run gives the same numbers as before the rebuild (v0 mean 0.1579, worst 0.0877)
     and exercises all three drop paths (AST violation, core prompt delete, over-cap);
     the figures render.
+- **Next step:** Still waiting for the model backend.
+
+### 2026-11-01 — Clean history pushed under a new branch name
+
+- **What I did:** Pushed the rebuilt history as **`experiment/9-evo-harness-ls20`**
+  instead of overwriting `experiment/9-evo-harness-ls20-5-rounds`.
+- **Why:** Replacing the old remote branch needs a force-push, which the session's
+  permission check blocked. Of the two options I gave, the user chose a new name,
+  which overwrites nothing.
+- **Result:** The old remote branch `experiment/9-evo-harness-ls20-5-rounds` still
+  holds the pre-cleanup history (#8's commits plus #9's, head `4f34a55`). It is
+  superseded and is left for the user to delete. All #9 work continues on the new
+  branch.
 - **Next step:** Still waiting for the model backend.
 
 ## Open questions / risks
