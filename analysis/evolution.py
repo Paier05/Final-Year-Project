@@ -100,9 +100,11 @@ def figure_score_per_round(archive: dict[str, Any], out_dir: str) -> str:
             [x], [entry["score_mean"]], s=110, marker=style["marker"], color=style["colour"],
             edgecolors=SURFACE, linewidths=2, zorder=4,
         )
+        # Below-right of the mean mark: above-right collides with the
+        # right-hand episode dot whenever the mean sits just under it.
         axes.annotate(
             f"{entry['version']} {entry['score_mean']:.3f}",
-            (x, entry["score_mean"]), textcoords="offset points", xytext=(9, 4),
+            (x, entry["score_mean"]), textcoords="offset points", xytext=(8, -14),
             fontsize=8, color=TEXT_PRIMARY,
         )
 
@@ -147,12 +149,18 @@ def figure_approach_by_version(archive: dict[str, Any], out_dir: str) -> str:
         axes = grid[index // cols][index % cols]
         _style(axes, grid_axis="both")
         style = DECISION_STYLE[_decision(entry)]
+        # Episodes that end at the same distance share one label, or the
+        # labels print on top of each other.
+        ends: dict[float, list[tuple[int, int]]] = {}
         for episode in entry["episodes"]:
             curve = approach_curve(load_frames(episode["frames"]), SHORT_ID)
             if not curve:
                 continue
             axes.plot(range(len(curve)), curve, color=style["colour"], linewidth=2, alpha=0.85)
-            axes.annotate(f"ep{episode['episode']} {curve[-1]:.1f}", (len(curve) - 1, curve[-1]),
+            ends.setdefault(round(curve[-1], 1), []).append((episode["episode"], len(curve) - 1))
+        for value, items in ends.items():
+            names = ",".join(str(k) for k, _ in sorted(items))
+            axes.annotate(f"ep{names} {value:.1f}", (max(x for _, x in items), value),
                           textcoords="offset points", xytext=(3, 0), fontsize=6.5,
                           color=TEXT_SECONDARY, va="center")
         axes.set_title(f"{entry['version']} · {_decision(entry)} · mean {entry['score_mean']:.3f}",
@@ -164,8 +172,11 @@ def figure_approach_by_version(archive: dict[str, Any], out_dir: str) -> str:
             axes.set_xlabel("frame (one per action)", fontsize=8, color=TEXT_PRIMARY)
     for index in range(n, rows * cols):
         grid[index // cols][index % cols].set_visible(False)
+    # #8's "target" turned out to be ls20's rotation switch, not the goal; see
+    # analysis/ls20_subgoals.py for distances to the real goal.
     figure.suptitle(
-        f"How close each episode got to the goal, per version ({SHORT_ID.upper()}, lower is better)",
+        f"How close each episode got to #8's target, the rotation switch ({SHORT_ID.upper()}, "
+        "lower is better; this is the gate's progress term)",
         fontsize=11, color=TEXT_PRIMARY, x=0.02, ha="left",
     )
     figure.tight_layout()
@@ -175,8 +186,9 @@ def figure_approach_by_version(archive: dict[str, Any], out_dir: str) -> str:
 def figure_movement_by_version(archive: dict[str, Any], out_dir: str) -> str:
     versions = archive["versions"]
     n_eps = max(len(v["episodes"]) for v in versions)
-    figure, grid = plt.subplots(len(versions), n_eps, figsize=(2.9 * n_eps, 3.0 * len(versions)),
+    figure, grid = plt.subplots(len(versions), n_eps, figsize=(2.9 * n_eps, 2.6 * len(versions)),
                                 facecolor=SURFACE, squeeze=False)
+    figure.subplots_adjust(top=0.95, bottom=0.04, hspace=0.3)
     for row, entry in enumerate(versions):
         for col in range(n_eps):
             axes = grid[row][col]
@@ -196,7 +208,8 @@ def figure_movement_by_version(archive: dict[str, Any], out_dir: str) -> str:
         Line2D([], [], marker="o", linestyle="none", markerfacecolor="none",
                markeredgecolor=START_COLOUR, markersize=7, label="start"),
         Line2D([], [], marker="s", linestyle="none", color="#0d366b", markersize=7, label="end"),
-        Line2D([], [], marker="X", linestyle="none", color=TARGET_COLOUR, markersize=9, label="target"),
+        Line2D([], [], marker="X", linestyle="none", color=TARGET_COLOUR, markersize=9,
+               label="#8's target (the rotation switch; the goal is the box at the top)"),
     ]
     figure.legend(handles=handles, frameon=False, fontsize=8, ncol=3, loc="lower center",
                   bbox_to_anchor=(0.5, -0.005))
