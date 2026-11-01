@@ -106,6 +106,33 @@ non-clear.
     by replaying the logged actions.
 - **Next step:** Build the sandbox and the code-acting action loop.
 
+### 2026-11-01 — Action harness: sandbox, code-acting loop, v0, replay
+
+- **What I did:** Built `evolve/sandbox.py`, `evolve/harness.py`, `evolve/seed_v0.py`,
+  `evolve/action_loop.py`, `evolve/replay.py`, `evolve/score.py` and an offline
+  `evolve/stub.py`; ran a stub episode on the live ls20 env and replayed it.
+- **Why:** The action loop is the thing being evolved, and replay is what makes
+  Validate's "replay" and "merge-equivalence" checks real rather than nominal.
+- **Result / what I found:**
+  - **The first sandbox draft was escapable**, found by reading the stdlib rather
+    than by testing: `statistics.sys`, `re.enum.sys` and `collections._sys` all
+    reach `sys`, and a generator's `gi_frame.f_back.f_globals` reaches the real
+    builtins. Fixed by refusing every attribute that starts with `_` plus a named
+    list (`gi_frame`, `f_globals`, `sys`, `os`, numpy file I/O, `random`, ...) and
+    dropping `re`/`statistics` from the import allow-list. 15 hand cases pass,
+    including `while True` inside `try/except Exception` (the timeout is a
+    `BaseException`, so it cannot be swallowed) and a bare `except:` (rejected).
+  - **v0 is a faithful port with one deliberate correction.** #8's skill header
+    said the rules were mined "from a *different* set of games"; for ls20 they
+    were mined from ls20 itself, so v0 says "from previous play on this game".
+    v0's system prompt is 7.2k chars (#8's was 2.9k + the library).
+  - **Replay works as the validation basis** (stub episode, 20 turns):
+    parent harness reproduces 20/20; deleting a *called* skill diverges at turn 1
+    (15/20); deleting an unused skill reproduces 20/20; promoting the stub's inline
+    helper to a skill (with its inline `def` stripped from the cells) reproduces
+    20/20 **and** the skill really ran (15 calls), so the check is not vacuous.
+- **Next step:** Meta harness: Analyze, Propose, Validate, Write, Gate, archive.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
