@@ -311,6 +311,101 @@ non-clear.
   check `end_reason` after round 0.
 - **Next step:** `python evolve_run.py --rounds 5`.
 
+### 2026-11-01 — Full run: rounds 0 and 1
+
+- **Round 0 (v0):** scores 0.088, 0.474, 0.439, so mean 0.333 and worst 0.088.
+  No clears. All 3 ran out of actions (none hit the wall-time cap); episodes took
+  22–30 min with 3 in parallel, and about 1.0M tokens in total.
+- **Round 1 (v1, 3 Meta edits, all passed Validate):**
+  - The edits: add `collect_items` and `player_position`, and rewrite the
+    `knowledge` prompt.
+  - Scores 0.263, 0.474, 0.474, so mean 0.404 and worst 0.263. No clears.
+  - **Accepted:** gain +0.070, and the worst episode improved rather than dropped.
+- **Finding: v1 is built on a wrong belief, and the gate accepted it anyway.**
+  - **What the Meta LLM wrote:** its rewritten `knowledge` prompt says the player
+    is "the 2-row lime bar at the bottom (rows 61-62)" and the goal is to "collect
+    all maroon items". `player_position()` looks for lime cells.
+  - **Why it's wrong:** the lime bar is most likely ls20's action counter, which
+    turns lime to green on every action. That would also explain #8's
+    ACTION2 "lime→green" rule with support 398. The mover is the teal block, which
+    #8's analysis tracks and the pilot player found on turn 1.
+  - **The players believed it:** their notes call the lime bar the player in 7,
+    18 and 53 turns of the three episodes, and none mentions teal.
+    `player_position` got 75–118 calls per episode.
+  - **Why the score rose anyway:** the error didn't change what they did. They
+    aimed at the maroon block at rows 11–13, which is near the real target, and
+    pressed ACTION1 to "raise the bar", which raises the real mover.
+  - **The lesson:** Validate checks mechanics only (does it apply, run, replay).
+    It cannot tell a true claim about the game from a false one, so only the gate
+    stands in the way, and at n=3 the gate scores outcomes, not understanding.
+    This goes in the report's failure modes.
+
+### 2026-11-01 — Rounds 2–3; the progress term measures the wrong object
+
+- **Round 2 (v2):**
+  - Edits: a rule-based delete of `bfs_to_target` (unused for 6 episodes), a Meta
+    rewrite of `knowledge` (refining the lime-bar belief), and a Meta add of
+    `plan_route`.
+  - Scores 0.474 ×3, so mean and worst are both 0.474. **Accepted** (+0.070).
+- **Round 3:**
+  - **Validate:** dropped the Meta rewrite of `plan_route`, which was a genuine
+    bug (`len(c)` on an int raises `TypeError`). It passed the one `knowledge`
+    edit.
+  - **Network:** one connection to `three.arcprize.org` was refused at 19:58:29
+    during Validate. `arc_agi` then loads the locally cached ls20, which is the
+    same game file, so nothing was affected.
+- **Finding: the 0.474 plateau is "touched the rotator", not "nearly at the goal".**
+  - **How I checked:** I replayed every finished episode through `EpisodeAPI` and
+    read ls20's internal state after each action. This was analysis only;
+    nothing from the game's code goes into any harness. The script is
+    `ls20_state_trace.py` in the session scratchpad.
+  - **ls20's win condition (`pbznecvnfr`):** the player sprite must stand on the
+    goal sprite *and* match its required shape, colour and rotation.
+    - Level 1's goal is at (row 10, col 34): the grey box at the top with the
+      maroon pattern.
+    - The player starts with rotation index 3, and the goal needs 0.
+    - The blue/black object near (32, 21) changes rotation when bumped. That is
+      the object #8's `analysis/approach.py` calls "the target".
+  - **So my gate's progress term measures distance to the rotator.** It reuses
+    #8's metric (`1 − closest/28.5`), which saturates at 0.947 when the player
+    touches the rotator. That gives score 0.474.
+  - **What the players actually did** (12 finished episodes):
+    - 8 reached the correct rotation at least once (3 → 0), often late, around
+      action 180 of 200;
+    - **none** spent a single action on the goal square.
+  - **Whose mistake:** the user agreed to "0.5 · (progress toward the goal)" in
+    the gate question. The error is in my implementation of "the goal": I took
+    #8's "target" object without checking it against the game's rules.
+    (Corrected: an earlier version of this entry wrongly called the formula
+    my own assumption.)
+- **Decision:** let the run finish under the metric it started with. Changing it
+  now would make the gate decisions already taken incomparable with later ones.
+  Afterwards, re-score every saved episode against the true goal (deterministic
+  replay makes this exact) and report both, with the second clearly labelled as
+  computed afterwards.
+- **Follow-up: `analysis/ls20_subgoals.py`** (post hoc, not used by the gate).
+  - **What it does:** replays each saved episode and reports the two real
+    sub-goals separately: whether the player got the goal's rotation, and how
+    close it got to the goal square, overall and while correctly rotated. It
+    also draws `real_goal_by_version.png`. I chose not to invent a composite
+    score after seeing the results.
+  - **Rounds 0–3 (12 episodes):**
+    - 8 episodes reached the right rotation;
+    - none ever stood on the goal;
+    - 5 got within 5 cells of it (one move), all with the wrong rotation;
+    - when correctly rotated, the closest any episode came was 15.
+- **Why "one move away" and still stuck: the goal is a wall to a wrongly rotated
+  player.**
+  - **Test:** from the start, press ACTION1 repeatedly. Six presses move the
+    player to (34, 15). The seventh changes nothing (`n_changed=0`).
+  - **What the players saw:** the goal looks like an obstacle. They found it,
+    were blocked, read it as a wall, and never linked "blocked here" to "change
+    state first". When they did rotate, mostly late and by bumping the switch
+    while wandering, none went back.
+  - **The gate's metric points the wrong way here:** v0 ep2 and v1 ep2 came
+    within one move of the goal, yet scored 0.439 and 0.263 because they were
+    far from the switch.
+
 ## Open questions / risks
 
 - **3 episodes are 3 samples of one level.** Gate decisions on n=3 are noisy; a lucky
