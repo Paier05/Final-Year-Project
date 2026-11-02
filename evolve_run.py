@@ -39,8 +39,19 @@ def redact(text: str) -> str:
     return text
 
 
+# Progress lines also go to this file, opened and closed on every write. On
+# 2026-11-02 the detached #12 run's redirected stdout stopped receiving them
+# at 16:37 while the run itself went on (py-spy showed no thread blocked), so
+# monitoring must not depend on stdout alone.
+EVENT_LOG: str | None = None
+
+
 def log(message: str) -> None:
-    print(redact(message), flush=True)
+    text = redact(message)
+    print(text, flush=True)
+    if EVENT_LOG:
+        with open(EVENT_LOG, "a", encoding="utf-8") as handle:
+            handle.write(text + "\n")
 
 
 def load_config(path: str) -> dict:
@@ -150,6 +161,10 @@ def main() -> None:
         meta_factory = (lambda: loop.make_client(cfg, "meta")) if cfg["meta"]["enabled"] else None
         fact_factory = lambda: loop.make_client(cfg, "meta")  # noqa: E731
 
+    global EVENT_LOG
+    EVENT_LOG = os.path.join("data", os.path.basename(os.path.normpath(root)) + "_events.log")
+    os.makedirs("data", exist_ok=True)
+    log(f"--- run started, rounds={rounds}, root={root}, events -> {EVENT_LOG}")
     started = time.monotonic()
     title = cfg.get("experiment", "").split(":")[0] or "issue #12"
     try:
