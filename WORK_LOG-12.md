@@ -272,6 +272,37 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
     because real prompts are 5k tokens;
   - the player found within 10 turns that the teal/maroon block moves 5 cells.
 
+### 2026-11-02 13:14 — Pilot cut short at 14 turns; full run launched; round 0 doubles as the pilot
+
+- **Pilot, 14 turns** (`data/evolve12_pilot/`, not part of the experiment):
+  - per turn: 3–6k tokens in, 180–720 out, 6.5–23 s;
+  - no parse failures, no cell errors;
+  - **turn 10 took 201.7 s**, but its successful call took 19.6 s. One
+    request hung until the 180 s client timeout and the retry succeeded.
+    The endpoint occasionally hangs.
+  - `llm_calls` counts the harness's calls (format retries included), not the
+    client's network retries, and wall time includes the hang.
+- **Estimate:** ~6k tokens per turn. At #9's ~140 turns per episode that is
+  ~0.8M per episode, so ~25M for 30 episodes (worst case 36M at the
+  per-episode cap; global cap 40M). Time: ~17 s per turn, ~40–50 min per
+  round, if 5 parallel episodes don't slow the endpoint.
+- **Why I stopped the pilot instead of finishing it:** finishing would cost
+  ~35 more minutes. Round 0 is 5 v0 episodes with the same code, so it
+  answers the same questions 5 times over, and the run can be stopped after
+  round 0 if the cost is off.
+  - The one path no test had covered (life loss → game over → harness
+    auto-reset) I tested offline first: a 200-action stub episode lost all 3
+    lives, auto-reset once, and its logged states equal the replayed ones
+    (202/202).
+- **Memory:** 0.7 GB free of 15.7 GB at launch (Chrome 8.8 GB, Claude Code
+  1.8 GB, VS Code 1.2 GB). In #9, Claude Code's low-memory guard killed the
+  run's background shell. This run is therefore launched **detached**
+  (`Start-Process`, PID 1800), not as a child of this session.
+  - Log: `data/evolve12_run.log` (+ `.err`).
+  - The loop resumes from saved state if it is stopped anyway.
+- **Launched 13:14:14:** `python evolve_run.py --rounds 5`, preflight OK for
+  both roles.
+
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
 
