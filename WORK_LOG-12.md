@@ -398,6 +398,69 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
   ~27M more tokens, ~32M total (cap 40M), and ~11–13 h.
 - **To resume:** `.venv\Scripts\python.exe evolve_run.py --rounds 5`.
 
+### 2026-11-02 18:10–21:12 — Resumed; round 1 done (v1 accepted on the cost tie-break); paused in round 2
+
+- **Resumed 18:10** (user: "resume"), detached, PID 31324. 4.1 GB RAM free.
+  Progress lines went to `data/evolve_12_events.log` as intended, and the
+  monitor read them there.
+- **Round 1, Validate** (7 proposed: 3 rule, 4 Meta; 4 passed):
+
+  | edit | source | result |
+  |---|---|---|
+  | promote helper `find` | rule | dropped: replay diverges (episode 1, turn 158) |
+  | promote helper `block_info` | rule | passed; 3 claims unverifiable |
+  | promote helper `teal_centroid` | rule | passed; 2 claims unverifiable |
+  | rewrite `knowledge` | Meta | **dropped, fact-check**: "the goal is … near the blue(1)/black(0) sprite at rows 31-33, cols 20-22" (the rotation switch) |
+  | add skill `move_cluster_to` | Meta | passed; 6/6 claims true |
+  | edit step 4 | Meta | passed |
+  | edit step 1 | Meta | **dropped, fact-check**: "target location (grey box or blue/black sprite)" |
+
+  - Fact-check, round 1: 33 claims, 21 true, 5 false, 7 unverifiable; 2
+    edits dropped for a false claim.
+  - The false belief it stopped (the switch is the target) is #9's own
+    scoring error, now coming from the Meta LLM.
+- **Round 1, v1's episodes:**
+
+  | seed | progress | best state | cost | ended on |
+  |---|---|---|---|---|
+  | 1 | 0.543 | 1 move, wrong rotation | 0.975 | 200 actions |
+  | 2 | 0.543 | 1 move, wrong rotation | 0.764 | 200 actions |
+  | 3 | 0.257 | 6 moves, wrong rotation | 0.692 | 200 actions |
+  | 4 | 0.543 | 1 move, wrong rotation | 0.755 | 200 actions |
+  | 5 | 0.600 | **rotated**, on the switch (7 moves) | 0.782 | 200 actions |
+
+  - Mean progress 0.497 ± 0.122, cost 0.794, gate score 0.100.
+  - Every episode used its 200 actions.
+  - Skill calls: `grid_region` 178, the promoted **`teal_centroid` 90**,
+    `move_cluster_to` 15, `block_info` 0.
+  - So one promoted helper was reused heavily and the other never.
+- **Gate: v1 accepted on the tie-break.**
+  - Progress −0.023 (within ε = 0.05), cost **−0.110**, worst-episode drop
+    +0.085 (≤ δ = 0.1).
+  - The rule as agreed: equal progress within ε, the cheaper version wins.
+    Here the cost difference (12%) is well above per-episode noise.
+  - The progress difference is noise at n=5 (SD 0.12).
+- **Round 2, Validate** (5 proposed: 1 rule, 4 Meta; 3 passed):
+  - **passed:** the rule-based delete of `bfs_to_target` (unused for 10
+    episodes, the raised threshold's first firing); a Meta edit of step 4;
+    a Meta `knowledge` rewrite (4 claims true, 1 unverifiable);
+  - **dropped:** Meta skill `detect_orientation` (its own test raised
+    IndexError on the start state) and Meta skill `rotate_cluster`
+    (NameError: it calls the dropped `detect_orientation`).
+  - The Meta LLM is now aiming at rotation, plausibly because Analyze reports
+    "rotation WRONG" per episode, but neither tool survived the mechanical
+    checks.
+- **Paused 21:12 at the user's request** ("can stop for now and i will resume
+  later"), during v2's evaluation:
+  - v2's 5 episodes were at 58–71 turns, about 1.8M tokens of play that
+    resume will redo; their trajectory files are reopened with "w";
+  - saved and reused on resume: archive (v0, v1), `harnesses/v2`,
+    `reports/round_2/{analysis,proposals,validation}.json`, so no Meta or
+    fact-check call is repeated.
+- **Tokens so far:** player 9.26M in counted episodes (v0 5.34M, v1 3.92M),
+  plus Meta + fact-check ~21k. Not counted: the first attempt (~3.4M) and the
+  two cut-short evaluations (~1.8M + v2's ~1.8M).
+
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
 

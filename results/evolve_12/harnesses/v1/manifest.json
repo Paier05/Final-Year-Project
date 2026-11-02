@@ -1,0 +1,46 @@
+{
+  "version": "v1",
+  "parent": "v0",
+  "round": 1,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "bfs_to_target",
+    "block_info",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r1-e2",
+      "source": "rule",
+      "what": "add skill block_info",
+      "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times"
+    },
+    {
+      "id": "r1-e3",
+      "source": "rule",
+      "what": "add skill teal_centroid",
+      "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times"
+    },
+    {
+      "id": "r1-e5",
+      "source": "meta",
+      "what": "add skill move_cluster_to",
+      "rationale": "The player oscillates because it decides one action per turn and re-tests. This skill batches up to 6 movement actions in one turn, driving the cluster toward the target directly."
+    },
+    {
+      "id": "r1-e6",
+      "source": "meta",
+      "what": "edit step 4",
+      "rationale": "The player wastes 44-114 turns with no action and re-tests known actions. This step forces it to use the batch-move skill once dynamics are known."
+    }
+  ]
+}

@@ -1,0 +1,1253 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "rules": [
+        {
+          "op": "add",
+          "target": "skill",
+          "name": "find",
+          "content": "def find(g, c):\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 18 times).\"\"\"\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]",
+          "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 18 times",
+          "source": "rule",
+          "replay_strip": [
+            [
+              "find",
+              "def _(g, c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]"
+            ]
+          ],
+          "replay_rename": {}
+        },
+        {
+          "op": "add",
+          "target": "skill",
+          "name": "block_info",
+          "content": "def block_info(g):\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 5 times).\"\"\"\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))",
+          "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+          "source": "rule",
+          "replay_strip": [
+            [
+              "block_info",
+              "def _(g):\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))"
+            ]
+          ],
+          "replay_rename": {}
+        },
+        {
+          "op": "add",
+          "target": "skill",
+          "name": "teal_centroid",
+          "content": "def teal_centroid():\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 5 times).\"\"\"\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))",
+          "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+          "source": "rule",
+          "replay_strip": [
+            [
+              "teal_centroid",
+              "def _():\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))"
+            ]
+          ],
+          "replay_rename": {}
+        }
+      ],
+      "meta": {
+        "reply": "{\n \"analysis\": \"The player never clears the level because it wastes its entire action budget (200 actions, ~180 turns) on redundant re-testing of the same four actions, with 44-114 turns producing no action at all. The dynamics are actually simple and consistent across episodes: ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5, moving a teal/maroon cluster. The goal is to move that cluster into a target region (a grey box or near the blue/black sprite). The player gets within 1-3 moves of the goal but never completes because it cannot commit to a plan and instead oscillates. The fix is to (a) hard-code the known action mapping into the knowledge prompt so the player skips exploration, (b) add a skill that computes the required moves and executes them in one turn, and (c) tighten the turn procedure to forbid re-testing known actions and to batch movement actions.\",\n \"edits\": [\n  {\n   \"op\": \"edit\",\n   \"target\": \"prompt\",\n   \"name\": \"knowledge\",\n   \"content\": \"LEARNED SKILL LIBRARY\\nThese were mined automatically from previous play on this game and then validated against the recorded data. They are hypotheses, not guarantees: a skill can be wrong for this particular game. Use them as a starting point and trust the diff you actually observe over any skill text.\\n\\nAction-effect rules (what an action tends to do):\\n  - ls20_action1_moves: In game LS20, ACTION1 moves the moving object up by 5 cells. [support=14, precision=1.00]\\n      how to use: Use ACTION1 when you need to move up by 5 cells.\\n  - ls20_action2_effect: In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells. [support=398, precision=0.96]\\n      how to use: Expect ACTION2 to recolour lime regions.\\n  - ls20_action3_moves: In game LS20, ACTION3 moves the moving object left by 5 cells. [support=10, precision=1.00]\\n      how to use: Use ACTION3 when you need to move left by 5 cells.\\n  - ls20_action4_moves: In game LS20, ACTION4 moves the moving object right by 5 cells. [support=9, precision=1.00]\\n      how to use: Use ACTION4 when you need to move right by 5 cells.\\n\\nCONFIRMED DYNAMICS (from 5 episodes, high confidence):\\n- The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.\\n- ACTION1 = move cluster UP by 5 rows. ACTION2 = move cluster DOWN by 5 rows.\\n- ACTION3 = move cluster LEFT by 5 cols. ACTION4 = move cluster RIGHT by 5 cols.\\n- ACTION2 also converts some lime->green cells in the bottom rows; this is a side effect, not the main effect.\\n- The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).\\n- DO NOT re-test these actions. They are known. Plan the moves and execute them.\",\n   \"rationale\": \"The player repeatedly re-tests the same four actions across 150+ turns. Hard-coding the confirmed action mapping lets it skip exploration and go straight to planning.\"\n  },\n  {\n   \"op\": \"add\",\n   \"target\": \"skill\",\n   \"name\": \"move_cluster_to\",\n   \"content\": \"def move_cluster_to(target_row, target_col, max_actions=6):\\n    \\\"\\\"\\\"Move the teal/maroon cluster toward (target_row, target_col) using known actions.\\n\\n    ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.\\n    Executes up to max_actions moves in this turn, stopping early if the cluster\\n    reaches the target or an action produces no change. Returns a list of\\n    (action, n_changed) tuples.\\n    \\\"\\\"\\\"\\n    results = []\\n    for _ in range(max_actions):\\n        g = grid()\\n        teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\\n        mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\\n        cells = teal + mar\\n        if not cells:\\n            break\\n        cr = sum(r for r, c in cells) / len(cells)\\n        cc = sum(c for r, c in cells) / len(cells)\\n        dr = target_row - cr\\n        dc = target_col - cc\\n        if abs(dr) < 2 and abs(dc) < 2:\\n            break\\n        if abs(dr) >= abs(dc):\\n            a = 1 if dr < 0 else 2\\n        else:\\n            a = 3 if dc < 0 else 4\\n        r = action(a)\\n        results.append((a, r.get(\\\"n_changed\\\", 0)))\\n        if r.get(\\\"n_changed\\\", 0) == 0:\\n            break\\n    return results\",\n   \"test\": \"r = move_cluster_to(12, 36, max_actions=1)\\nassert isinstance(r, list) and len(r) <= 1\",\n   \"rationale\": \"The player oscillates because it decides one action per turn and re-tests. This skill batches up to 6 movement actions in one turn, driving the cluster toward the target directly.\"\n  },\n  {\n   \"op\": \"edit\",\n   \"target\": \"step\",\n   \"index\": 4,\n   \"content\": \"4. PLAN: If the action dynamics are already in your notes, do NOT re-test them. Compute the delta between the cluster centroid and the target, then call move_cluster_to(target_row, target_col) to execute up to {cap} moves in one turn. If the dynamics are NOT yet known, test at most one unknown action this turn.\",\n   \"rationale\": \"The player wastes 44-114 turns with no action and re-tests known actions. This step forces it to use the batch-move skill once dynamics are known.\"\n  },\n  {\n   \"op\": \"edit\",\n   \"target\": \"step\",\n   \"index\": 1,\n   \"content\": \"1. OBSERVE: read the observation and the result of your last cell. Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite). Note the delta in rows and cols.\",\n   \"rationale\": \"The player often fails to track the cluster position and target delta, leading to oscillation. This step makes it explicitly compute the delta each turn.\"\n  }\n ]\n}",
+        "tokens_in": 14326,
+        "tokens_out": 1577,
+        "finish_reason": "stop",
+        "prompt_chars": 37633,
+        "analysis": "The player never clears the level because it wastes its entire action budget (200 actions, ~180 turns) on redundant re-testing of the same four actions, with 44-114 turns producing no action at all. The dynamics are actually simple and consistent across episodes: ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5, moving a teal/maroon cluster. The goal is to move that cluster into a target region (a grey box or near the blue/black sprite). The player gets within 1-3 moves of the goal but never completes because it cannot commit to a plan and instead oscillates. The fix is to (a) hard-code the known action mapping into the knowledge prompt so the player skips exploration, (b) add a skill that computes the required moves and executes them in one turn, and (c) tighten the turn procedure to forbid re-testing known actions and to batch movement actions.",
+        "edits": [
+          {
+            "op": "edit",
+            "target": "prompt",
+            "name": "knowledge",
+            "content": "LEARNED SKILL LIBRARY\nThese were mined automatically from previous play on this game and then validated against the recorded data. They are hypotheses, not guarantees: a skill can be wrong for this particular game. Use them as a starting point and trust the diff you actually observe over any skill text.\n\nAction-effect rules (what an action tends to do):\n  - ls20_action1_moves: In game LS20, ACTION1 moves the moving object up by 5 cells. [support=14, precision=1.00]\n      how to use: Use ACTION1 when you need to move up by 5 cells.\n  - ls20_action2_effect: In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells. [support=398, precision=0.96]\n      how to use: Expect ACTION2 to recolour lime regions.\n  - ls20_action3_moves: In game LS20, ACTION3 moves the moving object left by 5 cells. [support=10, precision=1.00]\n      how to use: Use ACTION3 when you need to move left by 5 cells.\n  - ls20_action4_moves: In game LS20, ACTION4 moves the moving object right by 5 cells. [support=9, precision=1.00]\n      how to use: Use ACTION4 when you need to move right by 5 cells.\n\nCONFIRMED DYNAMICS (from 5 episodes, high confidence):\n- The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.\n- ACTION1 = move cluster UP by 5 rows. ACTION2 = move cluster DOWN by 5 rows.\n- ACTION3 = move cluster LEFT by 5 cols. ACTION4 = move cluster RIGHT by 5 cols.\n- ACTION2 also converts some lime->green cells in the bottom rows; this is a side effect, not the main effect.\n- The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).\n- DO NOT re-test these actions. They are known. Plan the moves and execute them.",
+            "rationale": "The player repeatedly re-tests the same four actions across 150+ turns. Hard-coding the confirmed action mapping lets it skip exploration and go straight to planning.",
+            "source": "meta"
+          },
+          {
+            "op": "add",
+            "target": "skill",
+            "name": "move_cluster_to",
+            "content": "def move_cluster_to(target_row, target_col, max_actions=6):\n    \"\"\"Move the teal/maroon cluster toward (target_row, target_col) using known actions.\n\n    ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.\n    Executes up to max_actions moves in this turn, stopping early if the cluster\n    reaches the target or an action produces no change. Returns a list of\n    (action, n_changed) tuples.\n    \"\"\"\n    results = []\n    for _ in range(max_actions):\n        g = grid()\n        teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n        mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n        cells = teal + mar\n        if not cells:\n            break\n        cr = sum(r for r, c in cells) / len(cells)\n        cc = sum(c for r, c in cells) / len(cells)\n        dr = target_row - cr\n        dc = target_col - cc\n        if abs(dr) < 2 and abs(dc) < 2:\n            break\n        if abs(dr) >= abs(dc):\n            a = 1 if dr < 0 else 2\n        else:\n            a = 3 if dc < 0 else 4\n        r = action(a)\n        results.append((a, r.get(\"n_changed\", 0)))\n        if r.get(\"n_changed\", 0) == 0:\n            break\n    return results",
+            "test": "r = move_cluster_to(12, 36, max_actions=1)\nassert isinstance(r, list) and len(r) <= 1",
+            "rationale": "The player oscillates because it decides one action per turn and re-tests. This skill batches up to 6 movement actions in one turn, driving the cluster toward the target directly.",
+            "source": "meta"
+          },
+          {
+            "op": "edit",
+            "target": "step",
+            "index": 4,
+            "content": "4. PLAN: If the action dynamics are already in your notes, do NOT re-test them. Compute the delta between the cluster centroid and the target, then call move_cluster_to(target_row, target_col) to execute up to {cap} moves in one turn. If the dynamics are NOT yet known, test at most one unknown action this turn.",
+            "rationale": "The player wastes 44-114 turns with no action and re-tests known actions. This step forces it to use the batch-move skill once dynamics are known.",
+            "source": "meta"
+          },
+          {
+            "op": "edit",
+            "target": "step",
+            "index": 1,
+            "content": "1. OBSERVE: read the observation and the result of your last cell. Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite). Note the delta in rows and cols.",
+            "rationale": "The player often fails to track the cluster position and target delta, leading to oscillation. This step makes it explicitly compute the delta each turn.",
+            "source": "meta"
+          }
+        ],
+        "over_cap": []
+      },
+      "passed": [
+        {
+          "id": "r1-e2",
+          "source": "rule",
+          "what": "add skill block_info",
+          "edit": {
+            "op": "add",
+            "target": "skill",
+            "source": "rule",
+            "name": "block_info",
+            "content": "def block_info(g):\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 5 times).\"\"\"\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))",
+            "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+            "replay_strip": [
+              [
+                "block_info",
+                "def _(g):\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))"
+              ]
+            ],
+            "replay_rename": {},
+            "id": "r1-e2"
+          },
+          "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7416 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 5 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 5 times"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "3 claims: 0 true, 0 false, 3 unverifiable"
+            }
+          ],
+          "replay_detail": {
+            "episodes": [
+              {
+                "episode": 1,
+                "turns_compared": 159,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 2,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 3,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 4,
+                "turns_compared": 200,
+                "diverged_at": null,
+                "skill_calls": 5
+              },
+              {
+                "episode": 5,
+                "turns_compared": 158,
+                "diverged_at": null,
+                "skill_calls": 0
+              }
+            ]
+          },
+          "factcheck": {
+            "verdict": "unverifiable",
+            "claims": [
+              {
+                "quote": "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "teal",
+                  "role": "other"
+                },
+                "label": "unverifiable",
+                "evidence": "role 'other' is not checkable"
+              },
+              {
+                "quote": "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "maroon",
+                  "role": "other"
+                },
+                "label": "unverifiable",
+                "evidence": "role 'other' is not checkable"
+              },
+              {
+                "quote": "return (bb(teal), bb(mar), len(teal), len(mar))",
+                "kind": "other",
+                "claim": {
+                  "kind": "other",
+                  "skill": "block_info",
+                  "returns": null
+                },
+                "label": "unverifiable",
+                "evidence": "outside the checkable vocabulary"
+              }
+            ],
+            "summary": "3 claims: 0 true, 0 false, 3 unverifiable"
+          }
+        },
+        {
+          "id": "r1-e3",
+          "source": "rule",
+          "what": "add skill teal_centroid",
+          "edit": {
+            "op": "add",
+            "target": "skill",
+            "source": "rule",
+            "name": "teal_centroid",
+            "content": "def teal_centroid():\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 5 times).\"\"\"\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))",
+            "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+            "replay_strip": [
+              [
+                "teal_centroid",
+                "def _():\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))"
+              ]
+            ],
+            "replay_rename": {},
+            "id": "r1-e3"
+          },
+          "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 5 times",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7524 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 5 times"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "2 claims: 0 true, 0 false, 2 unverifiable"
+            }
+          ],
+          "replay_detail": {
+            "episodes": [
+              {
+                "episode": 1,
+                "turns_compared": 159,
+                "diverged_at": null,
+                "skill_calls": 5
+              },
+              {
+                "episode": 2,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 3,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 4,
+                "turns_compared": 200,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 5,
+                "turns_compared": 158,
+                "diverged_at": null,
+                "skill_calls": 0
+              }
+            ]
+          },
+          "factcheck": {
+            "verdict": "unverifiable",
+            "claims": [
+              {
+                "quote": "cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "teal",
+                  "role": "other"
+                },
+                "label": "unverifiable",
+                "evidence": "role 'other' is not checkable"
+              },
+              {
+                "quote": "return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))",
+                "kind": "other",
+                "claim": {
+                  "kind": "other",
+                  "skill": "teal_centroid",
+                  "returns": null
+                },
+                "label": "unverifiable",
+                "evidence": "outside the checkable vocabulary"
+              }
+            ],
+            "summary": "2 claims: 0 true, 0 false, 2 unverifiable"
+          }
+        },
+        {
+          "id": "r1-e5",
+          "source": "meta",
+          "what": "add skill move_cluster_to",
+          "edit": {
+            "op": "add",
+            "target": "skill",
+            "source": "meta",
+            "name": "move_cluster_to",
+            "content": "def move_cluster_to(target_row, target_col, max_actions=6):\n    \"\"\"Move the teal/maroon cluster toward (target_row, target_col) using known actions.\n\n    ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.\n    Executes up to max_actions moves in this turn, stopping early if the cluster\n    reaches the target or an action produces no change. Returns a list of\n    (action, n_changed) tuples.\n    \"\"\"\n    results = []\n    for _ in range(max_actions):\n        g = grid()\n        teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n        mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n        cells = teal + mar\n        if not cells:\n            break\n        cr = sum(r for r, c in cells) / len(cells)\n        cc = sum(c for r, c in cells) / len(cells)\n        dr = target_row - cr\n        dc = target_col - cc\n        if abs(dr) < 2 and abs(dc) < 2:\n            break\n        if abs(dr) >= abs(dc):\n            a = 1 if dr < 0 else 2\n        else:\n            a = 3 if dc < 0 else 4\n        r = action(a)\n        results.append((a, r.get(\"n_changed\", 0)))\n        if r.get(\"n_changed\", 0) == 0:\n            break\n    return results",
+            "test": "r = move_cluster_to(12, 36, max_actions=1)\nassert isinstance(r, list) and len(r) <= 1",
+            "rationale": "The player oscillates because it decides one action per turn and re-tests. This skill batches up to 6 movement actions in one turn, driving the cluster toward the target directly.",
+            "id": "r1-e5"
+          },
+          "rationale": "The player oscillates because it decides one action per turn and re-tests. This skill batches up to 6 movement actions in one turn, driving the cluster toward the target directly.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7917 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 7 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test passes on 3 recorded states"
+            },
+            {
+              "check": "fact-check",
+              "result": "6 claims: 6 true, 0 false, 0 unverifiable"
+            }
+          ],
+          "replay_detail": {
+            "episodes": [
+              {
+                "episode": 1,
+                "turns_compared": 159,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 2,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 3,
+                "turns_compared": 185,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 4,
+                "turns_compared": 200,
+                "diverged_at": null,
+                "skill_calls": 0
+              },
+              {
+                "episode": 5,
+                "turns_compared": 158,
+                "diverged_at": null,
+                "skill_calls": 0
+              }
+            ]
+          },
+          "factcheck": {
+            "verdict": "true",
+            "claims": [
+              {
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 1,
+                  "direction": "up",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION1 moves the player up 5 cells; logged: {(-5, 0): 183, (0, 0): 89}"
+              },
+              {
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 2,
+                  "direction": "down",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION2 moves the player down 5 cells; logged: {(0, 0): 189, (5, 0): 125}"
+              },
+              {
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 3,
+                  "direction": "left",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION3 moves the player left 5 cells; logged: {(0, 0): 65, (0, -5): 60}"
+              },
+              {
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 4,
+                  "direction": "right",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION4 moves the player right 5 cells; logged: {(0, 0): 90, (0, 5): 69}"
+              },
+              {
+                "quote": "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "teal",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "teal is player"
+              },
+              {
+                "quote": "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "maroon",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "maroon is goal, player, ui"
+              }
+            ],
+            "summary": "6 claims: 6 true, 0 false, 0 unverifiable"
+          }
+        },
+        {
+          "id": "r1-e6",
+          "source": "meta",
+          "what": "edit step 4",
+          "edit": {
+            "op": "edit",
+            "target": "step",
+            "source": "meta",
+            "content": "4. PLAN: If the action dynamics are already in your notes, do NOT re-test them. Compute the delta between the cluster centroid and the target, then call move_cluster_to(target_row, target_col) to execute up to {cap} moves in one turn. If the dynamics are NOT yet known, test at most one unknown action this turn.",
+            "rationale": "The player wastes 44-114 turns with no action and re-tests known actions. This step forces it to use the batch-move skill once dynamics are known.",
+            "index": 4,
+            "id": "r1-e6"
+          },
+          "rationale": "The player wastes 44-114 turns with no action and re-tests known actions. This step forces it to use the batch-move skill once dynamics are known.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8116 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "0 claims: 0 true, 0 false, 0 unverifiable"
+            }
+          ],
+          "replay_detail": {},
+          "factcheck": {
+            "verdict": "true",
+            "claims": [],
+            "summary": "0 claims: 0 true, 0 false, 0 unverifiable"
+          }
+        }
+      ],
+      "dropped": [
+        {
+          "id": "r1-e1",
+          "source": "rule",
+          "what": "add skill find",
+          "stage": "replay",
+          "reason": "behaviour changed: episode 1 diverges at turn 158",
+          "edit": {
+            "op": "add",
+            "target": "skill",
+            "source": "rule",
+            "name": "find",
+            "content": "def find(g, c):\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 18 times).\"\"\"\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]",
+            "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 18 times",
+            "replay_strip": [
+              [
+                "find",
+                "def _(g, c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]"
+              ]
+            ],
+            "replay_rename": {},
+            "id": "r1-e1"
+          },
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7414 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 5 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "behaviour changed: episode 1 diverges at turn 158"
+            }
+          ]
+        },
+        {
+          "id": "r1-e4",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "stage": "fact-check",
+          "reason": "contradicted by the game: 'The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).'; 'The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).'; 'The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).'",
+          "edit": {
+            "op": "edit",
+            "target": "prompt",
+            "source": "meta",
+            "name": "knowledge",
+            "content": "LEARNED SKILL LIBRARY\nThese were mined automatically from previous play on this game and then validated against the recorded data. They are hypotheses, not guarantees: a skill can be wrong for this particular game. Use them as a starting point and trust the diff you actually observe over any skill text.\n\nAction-effect rules (what an action tends to do):\n  - ls20_action1_moves: In game LS20, ACTION1 moves the moving object up by 5 cells. [support=14, precision=1.00]\n      how to use: Use ACTION1 when you need to move up by 5 cells.\n  - ls20_action2_effect: In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells. [support=398, precision=0.96]\n      how to use: Expect ACTION2 to recolour lime regions.\n  - ls20_action3_moves: In game LS20, ACTION3 moves the moving object left by 5 cells. [support=10, precision=1.00]\n      how to use: Use ACTION3 when you need to move left by 5 cells.\n  - ls20_action4_moves: In game LS20, ACTION4 moves the moving object right by 5 cells. [support=9, precision=1.00]\n      how to use: Use ACTION4 when you need to move right by 5 cells.\n\nCONFIRMED DYNAMICS (from 5 episodes, high confidence):\n- The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.\n- ACTION1 = move cluster UP by 5 rows. ACTION2 = move cluster DOWN by 5 rows.\n- ACTION3 = move cluster LEFT by 5 cols. ACTION4 = move cluster RIGHT by 5 cols.\n- ACTION2 also converts some lime->green cells in the bottom rows; this is a side effect, not the main effect.\n- The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).\n- DO NOT re-test these actions. They are known. Plan the moves and execute them.",
+            "rationale": "The player repeatedly re-tests the same four actions across 150+ turns. Hard-coding the confirmed action mapping lets it skip exploration and go straight to planning.",
+            "id": "r1-e4"
+          },
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8164 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "17 claims: 12 true, 3 false, 2 unverifiable"
+            }
+          ],
+          "factcheck": {
+            "verdict": "false",
+            "claims": [
+              {
+                "quote": "In game LS20, ACTION1 moves the moving object up by 5 cells.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 1,
+                  "direction": "up",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION1 moves the player up 5 cells; logged: {(-5, 0): 183, (0, 0): 89}"
+              },
+              {
+                "quote": "In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+                "kind": "other",
+                "claim": {
+                  "kind": "other"
+                },
+                "label": "unverifiable",
+                "evidence": "outside the checkable vocabulary"
+              },
+              {
+                "quote": "In game LS20, ACTION3 moves the moving object left by 5 cells.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 3,
+                  "direction": "left",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION3 moves the player left 5 cells; logged: {(0, 0): 65, (0, -5): 60}"
+              },
+              {
+                "quote": "In game LS20, ACTION4 moves the moving object right by 5 cells.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 4,
+                  "direction": "right",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION4 moves the player right 5 cells; logged: {(0, 0): 90, (0, 5): 69}"
+              },
+              {
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "teal",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "teal is player"
+              },
+              {
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "maroon",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "maroon is goal, player, ui"
+              },
+              {
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "location",
+                "claim": {
+                  "kind": "location",
+                  "object": "player",
+                  "rows": null,
+                  "cols": [
+                    33,
+                    39
+                  ],
+                  "region": null
+                },
+                "label": "true",
+                "evidence": "player sprite at rows 45-49, cols 34-38 (maroon, teal)"
+              },
+              {
+                "quote": "ACTION1 = move cluster UP by 5 rows.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 1,
+                  "direction": "up",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION1 moves the player up 5 cells; logged: {(-5, 0): 183, (0, 0): 89}"
+              },
+              {
+                "quote": "ACTION2 = move cluster DOWN by 5 rows.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 2,
+                  "direction": "down",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION2 moves the player down 5 cells; logged: {(0, 0): 189, (5, 0): 125}"
+              },
+              {
+                "quote": "ACTION3 = move cluster LEFT by 5 cols.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 3,
+                  "direction": "left",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION3 moves the player left 5 cells; logged: {(0, 0): 65, (0, -5): 60}"
+              },
+              {
+                "quote": "ACTION4 = move cluster RIGHT by 5 cols.",
+                "kind": "move",
+                "claim": {
+                  "kind": "move",
+                  "action": 4,
+                  "direction": "right",
+                  "cells": 5,
+                  "unit": "cells"
+                },
+                "label": "true",
+                "evidence": "ACTION4 moves the player right 5 cells; logged: {(0, 0): 90, (0, 5): 69}"
+              },
+              {
+                "quote": "ACTION2 also converts some lime->green cells in the bottom rows; this is a side effect, not the main effect.",
+                "kind": "other",
+                "claim": {
+                  "kind": "other"
+                },
+                "label": "unverifiable",
+                "evidence": "outside the checkable vocabulary"
+              },
+              {
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "grey",
+                  "role": "goal"
+                },
+                "label": "true",
+                "evidence": "grey is goal, ui"
+              },
+              {
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "blue",
+                  "role": "goal"
+                },
+                "label": "false",
+                "evidence": "blue is rotation_switch"
+              },
+              {
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "black",
+                  "role": "goal"
+                },
+                "label": "false",
+                "evidence": "black is rotation_switch"
+              },
+              {
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "location",
+                "claim": {
+                  "kind": "location",
+                  "object": "goal",
+                  "rows": [
+                    31,
+                    33
+                  ],
+                  "cols": [
+                    20,
+                    22
+                  ],
+                  "region": null
+                },
+                "label": "false",
+                "evidence": "goal at rows 10-14, cols 34-38"
+              },
+              {
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "goal_requirement",
+                "claim": {
+                  "kind": "goal_requirement",
+                  "requires": [
+                    "position"
+                  ]
+                },
+                "label": "true",
+                "evidence": "the level clears when the player stands on the goal with matching rotation, shape and colour"
+              }
+            ],
+            "summary": "17 claims: 12 true, 3 false, 2 unverifiable"
+          }
+        },
+        {
+          "id": "r1-e7",
+          "source": "meta",
+          "what": "edit step 1",
+          "stage": "fact-check",
+          "reason": "contradicted by the game: 'Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).'; 'Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).'",
+          "edit": {
+            "op": "edit",
+            "target": "step",
+            "source": "meta",
+            "content": "1. OBSERVE: read the observation and the result of your last cell. Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite). Note the delta in rows and cols.",
+            "rationale": "The player often fails to track the cluster position and target delta, leading to oscillation. This step makes it explicitly compute the delta each turn.",
+            "index": 1,
+            "id": "r1-e7"
+          },
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8190 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "5 claims: 3 true, 2 false, 0 unverifiable"
+            }
+          ],
+          "factcheck": {
+            "verdict": "false",
+            "claims": [
+              {
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "teal",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "teal is player"
+              },
+              {
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "maroon",
+                  "role": "player"
+                },
+                "label": "true",
+                "evidence": "maroon is goal, player, ui"
+              },
+              {
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "grey",
+                  "role": "goal"
+                },
+                "label": "true",
+                "evidence": "grey is goal, ui"
+              },
+              {
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "blue",
+                  "role": "goal"
+                },
+                "label": "false",
+                "evidence": "blue is rotation_switch"
+              },
+              {
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "claim": {
+                  "kind": "colour_role",
+                  "colour": "black",
+                  "role": "goal"
+                },
+                "label": "false",
+                "evidence": "black is rotation_switch"
+              }
+            ],
+            "summary": "5 claims: 3 true, 2 false, 0 unverifiable"
+          }
+        }
+      ],
+      "info": {
+        "fidelity": {
+          "1": {
+            "turns": 159,
+            "reproduced": 159,
+            "first_divergence": null
+          },
+          "2": {
+            "turns": 185,
+            "reproduced": 185,
+            "first_divergence": null
+          },
+          "3": {
+            "turns": 185,
+            "reproduced": 185,
+            "first_divergence": null
+          },
+          "4": {
+            "turns": 200,
+            "reproduced": 200,
+            "first_divergence": null
+          },
+          "5": {
+            "turns": 158,
+            "reproduced": 158,
+            "first_divergence": null
+          }
+        },
+        "test_states": [
+          "after 0 actions",
+          "after 92 actions",
+          "after 165 actions"
+        ],
+        "factcheck_extraction": {
+          "by_edit": {
+            "r1-e1": [
+              {
+                "edit": "r1-e1",
+                "quote": "def find(g, c):\n    \"\"\"Promoted from the player's own inline helper (defined in 1 episodes, called 18 times).\"\"\"\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]",
+                "kind": "other",
+                "skill": "find",
+                "returns": null
+              }
+            ],
+            "r1-e2": [
+              {
+                "edit": "r1-e2",
+                "quote": "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "colour": "teal",
+                "role": "other"
+              },
+              {
+                "edit": "r1-e2",
+                "quote": "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]",
+                "kind": "colour_role",
+                "colour": "maroon",
+                "role": "other"
+              },
+              {
+                "edit": "r1-e2",
+                "quote": "return (bb(teal), bb(mar), len(teal), len(mar))",
+                "kind": "other",
+                "skill": "block_info",
+                "returns": null
+              }
+            ],
+            "r1-e3": [
+              {
+                "edit": "r1-e3",
+                "quote": "cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "colour": "teal",
+                "role": "other"
+              },
+              {
+                "edit": "r1-e3",
+                "quote": "return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))",
+                "kind": "other",
+                "skill": "teal_centroid",
+                "returns": null
+              }
+            ],
+            "r1-e4": [
+              {
+                "edit": "r1-e4",
+                "quote": "In game LS20, ACTION1 moves the moving object up by 5 cells.",
+                "kind": "move",
+                "action": 1,
+                "direction": "up",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+                "kind": "other"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "In game LS20, ACTION3 moves the moving object left by 5 cells.",
+                "kind": "move",
+                "action": 3,
+                "direction": "left",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "In game LS20, ACTION4 moves the moving object right by 5 cells.",
+                "kind": "move",
+                "action": 4,
+                "direction": "right",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "colour_role",
+                "colour": "teal",
+                "role": "player"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "colour_role",
+                "colour": "maroon",
+                "role": "player"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The movable object is a teal(12)+maroon(9) cluster, ~10-15 cells, usually near cols 33-39.",
+                "kind": "location",
+                "object": "player",
+                "rows": null,
+                "cols": [
+                  33,
+                  39
+                ],
+                "region": null
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "ACTION1 = move cluster UP by 5 rows.",
+                "kind": "move",
+                "action": 1,
+                "direction": "up",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "ACTION2 = move cluster DOWN by 5 rows.",
+                "kind": "move",
+                "action": 2,
+                "direction": "down",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "ACTION3 = move cluster LEFT by 5 cols.",
+                "kind": "move",
+                "action": 3,
+                "direction": "left",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "ACTION4 = move cluster RIGHT by 5 cols.",
+                "kind": "move",
+                "action": 4,
+                "direction": "right",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "ACTION2 also converts some lime->green cells in the bottom rows; this is a side effect, not the main effect.",
+                "kind": "other"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "colour": "grey",
+                "role": "goal"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "colour": "blue",
+                "role": "goal"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "colour_role",
+                "colour": "black",
+                "role": "goal"
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "location",
+                "object": "goal",
+                "rows": [
+                  31,
+                  33
+                ],
+                "cols": [
+                  20,
+                  22
+                ],
+                "region": null
+              },
+              {
+                "edit": "r1-e4",
+                "quote": "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22).",
+                "kind": "goal_requirement",
+                "requires": [
+                  "position"
+                ]
+              }
+            ],
+            "r1-e5": [
+              {
+                "edit": "r1-e5",
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "action": 1,
+                "direction": "up",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e5",
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "action": 2,
+                "direction": "down",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e5",
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "action": 3,
+                "direction": "left",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e5",
+                "quote": "ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5.",
+                "kind": "move",
+                "action": 4,
+                "direction": "right",
+                "cells": 5,
+                "unit": "cells"
+              },
+              {
+                "edit": "r1-e5",
+                "quote": "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+                "kind": "colour_role",
+                "colour": "teal",
+                "role": "player"
+              },
+              {
+                "edit": "r1-e5",
+                "quote": "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]",
+                "kind": "colour_role",
+                "colour": "maroon",
+                "role": "player"
+              }
+            ],
+            "r1-e6": [],
+            "r1-e7": [
+              {
+                "edit": "r1-e7",
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "colour": "teal",
+                "role": "player"
+              },
+              {
+                "edit": "r1-e7",
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "colour": "maroon",
+                "role": "player"
+              },
+              {
+                "edit": "r1-e7",
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "colour": "grey",
+                "role": "goal"
+              },
+              {
+                "edit": "r1-e7",
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "colour": "blue",
+                "role": "goal"
+              },
+              {
+                "edit": "r1-e7",
+                "quote": "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite).",
+                "kind": "colour_role",
+                "colour": "black",
+                "role": "goal"
+              }
+            ]
+          },
+          "tokens_in": 2395,
+          "tokens_out": 2828,
+          "calls": 1,
+          "error": null
+        }
+      }
+    }
+  ],
+  "final_attempt": 1
+}
