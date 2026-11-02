@@ -24,6 +24,10 @@ passed. An edit is kept only if every check that applies to it passes:
 5. **skill test** -- for skills from the Meta LLM, the edit's own test snippet
    runs on real recorded states (start / middle / late of an episode) and must
    not raise.
+6. **fact-check** (#12) -- the factual claims in the edit's text (prompt,
+   step, or skill code and docstring) are tested against the game
+   (evolve/factcheck.py). A false claim drops the edit; unverifiable claims
+   keep it, flagged in the CHANGELOG.
 """
 
 from __future__ import annotations
@@ -33,6 +37,7 @@ from typing import Any, Callable
 
 from evolve.action_loop import build_sandbox
 from evolve.edits import EditError, Workspace, apply_edit, describe, normalise
+from evolve.factcheck import FactChecker, meta_facing_reason
 from evolve.harness import Harness
 from evolve.replay import ReplayResult, api_at_state, replay, states_along
 from evolve.sandbox import SandboxViolation, check_source, strip_function_defs
@@ -227,6 +232,7 @@ def validate(
     version: str,
     round_index: int,
     log: Callable[[str], None] = print,
+    factchecker: FactChecker | None = None,
 ) -> tuple[Harness, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     ws = Workspace.from_parent(parent, version, round_index)
     baselines = {e["episode"]: replay(e["records"], parent, cfg) for e in episodes}
@@ -239,16 +245,25 @@ def validate(
 
     passed: list[dict[str, Any]] = []
     dropped: list[dict[str, Any]] = []
+    normalised: list[tuple[str, str, Any, dict[str, Any] | None]] = []
     for index, raw in enumerate(raw_edits, start=1):
         edit_id = f"r{round_index}-e{index}"
         source = raw.get("source", "meta") if isinstance(raw, dict) else "meta"
         try:
             edit = normalise(raw, source)
+            edit["id"] = edit_id
         except EditError as error:
             dropped.append({"id": edit_id, "source": source, "what": str(raw)[:120],
                             "stage": "applies", "reason": f"malformed: {error}", "edit": raw})
+            edit = None
+        normalised.append((edit_id, source, raw, edit))
+    if factchecker is not None:
+        # One extraction call for every edit of this attempt.
+        factchecker.prepare([e for *_x, e in normalised if e is not None])
+
+    for edit_id, source, _raw, edit in normalised:
+        if edit is None:
             continue
-        edit["id"] = edit_id
         what = describe(edit)
         trial = ws.clone()
         checks: list[dict[str, str]] = []
@@ -287,16 +302,27 @@ def validate(
         if not ok:
             drop("skill test", message)
             continue
+        facts = None
+        if factchecker is not None:
+            facts = factchecker.check(edit, trial.harness, states)
+            checks.append({"check": "fact-check", "result": facts["summary"]})
+            if facts["verdict"] == "false":
+                drop("fact-check", meta_facing_reason(facts))
+                dropped[-1]["factcheck"] = facts
+                continue
 
         ws = trial
-        log(f"    pass {edit_id} [{source}] {what}")
+        log(f"    pass {edit_id} [{source}] {what}" + (f" ({facts['summary']})" if facts else ""))
         passed.append({"id": edit_id, "source": source, "what": what, "edit": edit,
                        "rationale": edit.get("rationale", ""), "checks": checks,
-                       "replay_detail": detail})
+                       "replay_detail": detail, "factcheck": facts})
 
     child = ws.harness
     child.edits = [
         {"id": p["id"], "source": p["source"], "what": p["what"], "rationale": p["rationale"]}
         for p in passed
     ]
-    return child, passed, dropped, {"fidelity": fidelity, "test_states": [s[0] for s in states]}
+    info = {"fidelity": fidelity, "test_states": [s[0] for s in states]}
+    if factchecker is not None:
+        info["factcheck_extraction"] = {k: v for k, v in factchecker.extraction.items()}
+    return child, passed, dropped, info
