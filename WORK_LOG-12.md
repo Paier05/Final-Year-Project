@@ -303,6 +303,54 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
 - **Launched 13:14:14:** `python evolve_run.py --rounds 5`, preflight OK for
   both roles.
 
+### 2026-11-02 14:55 — First attempt stopped after round 0: wall-clock cuts; two fact-check bugs; restarted
+
+- **Round 0 of the first attempt** (kept in `data/evolve12_aborted_90min/`,
+  not part of the results): v0 mean progress 0.589 ± 0.056, cost 0.640,
+  0/5 clears.
+  - 3 episodes reached the square under the goal with the wrong rotation;
+  - 2 rotated, but their best state was 6 moves from the goal;
+  - #9's failure, again.
+- **Problem: 4 of 5 episodes ended on the 90-min wall clock**, at 123–136 of
+  200 actions. With 5 episodes in parallel the endpoint gave ~38 s per turn
+  (17 s alone). #9 had this cut once in 18 episodes; here it decided almost
+  every episode's length, so scores and cost partly measured server speed —
+  the risk #9's pilot entry named.
+  - I asked; the user chose to **raise the cap to 4 h and restart from
+    round 0**, so the action / turn / token budgets end episodes, as in #9.
+  - This discards ~3.4M tokens of round-0 play and makes the run longer
+    (~2.5 h per round).
+- **Round 1 of the first attempt** (Analyze → Propose → Validate ran before
+  the stop; no v1 episodes were played) exposed **two fact-check bugs**
+  the offline tests had not:
+  1. The real extractor nested every claim's fields under `"fields"`, so all
+     5 move claims came out unverifiable ("no direction or size stated").
+     My prompt's `...fields` placeholder invited it. Fixed by flattening
+     `fields` before checking and putting a concrete flat example in the
+     prompt. The earlier test on #9's edits had extracted flat claims, so
+     this is model variance, not a one-off.
+  2. Colours written as indices in code (`o['colour'] in (0, 1)`) were not
+     mapped to names. That let a **promoted player helper `find_player()`,
+     which takes black/blue (the rotation switch) for the player**, pass as
+     unverifiable. Fixed: indices and "name(index)" are read as names.
+     - Re-checked offline with the stored claims: the knowledge prompt's
+       5-cell moves → true, `find_player` → **false** (it would now be
+       dropped).
+     - This is the risk the issue names for lower promotion thresholds
+       ("one-off helpers may get promoted"), caught by the check the issue
+       added for it.
+  - 3 self-test cases added; all pass.
+- Also seen in that round:
+  - promotion fired, with 3 rule-based adds (`find`, `find_blue`,
+    `find_player`) at the new thresholds;
+  - the Meta LLM's analysis names the right failure ("fails to align
+    rotation and position simultaneously");
+  - one Meta skill was dropped by its own failing test.
+- **Restarted 14:55:25** (PID 20860, detached), 1.0 GB RAM free. The monitor
+  now keeps its read position in a file, so lines logged between re-arms
+  are no longer skipped (the first attempt's monitor missed seeds 1–3 that
+  way).
+
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
 
