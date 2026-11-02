@@ -1682,6 +1682,763 @@
         "The player never clears the level because it wastes its entire action budget (200 actions, ~180 turns) on redundant re-testing of the same four actions, with 44-114 turns producing no action at all. The dynamics are actually simple and consistent across episodes: ACTION1=up5, ACTION2=down5, ACTION3=left5, ACTION4=right5, moving a teal/maroon cluster. The goal is to move that cluster into a target region (a grey box or near the blue/black sprite). The player gets within 1-3 moves of the goal but never completes because it cannot commit to a plan and instead oscillates. The fix is to (a) hard-code the known action mapping into the knowledge prompt so the player skips exploration, (b) add a skill that computes the required moves and executes them in one turn, and (c) tighten the turn procedure to forbid re-testing known actions and to batch movement actions."
       ],
       "meta_tokens": 21126
+    },
+    {
+      "version": "v2",
+      "parent": "v1",
+      "round": 2,
+      "harness_path": "results/evolve_12/harnesses/v2",
+      "evaluated_at": "2026-11-03T00:10:45",
+      "episodes": [
+        {
+          "episode": 1,
+          "seed": 1,
+          "score": 0.5429,
+          "gate_score": 0.1979,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 111,
+          "resets_used": 1,
+          "tokens_in": 531984,
+          "tokens_out": 74423,
+          "llm_calls": 113,
+          "wall_time_s": 5546.7,
+          "parse_failures": 2,
+          "cell_errors": 5,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 10,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 531984,
+            "tokens_out": 74423,
+            "tokens": 606407,
+            "llm_calls": 113,
+            "env_steps": 200,
+            "wall_time_s": 5546.7,
+            "normalised": {
+              "tokens": 0.5053,
+              "llm_calls": 0.565,
+              "env_steps": 1.0
+            },
+            "cost": 0.6901
+          },
+          "trajectory": "results/evolve_12/trajectories/round_2/seed_1.jsonl",
+          "frames": "results/evolve_12/frames/round_2/seed_1.npz"
+        },
+        {
+          "episode": 2,
+          "seed": 2,
+          "score": 0.6,
+          "gate_score": 0.1673,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_turns",
+          "actions_used": 136,
+          "turns": 200,
+          "resets_used": 1,
+          "tokens_in": 1005832,
+          "tokens_out": 93425,
+          "llm_calls": 218,
+          "wall_time_s": 6164.7,
+          "parse_failures": 18,
+          "cell_errors": 5,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.6,
+            "cleared": false,
+            "parts": {
+              "position": 0.0,
+              "rotation": 1.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.0,
+              "rotation": 0.4,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position"
+            ],
+            "best_state": {
+              "action_index": 54,
+              "moves_to_goal": 7
+            },
+            "ever": {
+              "rotation_matched": true,
+              "first_rotation_match_action": 54,
+              "states_with_all_attributes_matched": 28,
+              "closest_moves_to_goal": 3,
+              "closest_moves_to_goal_attributes_matched": 7
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 138,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 1005832,
+            "tokens_out": 93425,
+            "tokens": 1099257,
+            "llm_calls": 218,
+            "env_steps": 136,
+            "wall_time_s": 6164.7,
+            "normalised": {
+              "tokens": 0.916,
+              "llm_calls": 1.0,
+              "env_steps": 0.68
+            },
+            "cost": 0.8653
+          },
+          "trajectory": "results/evolve_12/trajectories/round_2/seed_2.jsonl",
+          "frames": "results/evolve_12/frames/round_2/seed_2.npz"
+        },
+        {
+          "episode": 3,
+          "seed": 3,
+          "score": 0.5429,
+          "gate_score": 0.2513,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 75,
+          "resets_used": 1,
+          "tokens_in": 375188,
+          "tokens_out": 50693,
+          "llm_calls": 79,
+          "wall_time_s": 4392.1,
+          "parse_failures": 4,
+          "cell_errors": 0,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 15,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 375188,
+            "tokens_out": 50693,
+            "tokens": 425881,
+            "llm_calls": 79,
+            "env_steps": 200,
+            "wall_time_s": 4392.1,
+            "normalised": {
+              "tokens": 0.3549,
+              "llm_calls": 0.395,
+              "env_steps": 1.0
+            },
+            "cost": 0.5833
+          },
+          "trajectory": "results/evolve_12/trajectories/round_2/seed_3.jsonl",
+          "frames": "results/evolve_12/frames/round_2/seed_3.npz"
+        },
+        {
+          "episode": 4,
+          "seed": 4,
+          "score": 0.2571,
+          "gate_score": -0.1179,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 133,
+          "resets_used": 1,
+          "tokens_in": 621347,
+          "tokens_out": 74180,
+          "llm_calls": 134,
+          "wall_time_s": 5241.3,
+          "parse_failures": 1,
+          "cell_errors": 2,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.2571,
+            "cleared": false,
+            "parts": {
+              "position": 0.1429,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.0571,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 1,
+              "moves_to_goal": 6
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 6,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 621347,
+            "tokens_out": 74180,
+            "tokens": 695527,
+            "llm_calls": 134,
+            "env_steps": 200,
+            "wall_time_s": 5241.3,
+            "normalised": {
+              "tokens": 0.5796,
+              "llm_calls": 0.67,
+              "env_steps": 1.0
+            },
+            "cost": 0.7499
+          },
+          "trajectory": "results/evolve_12/trajectories/round_2/seed_4.jsonl",
+          "frames": "results/evolve_12/frames/round_2/seed_4.npz"
+        },
+        {
+          "episode": 5,
+          "seed": 5,
+          "score": 0.6571,
+          "gate_score": 0.2645,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 142,
+          "resets_used": 1,
+          "tokens_in": 681991,
+          "tokens_out": 74637,
+          "llm_calls": 145,
+          "wall_time_s": 5296.2,
+          "parse_failures": 3,
+          "cell_errors": 2,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.6571,
+            "cleared": false,
+            "parts": {
+              "position": 0.1429,
+              "rotation": 1.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.0571,
+              "rotation": 0.4,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position"
+            ],
+            "best_state": {
+              "action_index": 137,
+              "moves_to_goal": 6
+            },
+            "ever": {
+              "rotation_matched": true,
+              "first_rotation_match_action": 136,
+              "states_with_all_attributes_matched": 2,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": 6
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 681991,
+            "tokens_out": 74637,
+            "tokens": 756628,
+            "llm_calls": 145,
+            "env_steps": 200,
+            "wall_time_s": 5296.2,
+            "normalised": {
+              "tokens": 0.6305,
+              "llm_calls": 0.725,
+              "env_steps": 1.0
+            },
+            "cost": 0.7852
+          },
+          "trajectory": "results/evolve_12/trajectories/round_2/seed_5.jsonl",
+          "frames": "results/evolve_12/frames/round_2/seed_5.npz"
+        }
+      ],
+      "tokens": 3583700,
+      "skill_usage": {
+        "block_info": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "422fc9c601c0"
+        },
+        "grid_region": {
+          "calls": 437,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "move_cluster_to": {
+          "calls": 1,
+          "errors": 0,
+          "source_hash": "84ed4df8e74d"
+        },
+        "obstacle_map": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "player_detector": {
+          "calls": 0,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "teal_centroid": {
+          "calls": 191,
+          "errors": 0,
+          "source_hash": "1cfc95e84eeb"
+        }
+      },
+      "n_episodes": 5,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "score_mean": 0.52,
+      "score_std": 0.1381,
+      "score_worst": 0.2571,
+      "score_best": 0.6571,
+      "parts_mean": {
+        "position": 0.4,
+        "rotation": 0.4,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "cost_mean": 0.7348,
+      "gate_mean": 0.1526,
+      "gate_worst": -0.1179,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps": 187.2,
+      "avg_steps_to_clear": null,
+      "tokens_mean": 716740.0,
+      "llm_calls_mean": 137.8,
+      "wall_time_mean_s": 5328.2,
+      "edits_accepted": [
+        {
+          "id": "r2-e1",
+          "source": "rule",
+          "what": "delete skill bfs_to_target",
+          "rationale": "never called in 10 evaluated episodes",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7825 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 6 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "n/a (nothing asserted)"
+            }
+          ],
+          "op": "delete",
+          "target": "skill",
+          "factcheck_verdict": "n/a"
+        },
+        {
+          "id": "r2-e4",
+          "source": "meta",
+          "what": "edit step 4",
+          "rationale": "Prioritize rotation discovery since it's a major failing component. Only move once rotation is aligned.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 7841 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "0 claims: 0 true, 0 false, 0 unverifiable"
+            }
+          ],
+          "op": "edit",
+          "target": "step",
+          "factcheck_verdict": "true"
+        },
+        {
+          "id": "r2-e5",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "Update knowledge to include rotation hypothesis and skills.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8086 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "5 claims: 4 true, 0 false, 1 unverifiable"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt",
+          "factcheck_verdict": "unverifiable"
+        }
+      ],
+      "edits_dropped": [
+        {
+          "id": "r2-e2",
+          "source": "meta",
+          "what": "add skill detect_orientation",
+          "stage": "skill test",
+          "reason": "test fails at state 'after 0 actions': IndexError: index 2 is out of bounds for axis 1 with size 2 (line 1)",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8047 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 7 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test fails at state 'after 0 actions': IndexError: index 2 is out of bounds for axis 1 with size 2 (line 1)"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        },
+        {
+          "id": "r2-e3",
+          "source": "meta",
+          "what": "add skill rotate_cluster",
+          "stage": "skill test",
+          "reason": "test fails at state 'after 0 actions': NameError: name 'detect_orientation' is not defined (line 1)",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8033 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 7 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "replay ok over 5 episodes, skill called 0 times"
+            },
+            {
+              "check": "skill test",
+              "result": "test fails at state 'after 0 actions': NameError: name 'detect_orientation' is not defined (line 1)"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        }
+      ],
+      "gate": {
+        "rule": "tie-break on cost",
+        "progress_diff": 0.0228,
+        "cost_diff": -0.0587,
+        "gain": 0.0522,
+        "drop": 0.0288,
+        "delta": 0.1,
+        "epsilon": 0.05,
+        "lambda": 0.5,
+        "decision": "accepted",
+        "reason": "tie on progress (|+0.0228| <= eps 0.05); child cheaper (cost -0.0587); drop +0.0288 <= 0.1",
+        "compared_to": "v1"
+      },
+      "accepted": true,
+      "factcheck": {
+        "n_claims": 5,
+        "true": 4,
+        "false": 0,
+        "unverifiable": 1,
+        "edits_dropped_for_false": [],
+        "extraction_tokens": 3450,
+        "extraction_calls": 1,
+        "claims": [
+          {
+            "attempt": 1,
+            "edit": "r2-e5",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "In game LS20, ACTION1 moves the moving object up by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 1,
+              "direction": "up",
+              "cells": 5,
+              "unit": "cells",
+              "object": null,
+              "rows": null,
+              "cols": null,
+              "region": null,
+              "colour": null,
+              "role": null,
+              "requires": null,
+              "what": null,
+              "value": null,
+              "skill": null,
+              "returns": null,
+              "cause": null,
+              "text": null
+            },
+            "label": "true",
+            "evidence": "ACTION1 moves the player up 5 cells; logged: {(-5, 0): 178, (0, 0): 91}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r2-e5",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "In game LS20, ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+            "kind": "other",
+            "claim": {
+              "kind": "other",
+              "object": null,
+              "rows": null,
+              "cols": null,
+              "region": null,
+              "colour": null,
+              "role": null,
+              "action": null,
+              "direction": null,
+              "cells": null,
+              "unit": null,
+              "requires": null,
+              "what": null,
+              "value": null,
+              "skill": null,
+              "returns": null,
+              "cause": null,
+              "text": "ACTION2 changes lime cells to green cells."
+            },
+            "label": "unverifiable",
+            "evidence": "outside the checkable vocabulary"
+          },
+          {
+            "attempt": 1,
+            "edit": "r2-e5",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "In game LS20, ACTION3 moves the moving object left by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 3,
+              "direction": "left",
+              "cells": 5,
+              "unit": "cells",
+              "object": null,
+              "rows": null,
+              "cols": null,
+              "region": null,
+              "colour": null,
+              "role": null,
+              "requires": null,
+              "what": null,
+              "value": null,
+              "skill": null,
+              "returns": null,
+              "cause": null,
+              "text": null
+            },
+            "label": "true",
+            "evidence": "ACTION3 moves the player left 5 cells; logged: {(0, 0): 76, (0, -5): 29}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r2-e5",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "In game LS20, ACTION4 moves the moving object right by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 4,
+              "direction": "right",
+              "cells": 5,
+              "unit": "cells",
+              "object": null,
+              "rows": null,
+              "cols": null,
+              "region": null,
+              "colour": null,
+              "role": null,
+              "requires": null,
+              "what": null,
+              "value": null,
+              "skill": null,
+              "returns": null,
+              "cause": null,
+              "text": null
+            },
+            "label": "true",
+            "evidence": "ACTION4 moves the player right 5 cells; logged: {(0, 0): 195, (0, 5): 65}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r2-e5",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "The goal requires matching 'rotation'.",
+            "kind": "goal_requirement",
+            "claim": {
+              "kind": "goal_requirement",
+              "requires": [
+                "rotation"
+              ],
+              "object": null,
+              "rows": null,
+              "cols": null,
+              "region": null,
+              "colour": null,
+              "role": null,
+              "action": null,
+              "direction": null,
+              "cells": null,
+              "unit": null,
+              "what": null,
+              "value": null,
+              "skill": null,
+              "returns": null,
+              "cause": null,
+              "text": null
+            },
+            "label": "true",
+            "evidence": "the level clears when the player stands on the goal with matching rotation, shape and colour"
+          }
+        ]
+      },
+      "meta_analysis": [
+        "The player is stuck at ~0.5 score because it fails to satisfy the 'rotation' condition (0.4 weight) and often gets close to the goal but not quite (position 0.857). The 'rotation' part likely requires a specific action or state change not yet discovered, or the player is misidentifying the 'player' object vs the 'target'. In episode 5, rotation matched once but position was far. The player spends many turns re-testing or oscillating. The current `move_cluster_to` assumes teal/maroon is the player, but the rotation failure suggests the orientation of the cluster or a separate sprite matters. The player also wastes budget on 'no-op' actions or actions that don't align with the goal's rotation requirement. We need a skill to detect the 'player' orientation and a strategy to align it."
+      ],
+      "meta_tokens": 19811
     }
   ],
   "rounds": [
@@ -1698,7 +2455,14 @@
       "child": "v1",
       "decision": "accepted",
       "parent_after": "v1"
+    },
+    {
+      "round": 2,
+      "parent_before": "v1",
+      "child": "v2",
+      "decision": "accepted",
+      "parent_after": "v2"
     }
   ],
-  "updated": "2026-11-02T20:17:55"
+  "updated": "2026-11-03T00:10:46"
 }

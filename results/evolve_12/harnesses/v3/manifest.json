@@ -1,0 +1,45 @@
+{
+  "version": "v3",
+  "parent": "v2",
+  "round": 3,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "get_cluster_centroid",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r3-e1",
+      "source": "rule",
+      "what": "add skill get_cluster_centroid",
+      "rationale": "inline helper defined in 1 episode(s), 1 turn(s), called 4 times"
+    },
+    {
+      "id": "r3-e2",
+      "source": "rule",
+      "what": "delete skill block_info",
+      "rationale": "never called in 10 evaluated episodes"
+    },
+    {
+      "id": "r3-e5",
+      "source": "meta",
+      "what": "edit step 4",
+      "rationale": "Forces the use of the new skills to handle rotation and movement efficiently, reducing exploration loops."
+    },
+    {
+      "id": "r3-e6",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "Updates knowledge to include the new skills and the rotation hypothesis, guiding the player to use them."
+    }
+  ]
+}

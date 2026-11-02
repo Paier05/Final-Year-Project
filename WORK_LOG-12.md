@@ -461,6 +461,82 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
   plus Meta + fact-check ~21k. Not counted: the first attempt (~3.4M) and the
   two cut-short evaluations (~1.8M + v2's ~1.8M).
 
+### 2026-11-02 22:27 – 2026-11-03 01:33 — Round 2 done (v2 accepted on cost again); paused in round 3
+
+- **Resumed 22:27** (user: "can resume now"), PID 5476. Round 2 reused its
+  saved analysis and Validate (no Meta call repeated) and replayed v2's 5
+  episodes from the start.
+  - Detail: v1's players wrote **0** inline helpers (v0's wrote 28 groups).
+    They used the skills they were given instead (283 calls).
+- **Round 2, v2's episodes:**
+
+  | seed | progress | best state | cost | ended on |
+  |---|---|---|---|---|
+  | 1 | 0.543 | 1 move, wrong rotation | 0.690 | 200 actions |
+  | 2 | 0.600 | **rotated** (action 54), on the switch | 0.865 | 200 turns |
+  | 3 | 0.543 | 1 move, wrong rotation | 0.583 | 200 actions (75 turns) |
+  | 4 | 0.257 | 6 moves, wrong rotation | 0.750 | 200 actions |
+  | 5 | 0.657 | **rotated**, best 6 moves from goal | 0.785 | 200 actions |
+
+  - Mean 0.520 ± 0.138, cost 0.735, gate score 0.153.
+  - Skill calls: `grid_region` 437, `teal_centroid` 191, `move_cluster_to` 1,
+    `block_info` 0.
+- **Gate: v2 accepted on the tie-break** (progress +0.023 within ε, cost
+  −0.059, drop +0.029).
+- **The pattern so far:**
+
+  | version | progress | cost | gate score |
+  |---|---|---|---|
+  | v0 | 0.520 | 0.904 | 0.068 |
+  | v1 | 0.497 | 0.794 | 0.100 |
+  | v2 | 0.520 | 0.735 | 0.153 |
+
+  - Both acceptances came from cost. Progress has not moved beyond noise.
+  - The cost-aware gate rewards reaching the same state more cheaply, but it
+    does not by itself push toward "rotate, then go to the goal".
+- **Round 3, Validate** (6 proposed: 2 rule, 4 Meta; 4 passed → v3):
+  - passed: rule promotion of `get_cluster_centroid`; **rule delete of
+    `block_info`**; Meta edit of step 4; Meta `knowledge` rewrite (5 true, 1
+    unverifiable);
+  - dropped: Meta `analyze_cluster_state`, **by the fact-check**, for
+    "target: the nearest cyan(8) or grey(5)" (cyan is the lives display);
+    Meta `try_rotate`, by the sandbox rules (bare `except:`).
+  - The `block_info` delete is the issue's safeguard for one-off promotions
+    working as designed: promoted in round 1 at the lowered threshold, never
+    called in v1's or v2's 10 episodes, removed at the raised 10-episode
+    delete rule.
+- **Finding: a wrong helper got promoted, and the fact-check could not see
+  it.**
+  - `get_cluster_centroid(g, colors=[12, 9])` averages every teal *and maroon*
+    cell. Maroon is also in the HUD box and the goal's pattern (only 15 of 45
+    maroon cells are the player's).
+  - Run on 4 recorded states, it returned (47.6, 22.6), (40.8, 24.8),
+    (40.8, 22.6) and (34.3, 22.9) while the player was at cols 34–43. Its
+    column stays near 22–25 wherever the player is. `teal_centroid` matched
+    the player at all 4 states.
+  - It got through because:
+    1. promotion needs 1 episode or 2 calls now (it had 1 and 4);
+    2. replay rightly finds it identical to the player's own copy;
+    3. the extractor described its claims as "teal/maroon have role other"
+       (unverifiable);
+    4. the `skill_output` check calls skills with no arguments, and this one
+       needs `g`, so it could not run.
+  - Recommended follow-up fix (not applied mid-run, so rounds 1–5 are
+    validated the same way): retry a skill with `grid()` as its argument when
+    the no-argument call fails, and have the extractor emit a
+    "returns the player position" claim for any locate-the-player helper.
+  - Also: `teal_centroid`'s claims came out unverifiable too, though it is
+    correct. "Unverifiable" here often means "the extractor was vague", not
+    "doubtful".
+- **Paused 01:33 at the user's request** during v3's evaluation:
+  - seeds were at 78–97 turns; seeds 1 and 2 had rotated (at actions 43 and
+    92); no v3 episode had finished;
+  - all 5 replay on resume (~2.3M tokens of play redone); the partial
+    trajectories are copied to `data/evolve12_partial_round3/` for reference;
+  - saved and reused: archive (v0–v2), `harnesses/v3`,
+    `reports/round_3/{analysis,proposals,validation}.json`.
+- **Tokens:** player 12.84M in counted episodes; Meta + fact-check ~41k.
+
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
 

@@ -55,3 +55,25 @@ Dropped at Validate (2):
 - `r2-e2` [meta] add skill detect_orientation — skill test: test fails at state 'after 0 actions': IndexError: index 2 is out of bounds for axis 1 with size 2 (line 1)
 - `r2-e3` [meta] add skill rotate_cluster — skill test: test fails at state 'after 0 actions': NameError: name 'detect_orientation' is not defined (line 1)
 
+Gate for v2 vs v1: **accepted** (tie-break on cost) — tie on progress (|+0.0228| <= eps 0.05); child cheaper (cost -0.0587); drop +0.0288 <= 0.1 (progress 0.52 vs 0.4972, cost 0.7348 vs 0.7935, gate score 0.1526 vs 0.1004, worst gate score -0.1179 vs -0.0891)
+
+## v3 (parent v2, round 3) — 2026-11-03T00:14:46
+Accepted edits (4):
+- `r3-e1` [rule] **UNVERIFIABLE** add skill get_cluster_centroid — inline helper defined in 1 episode(s), 1 turn(s), called 4 times
+  - fact-check: 2 claims: 0 true, 0 false, 2 unverifiable
+    - UNVERIFIABLE "def get_cluster_centroid(g, colors=[12, 9]):" (colour_role): role 'other' is not checkable
+    - UNVERIFIABLE "def get_cluster_centroid(g, colors=[12, 9]):" (colour_role): role 'other' is not checkable
+- `r3-e2` [rule] delete skill block_info — never called in 10 evaluated episodes
+- `r3-e5` [meta] edit step 4 — Forces the use of the new skills to handle rotation and movement efficiently, reducing exploration loops.
+  - fact-check: 0 claims: 0 true, 0 false, 0 unverifiable
+- `r3-e6` [meta] **UNVERIFIABLE** edit prompt knowledge — Updates knowledge to include the new skills and the rotation hypothesis, guiding the player to use them.
+  - fact-check: 6 claims: 5 true, 0 false, 1 unverifiable
+    - UNVERIFIABLE "ACTION2 usually causes a tiny change, mostly lime -> green cells." (other): outside the checkable vocabulary
+Dropped at Validate (2):
+- `r3-e3` [meta] add skill analyze_cluster_state — fact-check: contradicted by the game: ''target': (row, col) of the nearest cyan(8) or grey(5) target'
+  - fact-check: 4 claims: 1 true, 1 false, 2 unverifiable
+    - UNVERIFIABLE "Analyze the teal/maroon cluster: position, orientation, and target distance." (colour_role): role 'other' is not checkable
+    - UNVERIFIABLE "Analyze the teal/maroon cluster: position, orientation, and target distance." (colour_role): role 'other' is not checkable
+    - FALSE "'target': (row, col) of the nearest cyan(8) or grey(5) target" (colour_role): cyan is lives
+- `r3-e4` [meta] add skill try_rotate — static tests: sandbox rules: line 45: bare 'except:' is not allowed; catch Exception
+
