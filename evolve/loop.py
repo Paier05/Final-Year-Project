@@ -1,12 +1,17 @@
 """The evolution loop: round 0 evaluates v0, rounds 1..N run the meta harness.
 
-    round N:  1 Analyze(parent) -> 2 Propose -> 3 Validate -> 4 Write vN
-              -> evaluate vN (episodes in parallel) -> 5 Gate vs parent
+    round N:  1 Analyze(parent) -> 2 Propose -> 3 Validate (+ fact-check)
+              -> 4 Write vN -> evaluate vN (seeds in parallel) -> 5 Gate vs parent
               -> archive.json (accepted or not); accepted vN becomes the parent
 
 Every stage persists its output under <root>/reports/round_N/ before the next
 starts, so an interrupted run resumes where it stopped instead of re-spending
 model calls. An episode that did not finish is re-run from scratch.
+
+Issue #12: every version plays the same seeds (cfg["seeds"], 1..5), one
+episode per seed, all at once, each with its own env, sandbox and model client.
+Episodes are scored by goal progress and cost (evolve/score.py) and the gate is
+cost-aware.
 """
 
 from __future__ import annotations
@@ -21,7 +26,9 @@ from typing import Any, Callable
 
 from harness.model import AbortExperiment, ModelClient, load_api_key
 from evolve import analyze as analyze_mod
-from evolve.action_loop import EpisodeOutcome, load_frames, run_episode
+from evolve.action_loop import EpisodeOutcome, read_records, run_episode
+from evolve.factcheck import FactChecker
+from evolve.goal_score import read_state
 from evolve.harness import Harness, load_harness
 from evolve.propose import meta_edits, rule_edits
 from evolve.replay import make_env
@@ -33,6 +40,7 @@ from evolve.validate import validate
 @dataclass
 class Paths:
     root: str
+    title: str = "issue #12"
 
     @property
     def harnesses(self) -> str:
@@ -86,7 +94,7 @@ def _write_json(path: str, payload: Any) -> None:
 # ---------------------------------------------------------------------------
 
 
-def make_client(cfg: dict[str, Any], section: str) -> ModelClient:
+def make_client(cfg: dict[str, Any], section: str, seed: int | None = None) -> ModelClient:
     model = cfg[section]
     limits = cfg["limits"]
     return ModelClient(
@@ -101,6 +109,7 @@ def make_client(cfg: dict[str, Any], section: str) -> ModelClient:
         max_transient_retries=int(model["max_transient_retries"]),
         abort_after_consecutive_rate_limits=int(limits["abort_after_consecutive_rate_limits"]),
         global_token_cap=int(limits["global_token_cap"]),
+        seed=seed,
     )
 
 
@@ -113,9 +122,10 @@ def load_archive(paths: Paths, cfg: dict[str, Any]) -> dict[str, Any]:
     archive = _read_json(paths.archive)
     if archive is None:
         archive = {
-            "experiment": "issue #9: evo-harness on ls20 level 1",
+            "experiment": cfg["experiment"],
             "created": _now(),
-            "config": {k: cfg[k] for k in ("game", "episodes_per_round", "budget", "gate", "rules", "validate")}
+            "config": {k: cfg[k] for k in ("game", "episodes_per_round", "seeds", "parallel_episodes",
+                                           "budget", "score", "gate", "rules", "validate", "factcheck")}
             | {"player_model": cfg["player"]["model"], "meta_model": cfg["meta"]["model"],
                "meta_enabled": cfg["meta"]["enabled"]},
             "versions": [],
@@ -137,24 +147,40 @@ def append_changelog(paths: Paths, text: str) -> None:
     new = not os.path.exists(paths.changelog)
     with open(paths.changelog, "a", encoding="utf-8") as handle:
         if new:
-            handle.write("# CHANGELOG: harness versions for issue #9 (ls20, level 1)\n\n"
+            handle.write(f"# CHANGELOG: harness versions for {paths.title} (ls20, level 1)\n\n"
                          "Append-only. One section per version, written at stage 4; "
-                         "the gate decision is appended when the version has been evaluated.\n\n")
+                         "the gate decision is appended when the version has been evaluated.\n"
+                         "Fact-check flags: an accepted edit with claims the game could not "
+                         "confirm or refute is marked **UNVERIFIABLE**, with those claims.\n\n")
         handle.write(text.rstrip() + "\n\n")
+
+
+def _factcheck_lines(item: dict[str, Any]) -> list[str]:
+    facts = item.get("factcheck") or {}
+    if not facts or facts.get("verdict") == "n/a":
+        return []
+    lines = [f"  - fact-check: {facts['summary']}"]
+    for claim in facts.get("claims") or []:
+        if claim["label"] in ("unverifiable", "false"):
+            lines.append(f"    - {claim['label'].upper()} \"{claim['quote']}\" ({claim['kind']}): {claim['evidence']}")
+    return lines
 
 
 def changelog_section(harness: Harness, passed: list[dict[str, Any]], dropped: list[dict[str, Any]]) -> str:
     lines = [f"## {harness.version} (parent {harness.parent or '-'}, round {harness.round_index}) — {_now()}"]
     if harness.parent is None:
-        lines.append("- seed: issue #8's harness ported to code-acting (see evolve/seed_v0.py)")
+        lines.append("- seed: issue #8's harness ported to code-acting (see evolve/seed_v0.py); same v0 as #9")
     lines.append(f"Accepted edits ({len(passed)}):")
     for p in passed:
-        lines.append(f"- `{p['id']}` [{p['source']}] {p['what']} — {p['rationale']}".rstrip(" —"))
+        flag = " **UNVERIFIABLE**" if (p.get("factcheck") or {}).get("verdict") == "unverifiable" else ""
+        lines.append(f"- `{p['id']}` [{p['source']}]{flag} {p['what']} — {p['rationale']}".rstrip(" —"))
+        lines.extend(_factcheck_lines(p))
     if not passed:
         lines.append("- (none)")
     lines.append(f"Dropped at Validate ({len(dropped)}):")
     for d in dropped:
         lines.append(f"- `{d['id']}` [{d['source']}] {d['what']} — {d['stage']}: {d['reason']}")
+        lines.extend(_factcheck_lines(d))
     if not dropped:
         lines.append("- (none)")
     return "\n".join(lines)
@@ -165,44 +191,53 @@ def changelog_section(harness: Harness, passed: list[dict[str, Any]], dropped: l
 # ---------------------------------------------------------------------------
 
 
+EPISODE_FIELDS = (
+    "episode", "seed", "score", "gate_score", "solved", "steps_to_clear", "end_reason", "actions_used",
+    "turns", "resets_used", "tokens_in", "tokens_out", "llm_calls", "wall_time_s", "parse_failures",
+    "cell_errors", "timeouts", "goal", "cost", "trajectory", "frames",
+)
+
+
 def evaluate(
     harness: Harness, round_index: int, cfg: dict[str, Any], paths: Paths,
     client_factory: Callable[[int], Any], log: Callable[[str], None] = print,
 ) -> list[dict[str, Any]]:
-    """Run every episode of one version, in parallel; resume finished ones."""
+    """Play one episode per seed, all in parallel; resume finished ones."""
     out_path = os.path.join(paths.report_dir(round_index), "episodes.json")
-    done = {e["episode"]: e for e in _read_json(out_path, [])}
-    todo = [k for k in range(int(cfg["episodes_per_round"])) if k not in done]
+    done = {e["seed"]: e for e in _read_json(out_path, [])}
+    seeds = [int(s) for s in cfg["seeds"]]
+    todo = [s for s in seeds if s not in done]
     if not todo:
-        return [done[k] for k in sorted(done)]
+        return [done[s] for s in seeds]
 
     stop = threading.Event()
     lock = threading.Lock()
     errors: list[BaseException] = []
-    human = int(cfg["human_baseline_actions"])
 
-    def one(k: int) -> None:
+    def one(seed: int) -> None:
         try:
-            env = make_env(cfg["game"], seed=k)
-            client = client_factory(k)
+            # Own env, own sandbox (built inside run_episode), own client:
+            # the parallel episodes share no state.
+            env = make_env(cfg["game"], seed=seed)
+            client = client_factory(seed)
             outcome: EpisodeOutcome = run_episode(
                 env=env, client=client, harness=harness, round_index=round_index,
-                episode=k, cfg=cfg, stop_event=stop, traj_root=paths.trajectories,
-                frame_root=paths.frames, log=log,
+                episode=seed, seed=seed, cfg=cfg, stop_event=stop, traj_root=paths.trajectories,
+                frame_root=paths.frames, log=log, probe=read_state,
             )
             if outcome.end_reason == "aborted" or outcome.error:
-                raise AbortExperiment(f"episode {k} ended with {outcome.end_reason}: {outcome.error}")
-            metrics = episode_metrics(
-                load_frames(outcome.frames), outcome.solved, outcome.steps_to_clear, human
-            )
-            row = outcome.as_dict() | metrics
+                raise AbortExperiment(f"seed {seed} ended with {outcome.end_reason}: {outcome.error}")
+            row = outcome.as_dict()
+            row |= episode_metrics(read_records(outcome.trajectory), row, cfg)
             with lock:
-                done[k] = row
-                _write_json(out_path, [done[i] for i in sorted(done)])
+                done[seed] = row
+                _write_json(out_path, [done[s] for s in seeds if s in done])
+            goal = row["goal"]
             log(
-                f"  [{harness.version} ep{k}] {'CLEARED' if outcome.solved else 'not cleared'} "
-                f"score={metrics['score']:.3f} closest={metrics['closest_approach']} "
-                f"actions={outcome.actions_used} turns={outcome.turns} end={outcome.end_reason} "
+                f"  [{harness.version} seed{seed}] {'CLEARED' if outcome.solved else 'not cleared'} "
+                f"progress={row['score']:.3f} parts={goal['parts']} cost={row['cost']['cost']:.3f} "
+                f"g={row['gate_score']:.3f} actions={outcome.actions_used} turns={outcome.turns} "
+                f"calls={outcome.llm_calls} end={outcome.end_reason} "
                 f"tok={outcome.tokens_in + outcome.tokens_out} {outcome.wall_time_s:.0f}s"
             )
         except BaseException as error:  # noqa: BLE001 - surfaced after the pool drains
@@ -210,12 +245,12 @@ def evaluate(
             with lock:
                 errors.append(error)
 
-    log(f"  evaluating {harness.version}: episodes {todo} in parallel")
+    log(f"  evaluating {harness.version}: seeds {todo} in parallel")
     with ThreadPoolExecutor(max_workers=int(cfg["parallel_episodes"])) as pool:
         list(pool.map(one, todo))
     if errors:
         raise AbortExperiment(f"evaluation of {harness.version} stopped: {errors[0]}")
-    return [done[k] for k in sorted(done)]
+    return [done[s] for s in seeds]
 
 
 def version_entry(
@@ -228,20 +263,32 @@ def version_entry(
         "round": round_index,
         "harness_path": os.path.join(paths.harnesses, harness.version).replace(os.sep, "/"),
         "evaluated_at": _now(),
-        "episodes": [
-            {k: e.get(k) for k in (
-                "episode", "score", "progress", "solved", "steps_to_clear", "closest_approach",
-                "start_distance", "end_reason", "actions_used", "turns", "resets_used",
-                "tokens_in", "tokens_out", "wall_time_s", "parse_failures", "cell_errors",
-                "timeouts", "trajectory", "frames")}
-            for e in episodes
-        ],
-        "n_episodes": len(episodes),
+        "episodes": [{k: e.get(k) for k in EPISODE_FIELDS} for e in episodes],
         "tokens": sum(e["tokens_in"] + e["tokens_out"] for e in episodes),
         "skill_usage": analyze_mod.skill_usage_for_entry(harness, loaded),
     }
     entry |= summarise(episodes)
     return entry
+
+
+def _factcheck_record(attempts: list[dict[str, Any]]) -> dict[str, Any]:
+    """Every claim the fact-check tested this round, with its evidence."""
+    claims, dropped_for_false = [], []
+    tokens = calls = 0
+    for attempt in attempts:
+        extraction = (attempt.get("info") or {}).get("factcheck_extraction") or {}
+        tokens += int(extraction.get("tokens_in") or 0) + int(extraction.get("tokens_out") or 0)
+        calls += int(extraction.get("calls") or 0)
+        for item in attempt["passed"] + attempt["dropped"]:
+            facts = item.get("factcheck") or {}
+            for claim in facts.get("claims") or []:
+                claims.append({"attempt": attempt["attempt"], "edit": item["id"], "source": item["source"],
+                               "what": item["what"], **claim})
+            if item.get("stage") == "fact-check":
+                dropped_for_false.append(item["id"])
+    counts = {label: sum(1 for c in claims if c["label"] == label) for label in ("true", "false", "unverifiable")}
+    return {"n_claims": len(claims), **counts, "edits_dropped_for_false": dropped_for_false,
+            "extraction_tokens": tokens, "extraction_calls": calls, "claims": claims}
 
 
 # ---------------------------------------------------------------------------
@@ -253,10 +300,11 @@ def run(
     cfg: dict[str, Any], paths: Paths, rounds: int,
     player_factory: Callable[[int], Any], meta_factory: Callable[[], Any] | None,
     log: Callable[[str], None] = print,
+    fact_factory: Callable[[], Any] | None = None,
 ) -> dict[str, Any]:
     os.makedirs(paths.root, exist_ok=True)
     archive = load_archive(paths, cfg)
-    delta = float(cfg["gate"]["delta"])
+    use_factcheck = bool((cfg.get("factcheck") or {}).get("enabled"))
 
     # ---- round 0: v0 baseline ------------------------------------------------
     if entry_for(archive, "v0") is None:
@@ -275,8 +323,9 @@ def run(
         archive["rounds"].append({"round": 0, "parent_before": None, "child": "v0",
                                   "decision": "baseline", "parent_after": "v0"})
         save_archive(paths, archive)
-        append_changelog(paths, f"Gate for v0: baseline — mean score {entry['score_mean']}, "
-                                f"worst {entry['score_worst']}, clear rate {entry['clear_rate']}")
+        append_changelog(paths, f"Gate for v0: baseline — mean progress {entry['score_mean']}, "
+                                f"mean cost {entry['cost_mean']}, mean gate score {entry['gate_mean']}, "
+                                f"clear rate {entry['clear_rate']}")
 
     for round_index in range(1, rounds + 1):
         if any(r["round"] == round_index for r in archive["rounds"]):
@@ -295,8 +344,8 @@ def run(
         parent_entry = entry_for(archive, parent_name)
         version = f"v{round_index}"
         rdir = paths.report_dir(round_index)
-        log(f"\nround {round_index}: parent {parent_name} (mean {parent_entry['score_mean']}, "
-            f"worst {parent_entry['score_worst']})")
+        log(f"\nround {round_index}: parent {parent_name} (progress {parent_entry['score_mean']}, "
+            f"cost {parent_entry['cost_mean']}, gate {parent_entry['gate_mean']})")
 
         # ---- 1 · Analyze -----------------------------------------------------
         rejected_since = [
@@ -328,7 +377,11 @@ def run(
                 log(f"  2 propose (attempt {attempt + 1}): {len(rules)} rule-based, "
                     f"{len(meta['edits']) if meta else 0} from the Meta LLM"
                     + (f" (parse error: {meta['parse_error']})" if meta and meta.get("parse_error") else ""))
-                child, passed, dropped, info = validate(parent, raw, episodes, cfg, version, round_index, log)
+                checker = None
+                if use_factcheck:
+                    checker = FactChecker(cfg, fact_factory() if fact_factory else None, episodes)
+                child, passed, dropped, info = validate(parent, raw, episodes, cfg, version, round_index, log,
+                                                        factchecker=checker)
                 over_cap = (meta or {}).get("over_cap") or []
                 for i, extra in enumerate(over_cap, start=1):
                     where = extra.get("name") or extra.get("index") or extra.get("indices")
@@ -341,6 +394,8 @@ def run(
                 log(f"  3 validate: {len(passed)} passed, {len(dropped)} dropped")
                 if passed:
                     break
+                # The reasons are the Meta-facing ones: a fact-check drop says
+                # which claim is false, not what is true.
                 feedback = "Every edit was dropped at validation:\n" + "\n".join(
                     f"- {d['what']}: {d['stage']}: {d['reason']}" for d in dropped
                 ) + "\nPropose edits that address these failures."
@@ -351,12 +406,13 @@ def run(
         final = validation["attempts"][-1]
         passed, dropped = final["passed"], final["dropped"]
         all_dropped = [d for a in validation["attempts"] for d in a["dropped"]]
+        facts = _factcheck_record(validation["attempts"])
 
         if not passed:
             log(f"  no edit survived validation; round {round_index} ends without a child")
             archive["rounds"].append({"round": round_index, "parent_before": parent_name, "child": None,
                                       "decision": "no valid edits", "parent_after": parent_name,
-                                      "edits_dropped": _slim(all_dropped)})
+                                      "edits_dropped": _slim(all_dropped), "factcheck": facts})
             save_archive(paths, archive)
             append_changelog(paths, f"## round {round_index}: no child (parent {parent_name})\n"
                              f"Every proposed edit was dropped at Validate ({len(all_dropped)}).")
@@ -374,20 +430,26 @@ def run(
         # ---- evaluate + 5 · Gate ------------------------------------------------
         episodes = evaluate(child, round_index, cfg, paths, player_factory, log)
         entry = version_entry(child, round_index, episodes, paths)
-        decision = gate(entry, parent_entry, delta)
+        decision = gate(entry, parent_entry, cfg)
         decision["compared_to"] = parent_name
         entry |= {"edits_accepted": _slim(passed), "edits_dropped": _slim(all_dropped),
                   "gate": decision, "accepted": decision["decision"] == "accepted",
-                  "meta_analysis": [((a.get("meta") or {}).get("analysis")) for a in validation["attempts"]]}
+                  "factcheck": facts,
+                  "meta_analysis": [((a.get("meta") or {}).get("analysis")) for a in validation["attempts"]],
+                  "meta_tokens": sum(int((a.get("meta") or {}).get("tokens_in") or 0)
+                                     + int((a.get("meta") or {}).get("tokens_out") or 0)
+                                     for a in validation["attempts"]) + facts["extraction_tokens"]}
         archive["versions"].append(entry)
         parent_after = version if entry["accepted"] else parent_name
         archive["rounds"].append({"round": round_index, "parent_before": parent_name, "child": version,
                                   "decision": decision["decision"], "parent_after": parent_after})
         save_archive(paths, archive)
-        append_changelog(paths, f"Gate for {version} vs {parent_name}: **{decision['decision']}** — "
-                                f"{decision['reason']} (mean {entry['score_mean']} vs "
-                                f"{parent_entry['score_mean']}, worst {entry['score_worst']} vs "
-                                f"{parent_entry['score_worst']})")
+        append_changelog(paths, f"Gate for {version} vs {parent_name}: **{decision['decision']}** "
+                                f"({decision['rule']}) — {decision['reason']} (progress {entry['score_mean']} vs "
+                                f"{parent_entry['score_mean']}, cost {entry['cost_mean']} vs "
+                                f"{parent_entry['cost_mean']}, gate score {entry['gate_mean']} vs "
+                                f"{parent_entry['gate_mean']}, worst gate score {entry['gate_worst']} vs "
+                                f"{parent_entry['gate_worst']})")
         log(f"  5 gate: {decision['decision']} ({decision['reason']}); parent is now {parent_after}")
     return archive
 
@@ -407,6 +469,9 @@ def _rebuild_child(parent: Harness, final: dict[str, Any], cfg: dict[str, Any], 
 
 
 def _slim(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """What the archive keeps per edit. Analyze shows the Meta LLM `what` and
+    `reason` from here, so a fact-check `reason` must not state true values
+    (see evolve/factcheck.meta_facing_reason); the evidence is kept apart."""
     keep = ("id", "source", "what", "rationale", "stage", "reason", "checks")
     out = []
     for item in items:
@@ -415,5 +480,8 @@ def _slim(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         if isinstance(edit, dict):
             slim["op"] = edit.get("op")
             slim["target"] = edit.get("target")
+        facts = item.get("factcheck") or {}
+        if facts:
+            slim["factcheck_verdict"] = facts.get("verdict")
         out.append(slim)
     return out
