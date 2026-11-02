@@ -170,6 +170,12 @@ def factcheck_rules() -> None:
         ({"kind": "count", "what": "lives", "value": 3}, "true", "3 lives"),
         ({"kind": "count", "what": "moves_per_life", "value": 20}, "false", "20 moves per life"),
         ({"kind": "other"}, "unverifiable", "anything else"),
+        # Formatting slips seen from the real extractor on 2026-11-02.
+        ({"kind": "move", "fields": {"action": 1, "direction": "up", "cells": 1, "unit": "cells"}}, "false",
+         "fields nested under 'fields' are read"),
+        ({"kind": "colour_role", "colour": 1, "role": "player"}, "false",
+         "colour index 1 (blue) is read as blue: a player helper that looks for blue"),
+        ({"kind": "colour_role", "colour": "teal(12)", "role": "player"}, "true", "'teal(12)' is read as teal"),
     ]
     for claim, want, label in cases:
         got, evidence = check_claim(claim, truth, {})

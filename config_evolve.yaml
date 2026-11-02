@@ -74,7 +74,12 @@ budget:
   max_actions: 200
   actions_per_turn: 6
   max_turns: 200
-  wall_clock_s: 5400
+  # #9: 5400 (90 min). With 5 episodes in parallel the endpoint gives ~38 s
+  # per turn, and the first #12 attempt had 4 of 5 v0 episodes cut by the
+  # 90-min cap at 123-136 actions, so the score measured server speed. The
+  # user chose (2026-11-02) to raise it so the action / turn / token budgets
+  # above end episodes, as in #9, and to restart from round 0.
+  wall_clock_s: 14400
   max_tokens_per_episode: 1200000
   max_resets: 10
   cell_time_limit_s: 10

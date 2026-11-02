@@ -291,9 +291,13 @@ its docstring says it returns.
 Coordinates are (row, col) on the 64x64 observation grid, row 0 at the top.
 "cells" means grid cells. Colour names: {colours}.
 
-Reply with one JSON object and nothing else:
-{{"claims": [{{"edit": "<edit id>", "quote": "<exact words, at most 160 chars>",
-              "kind": "<kind>", ...fields}}]}}
+Reply with one JSON object and nothing else. The fields of a kind sit directly
+in the claim object, next to "kind" -- not nested. For example:
+{{"claims": [{{"edit": "r1-e2", "quote": "ACTION1 moves the player up 5 cells",
+              "kind": "move", "action": 1, "direction": "up", "cells": 5, "unit": "cells"}},
+             {{"edit": "r1-e3", "quote": "if o['colour'] == 11: return o",
+              "kind": "colour_role", "colour": "lime", "role": "player"}}]}}
+Colours are always names, never indices (colour 11 is "lime").
 
 Kinds and their fields (null for anything the text does not say):
 - "move": an action moves the player.
@@ -426,11 +430,36 @@ def _check_region(region: str, box: tuple[int, int, int, int]) -> str:
     return "true"
 
 
+def _colour_name(value: Any) -> str:
+    """'lime', 11, '11' and 'lime(11)' all mean lime."""
+    if isinstance(value, (int, np.integer)) and not isinstance(value, bool):
+        return COLOUR_NAMES.get(int(value), str(value))
+    text = str(value or "").strip().lower()
+    match = re.fullmatch(r"([a-z]*)\s*\(?\s*(\d+)?\s*\)?", text)
+    if match and match.group(2) and not match.group(1):
+        return COLOUR_NAMES.get(int(match.group(2)), text)
+    return match.group(1) if match and match.group(1) else text
+
+
+def normalise_claim(claim: dict[str, Any]) -> dict[str, Any]:
+    """Undo the extractor's formatting slips: fields nested under "fields"
+    (seen from qwen38-flash-next-autoround on 2026-11-02), colour indices."""
+    out = dict(claim)
+    nested = out.pop("fields", None)
+    if isinstance(nested, dict):
+        for key, value in nested.items():
+            out.setdefault(key, value)
+    if out.get("colour") is not None:
+        out["colour"] = _colour_name(out["colour"])
+    return out
+
+
 def check_claim(
     claim: dict[str, Any], truth: GroundTruth, observed: dict[str, Counter],
     skill_runner: Any = None,
 ) -> tuple[str, str]:
     """(label, evidence) for one claim."""
+    claim = normalise_claim(claim)
     kind = str(claim.get("kind", "other"))
     if kind == "move":
         actions = [int(claim["action"])] if claim.get("action") is not None else sorted(truth.moves)
@@ -651,6 +680,7 @@ class FactChecker:
         runner = make_skill_runner(harness, test_states, self.cfg)
         claims = []
         for claim in self.extraction["by_edit"].get(edit["id"], []):
+            claim = normalise_claim(claim)
             try:
                 label, evidence = check_claim(claim, self.truth, self.observed, runner)
             except (TypeError, ValueError, KeyError) as error:  # a malformed claim is not a false one
