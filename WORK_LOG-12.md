@@ -351,6 +351,53 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
   are no longer skipped (the first attempt's monitor missed seeds 1–3 that
   way).
 
+### 2026-11-02 17:05 — Round 0 done; run paused before round 1 at the user's request
+
+- **User's instruction (~15:50):** stop after round 0; they will resume rounds
+  1–5 later with the computer on. I armed a stopper to kill the run once
+  round 0 was saved, before round 1 makes any model call.
+- **The run's stdout log stopped receiving lines at 16:37**, while the run
+  itself went on.
+  - A `py-spy dump` of the live process showed nothing blocked: seeds 1–4's
+    threads had returned, seed 5 was in a model call, the main thread was
+    waiting for it. Their scores were in `episodes.json`; only their log
+    lines never reached the redirected file. I did not find the cause.
+  - Consequence: the first stopper watched that log for "round 1:" and could
+    have missed it. I replaced it with a detached one watching for
+    `archive.json`, which the loop writes once v0 is saved and before round
+    1's first model call.
+  - For the resume, `evolve_run.py` now also appends every progress line to
+    `data/evolve_12_events.log`, opened and closed per write (stub-tested).
+- **Seed 5 was slow** (66 turns in 75 min vs ~115 for the others). Not the
+  server singling it out: every seed got ~14 output tokens/s. Seed 5 wrote
+  ~805 output tokens per turn vs ~430, some hitting the 1,500 cap, and had 4
+  hung calls (~3.5 min each) vs 1–2.
+- **Stopped at 17:04:56**, right after round 0 was saved. Round 1 had written
+  only its deterministic `analysis.json`, which the resume reuses; no model
+  call was made.
+- **Round 0 (v0 = baseline of this run):**
+
+  | seed | progress | best state | rotated | ended on | actions | turns | tokens | cost |
+  |---|---|---|---|---|---|---|---|---|
+  | 1 | 0.429 | 3 moves from goal | no | 200 actions | 200 | 159 | 879k | 0.866 |
+  | 2 | 0.543 | 1 move, wrong rotation | no | token cap | 128 | 185 | 1,208k | 0.880 |
+  | 3 | 0.543 | 1 move, wrong rotation | no | token cap | 174 | 185 | 1,201k | 0.957 |
+  | 4 | 0.543 | 1 move, wrong rotation | no | turn cap | 184 | 200 | 1,154k | 0.961 |
+  | 5 | 0.543 | 1 move, wrong rotation | no | 200 actions | 200 | 158 | 897k | 0.856 |
+
+  - Mean progress **0.520 ± 0.046**, cost 0.904, gate score 0.068, 0/5
+    clears, **0/5 rotated**.
+  - 5.34M tokens for the round; LLM calls exceed turns (164–234) because of
+    10–20 format retries per episode.
+  - With the 4 h cap no episode ended on wall clock: each ended on actions,
+    turns or tokens, as intended.
+  - #9's failure, more uniformly: walk to the goal, get blocked, never look
+    for the switch. The first attempt's v0 rotated in 2/5, so 0/5 here is
+    within sampling noise at n=5.
+- **Projection for rounds 1–5:** ~5.3M tokens and ~2–2.5 h per round, so
+  ~27M more tokens, ~32M total (cap 40M), and ~11–13 h.
+- **To resume:** `.venv\Scripts\python.exe evolve_run.py --rounds 5`.
+
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
 
