@@ -143,7 +143,134 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
     posted as one issue comment; then the PR.
 
 ## Progress log
-<Append a dated entry every time you make meaningful progress, hit a decision point, or change direction. Do not overwrite earlier entries — this is a running history, not a status snapshot.>
+
+### 2026-11-02 ~12:00 — Goal-progress score and state logging (change 1)
+
+- **What I did:**
+  - Wrote `evolve/goal_score.py`: reads ls20's state (player x/y; rotation,
+    shape and colour indices; the goal's requirements; lives; moves left),
+    builds the Level-1 maze from the wall sprites, and scores each state.
+  - `EpisodeAPI` takes an optional `probe` and writes `game_state` into every
+    action's trajectory record. The sandbox API doesn't expose it, so the
+    player never sees it.
+  - Trajectories are now `seed_S.jsonl`, and each turn records `llm_calls`,
+    `env_steps` and `wall_time_s`.
+- **Result:**
+  - The self-test reproduces the ladder agreed with the user: start 0.200,
+    under the goal unrotated 0.543, rotated at the switch 0.600, rotated
+    under the goal 0.943, clear 1.000.
+  - It also checks that "rotated at one time, near the goal at another"
+    scores only the better single state, not a mix.
+  - On a stub episode the logged states equal the replay-rebuilt states
+    exactly (41/41). That match is what makes rescoring #9 by replay
+    legitimate.
+
+### 2026-11-02 ~12:30 — Fact-check (change 2), tested on #9's own edits
+
+- **What I did:**
+  - Wrote `evolve/factcheck.py`. Ground truth is probed from the env:
+    - each action's effect on the player sprite;
+    - each colour's role, found from the sprites, plus two probes: a move
+      shows which cells the counter uses, and losing a life shows which are
+      the lives;
+    - where the player, goal, switch, counter and lives are;
+    - lives = 3, moves per life = 42.
+  - One meta-model call per Validate attempt extracts claims into a fixed
+    vocabulary; code checks them.
+  - Wired it into `validate.py` as a 6th check, after the skill test.
+- **Dead end, fixed:** the first role table said yellow, grey, maroon and
+  green are all walls. Some wall sprites sit under the HUD box, so their
+  bounding boxes picked up its colours. The wall colour is now the most common
+  colour over all wall squares (yellow). The background colour is no longer
+  counted as "UI".
+- **Test on real data:** I ran the real extractor (`qwen38-flash-next-autoround`,
+  1 call, 6.4k tokens) on #9's 11 accepted edits. Labelled false, all
+  correctly:
+  - "Player: 2-row lime bar at the bottom (rows 61-62)" (twice: as a colour
+    and as a location);
+  - `player_position()`: running it on replayed states returned the lime bar,
+    not the player;
+  - "Moves 1 cell per action" and "ACTION1 = move up 1 cell" (×4);
+  - "Maroon = collectible items", "Goal: collect all maroon items";
+  - "Cyan = deadly obstacles", "Green = trail", "Green can block movement".
+
+  "ACTION1–4 = move 5 cells" came out true. So with this check, all three
+  of #9's round-1 edits (the source of the lime-bar belief) would have been
+  dropped.
+- **One miss, fixed:** "The maroon items are located at rows 11-13, …" was
+  mapped by the extractor to the *goal's* location and passed, because rows
+  11–13 are the goal's pattern. The vocabulary now has `collectible` and
+  `other` as location objects. A `collectible` location is false on Level 1,
+  since nothing on it is collected.
+
+### 2026-11-02 ~13:00 — Gate, seeds, config, Analyze, Propose; offline tests pass
+
+- **What I did:**
+  - `score.py` now computes cost and gate score, and gates with λ/ε/δ.
+  - `loop.py`:
+    - seeds 1–5 run in parallel, each with its own env, sandbox and client;
+    - archive fields: seed, goal parts, cost, fact-check;
+    - the CHANGELOG flags UNVERIFIABLE claims;
+    - the Meta LLM's feedback carries only the false claim.
+  - Config: model switch, thresholds, delete after 10 episodes, root
+    `results/evolve_12`.
+  - Analyze reports goal parts and failures.
+  - The Meta prompt describes the new score, gate and fact-check.
+  - Added a stub claim extractor and extended the self-test.
+- **Result:**
+  - `python -m evolve.selftest`: **73 checks pass**. They cover the score,
+    6 gate cases (incl. both tie-break branches), 23 hand-written claims (11
+    of them #9's false beliefs), a skill that finds the player by lime
+    (false) vs by teal (true), 3 envs stepped in parallel = serial, and the
+    fact-check stage inside Validate.
+  - The Meta-facing reason names the false claim and not the true value:
+    `contradicted by the game: 'ACTION1 moves the player up 1 cell'`.
+  - Stub run, 2 rounds, 1.5 min:
+    - round 1 promoted the stub's helper under the new thresholds;
+    - round 2 deleted v0's 3 never-called skills at 10 episodes;
+    - the fact-check dropped the stub's "1 cell" edit and flagged its
+      strategy line UNVERIFIABLE in the CHANGELOG;
+    - both gates went through the tie-break.
+- **Risk found in the stub run:** a tie-break decides on *any* cost
+  difference. v2 was accepted for being cheaper by 0.0006. With real episodes,
+  cost differences of that size are noise (turn counts vary), so near-ties on
+  progress become coin flips on cost noise. This follows from the rule as
+  agreed; I am noting it, not changing it.
+
+### 2026-11-02 ~13:05 — #9 rescored; figures; pilot started
+
+- **#9 on #12's scale** (`results/evolve_12/rescored_9.json`, replay-rebuilt
+  states):
+
+  | #9 version | #9 decision | #9 score | #12 progress (mean ± SD) | rotated | cost |
+  |---|---|---|---|---|---|
+  | v0 | baseline | 0.333 | 0.467 ± 0.150 | 1/3 | 0.545 |
+  | v1 | accepted | 0.404 | 0.676 ± 0.117 | 2/3 | 0.517 |
+  | v2 | accepted | 0.474 | **0.714 ± 0.081** | 3/3 | 0.546 |
+  | v3 | rejected | 0.462 | 0.581 ± 0.108 | 2/3 | 0.494 |
+  | v4 | rejected | 0.474 | 0.676 ± 0.027 | 3/3 | 0.852 |
+  | v5 | rejected | 0.474 | 0.657 ± 0.000 | 3/3 | 0.521 |
+
+  - v2 is still #9's best.
+  - Its gain was real progress on *rotation*: every episode bumped the
+    switch.
+  - Closest any #9 episode got to the goal **while rotated**: 3 moves.
+  - The 14/18 "rotated" count matches #9's post-hoc `subgoals.json`.
+  - v4 (the `verify_move` version) has the highest cost by far (0.852):
+    under #12's gate it would lose even before the tie-break.
+- **Figures:** `analysis/evolution12.py`, rendered from the stub archive and
+  looked at. Three layout fixes:
+  - version labels on the cost scatter overlapped → fanned out;
+  - the rejected-edge label sat on its arrow in the lineage → moved under the
+    node;
+  - "g=-0.0" → "g=0.0".
+  - Palette: #8's slots 1–4, validated with the dataviz script (all hard
+    checks pass; aqua and yellow are below 3:1, so the charts carry direct
+    labels and the report has tables).
+- **Pilot started** (seed 1, v0, `data/evolve12_pilot/`):
+  - turns take 6–23 s with 3–6k tokens in, about 2× my 1 s probe calls,
+    because real prompts are 5k tokens;
+  - the player found within 10 turns that the teal/maroon block moves 5 cells.
 
 ## Open questions / risks
 <Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
