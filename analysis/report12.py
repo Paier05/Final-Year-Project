@@ -39,7 +39,8 @@ def table_rounds(archive: dict[str, Any]) -> str:
         rows.append(
             f"| {v['round']} | {v['version']} | {v['parent'] or '–'} | {v['score_mean']:.3f} ± {v['score_std']:.3f} | "
             f"{v['n_clears']}/{v['n_episodes']} | {v['avg_steps']:.0f} | {v['cost_mean']:.3f} | "
-            f"{v['tokens_mean'] / 1e3:.0f}k | {v['gate_mean']:.3f} | **{_decision(v)}** | {gate.get('reason', '')} |"
+            f"{v['tokens_mean'] / 1e3:.0f}k | {v['gate_mean']:.3f} | **{_decision(v)}** | "
+            f"{gate.get('reason', '').replace('|', chr(92) + '|')} |"  # |x| would end the cell
         )
     for info in archive["rounds"]:
         if info.get("child") is None:
