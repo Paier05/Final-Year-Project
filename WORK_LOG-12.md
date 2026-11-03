@@ -537,8 +537,145 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
     `reports/round_3/{analysis,proposals,validation}.json`.
 - **Tokens:** player 12.84M in counted episodes; Meta + fact-check ~41k.
 
-## Open questions / risks
-<Anything uncertain, anything you're unsure is the right call, anything that should be double-checked by a human.>
+### 2026-11-03 09:09–16:20 — Resumed; rounds 3–5 done; run complete
 
-## Summary (fill in at the end)
-<What changed, why, how it was verified.>
+- **Resumed 09:09** (user: "resume"), PID 14748. v3's 5 episodes replayed
+  from scratch. Last night's cut sample had 2 early rotations; this one had
+  none early. That's n=5 sampling noise in plain view.
+- **Round 3 → v3 accepted on gate score** (the first acceptance on progress):
+  - progress 0.589 vs 0.520 (+0.069, beyond ε);
+  - cost 0.834 vs 0.735 (+0.099);
+  - gate score 0.172 vs 0.153;
+  - 3/5 rotated.
+- **Round 4.** Validate (4 Meta edits, 3 passed):
+  - the fact-check dropped a `knowledge` rewrite claiming ACTION5/7 rotates
+    the player;
+  - but `try_rotate`, whose docstring makes the same claim, passed as
+    unverifiable, and never got called.
+- **Round 4, v4's episodes:**
+  - **seed 1 = 0.829**, the run's best: rotated at action 26, then at action
+    33 it stood directly under the goal, rotated, with 11 counter moves left.
+    It walked right instead, pressed into a wall until the counter hit 0
+    (action 44), and the life loss reset the rotation;
+  - the other 4 seeds stalled under the goal, unrotated.
+  - **Gate: rejected.** Progress +0.011 is a tie, and v4 was not cheaper
+    (+0.022). The gate judges the mean, not the best episode.
+- **Round 5.** Validate (4 Meta edits, 1 passed):
+  - the fact-check dropped `try_rotate_cluster` ("Try ACTION5 and ACTION7 to
+    rotate the cluster", round 4's claim again, this time extracted as a
+    rotation-cause claim) and a `knowledge` rewrite (ACTION5/7 rotate; cyan
+    is the target);
+  - its own test dropped `get_cluster_orientation`.
+- **Round 5, v5's episodes:** 0.543, 0.257, 0.257, 0.714 (rotated, then 5
+  moves from the goal), 0.600. Mean 0.474.
+  - **Gate: rejected** (progress −0.114; gate score −0.105).
+- **Final parent: v3.** The run ended normally; `archive.json` has rounds
+  0–5 and no early stop.
+- **While round 5 played**, I rendered the figures from the real v0–v4 data
+  and fixed what they showed:
+  - the replay strip now shows the move counter and the life-loss frames;
+  - lineage labels no longer overlap the boxes;
+  - scatter labels are placed on the clearest side;
+  - overlapping seed labels were removed;
+  - `|` in table cells is escaped.
+  - Also added `analysis/failure_modes12.py`, which reproduces the
+    failure-mode numbers from the logged states.
+- **Report** posted as one issue comment
+  (https://github.com/Paier05/Final-Year-Project/issues/12#issuecomment-6598830292),
+  with images pinned to commit `9f4d137`. All 7 image URLs return 200. The
+  same text is in `REPORT-12.md`.
+  - Credential scan of `results/evolve_12/`, `analysis/`, `evolve/`, the log
+    and the config: no hits.
+
+## Open questions / risks
+
+- **n = 5 is still small.**
+  - Per-version SD reached 0.19.
+  - 3 of 5 gates fell inside ε = 0.05 and were decided on cost.
+  - v1's and v2's acceptances are "same progress, cheaper", not
+    improvements in play.
+  - The replayed v3 (09:09) and the cut v3 sample (last night) differed
+    visibly at the same turn.
+- **The seeds name attempts; they don't pair them.** ls20 and the endpoint
+  both ignore the seed, so "the same seeds for every version" doesn't make
+  the comparison paired.
+- **The fact-check depends on extraction.**
+  - The same false claim was "unverifiable" in round 4 and "false" in round 5.
+  - A wrong promoted helper (`get_cluster_centroid`) passed because the
+    output check can't call skills that take arguments.
+  - "Unverifiable" often means vaguely described, not doubtful.
+- **The Meta LLM saw goal-part names** (position, rotation, …), as the issue
+  asked. #9 withheld this. So #12's evolve loop ran with more evaluator
+  information than #9's, which is part of the "model + harness" comparison.
+- **Cost depends on server speed only through tokens and turns.** Wall time
+  isn't in the cost, but a slow endpoint pushed the first attempt onto the
+  wall-clock cap. The 4 h cap removed that effect from the counted run (no
+  episode ended on wall clock).
+- **The ε, cost normalisation, score weights and fact-check feedback** were
+  chosen by the user before the run. ε differs from the issue's 0.5.
+- **Unexplained:** the detached run's redirected stdout stopped receiving
+  progress lines twice while the run was healthy (py-spy confirmed). Worked
+  around with a separate events file; not root-caused.
+
+## Summary
+
+**What changed** (on top of #9's code, branch stacked on
+`experiment/9-evo-harness-ls20`):
+
+1. **Goal-progress score** (`evolve/goal_score.py`).
+   - Deterministic, from ls20's state logged per action (`game_state`, not
+     visible to the player).
+   - Parts: position 0.4 (maze moves to the goal), rotation 0.4, shape 0.1,
+     colour 0.1. An episode scores its best state; a clear = 1.0.
+   - #9 rescored by replay (`analysis/rescore_9.py`).
+2. **Fact-check in Validate** (`evolve/factcheck.py`).
+   - One meta-model call extracts claims into a fixed vocabulary; code checks
+     them against ground truth probed from the env, the logged states, and
+     skills run on replayed states.
+   - false → drop; unverifiable → keep and flag in the CHANGELOG. The Meta LLM
+     sees only that a claim is false.
+3. **Lower promotion thresholds:** ≥1 episode or ≥2 calls; delete after 10
+   unused episodes.
+4. **Cost-aware gate** (`evolve/score.py`): g = progress − 0.5·cost, ε = 0.05
+   tie-break on cost, δ = 0.1.
+   - Seeds 1–5 run in parallel, each with its own env, sandbox and client.
+   - Cost and seed are recorded per turn and per episode.
+5. **Config:** model `qwen38-flash-next-autoround`; wall clock 4 h (after the
+   first attempt was cut by 90 min); output to `results/evolve_12/`.
+6. **Report tooling:** `analysis/evolution12.py` (6 figures + GIF),
+   `analysis/report12.py` (all tables), `analysis/failure_modes12.py`.
+
+**Result** (5 rounds, 30 episodes):
+- No clear.
+- Lineage: v0 0.520 → v1 0.497 (tie-break) → v2 0.520 (tie-break) → v3 0.589
+  (gate score); v4 0.600 rejected (tie, not cheaper); v5 0.474 rejected.
+- Final parent v3.
+- Best episode: v4 seed 1 at 0.829, three moves from a clear.
+- The three comparisons: model change +0.053 progress / +0.359 cost; evolve
+  loop +0.080; #9's best (rescored 0.714) is still above #12's best (0.600).
+- Fact-check: 84 claims (50 true, 12 false, 22 unverifiable), 6 edits
+  dropped.
+- Promotion: 3 promotions — 1 reused heavily, 1 deleted unused, 1 wrong but
+  used.
+- Main failure: 55% of moves blocked; 24/30 episodes stuck under the goal
+  with the wrong rotation.
+
+**How it was verified:**
+- `python -m evolve.selftest`: 76 checks pass. They cover:
+  - the score ladder;
+  - 6 gate cases;
+  - 26 hand-written claims, incl. #9's false beliefs and the extractor's
+    formatting slips;
+  - a lime- vs a teal-based player helper;
+  - parallel = serial envs;
+  - logged = replayed states;
+  - the fact-check stage inside Validate (false → dropped with a Meta-facing
+    reason that hides the truth; unverifiable → kept and flagged).
+- A 200-action stub episode with life losses and a game over: logged states
+  = replayed (202/202).
+- Stub end-to-end runs (2 rounds).
+- The fact-check run on #9's 11 real accepted edits labels the known false
+  beliefs false and the 5-cell moves true.
+- Figures checked visually on stub and real data; image links verified
+  (HTTP 200).
+- No credentials in any committed file.
