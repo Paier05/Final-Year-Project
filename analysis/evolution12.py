@@ -103,15 +103,11 @@ def figure_score_per_round(archive: dict[str, Any], out_dir: str) -> str:
     for entry in versions:
         style = DECISION_STYLE[_decision(entry)]
         x = entry["round"]
+        # Dots are seeds 1..5 left to right; per-seed values are in the report's table.
         scores = [e["score"] for e in entry["episodes"]]
-        seeds = [e["seed"] for e in entry["episodes"]]
         jitter = np.linspace(-0.16, 0.16, len(scores)) if len(scores) > 1 else [0.0]
         axes.scatter([x + j for j in jitter], scores, s=22, color=style["colour"], alpha=0.5,
                      edgecolors="none", zorder=3)
-        if x == versions[0]["round"]:
-            for j, s, seed in zip(jitter, scores, seeds):
-                axes.annotate(f"s{seed}", (x + j, s), textcoords="offset points", xytext=(0, -10),
-                              ha="center", fontsize=6, color=TEXT_SECONDARY)
         axes.errorbar([x + 0.3], [entry["score_mean"]], yerr=[entry["score_std"]], fmt="none",
                       ecolor=style["colour"], elinewidth=2, capsize=4, zorder=3)
         axes.scatter([x + 0.3], [entry["score_mean"]], s=110, marker=style["marker"], color=style["colour"],
@@ -130,7 +126,8 @@ def figure_score_per_round(archive: dict[str, Any], out_dir: str) -> str:
     axes.set_xticklabels([f"round {r}" for r in rounds], fontsize=8)
     axes.set_xlim(min(rounds) - 0.4, max(rounds) + 0.9)
     axes.set_ylim(0, 1.08)
-    axes.set_ylabel("Goal progress (dots: seeds 1-5; mark: mean ± SD)", fontsize=9, color=TEXT_PRIMARY)
+    axes.set_ylabel("Goal progress (dots: seeds 1-5, left to right; mark: mean ± SD)", fontsize=9,
+                    color=TEXT_PRIMARY)
     axes.set_title(f"Goal progress per round, ls20 Level 1 ({archive['config']['player_model']}, "
                    f"{len(archive['config']['seeds'])} seeds per version)",
                    fontsize=11, color=TEXT_PRIMARY, loc="left")
@@ -221,9 +218,9 @@ def figure_cost(archive: dict[str, Any], out_dir: str) -> str:
                       color=style["colour"], alpha=0.35, edgecolors="none", zorder=2)
         right.scatter([v["cost_mean"]], [v["score_mean"]], s=100, marker=style["marker"], color=style["colour"],
                       edgecolors=SURFACE, linewidths=2, zorder=4)
-        # Versions can land on nearly the same point: fan the labels out.
+        # Versions can land on nearly the same point: alternate above / below.
         right.annotate(v["version"], (v["cost_mean"], v["score_mean"]), textcoords="offset points",
-                       xytext=(8, 10 - 9 * (index % 4)), fontsize=8, color=TEXT_PRIMARY)
+                       xytext=(7, 6) if index % 2 == 0 else (7, -13), fontsize=8, color=TEXT_PRIMARY)
     right.set_xlim(lo, hi + 0.04)
     right.set_ylim(0, 1.05)
     right.set_xlabel("Normalised cost per episode", fontsize=9, color=TEXT_PRIMARY)
@@ -248,12 +245,12 @@ def figure_lineage(archive: dict[str, Any], out_dir: str) -> str:
     while name:
         chain.append(name)
         name = versions[name]["parent"]
-    figure, axes = plt.subplots(figsize=(11.6, 3.9), facecolor=SURFACE)
+    figure, axes = plt.subplots(figsize=(13.2, 3.9), facecolor=SURFACE)
     axes.set_facecolor(SURFACE)
     axes.axis("off")
     pos: dict[str, tuple[float, float]] = {}
     for v in archive["versions"]:
-        pos[v["version"]] = (v["round"] * 2.0, 0.0 if v["version"] in chain else -1.25)
+        pos[v["version"]] = (v["round"] * 2.4, 0.0 if v["version"] in chain else -1.25)
     for v in archive["versions"]:
         if v["parent"] is None:
             continue
@@ -265,12 +262,14 @@ def figure_lineage(archive: dict[str, Any], out_dir: str) -> str:
                                   "linestyle": "solid" if decision == "accepted" else (0, (3, 2)),
                                   "connectionstyle": "arc3,rad=0.0" if y0 == y1 else "arc3,rad=-0.15"})
         gate = v.get("gate") or {}
-        label = f"{decision}\n{gate.get('rule', '')}\nΔprog {gate.get('progress_diff', 0):+.3f}  Δcost {gate.get('cost_diff', 0):+.3f}"
-        if y0 == y1:
-            axes.annotate(label, ((x0 + x1) / 2, y0 + 0.32), ha="center", va="bottom", fontsize=6.5,
+        rule = "tie-break" if gate.get("rule", "").startswith("tie") else "gate score"
+        label = (f"{decision} ({rule})\nΔprog {gate.get('progress_diff', 0):+.3f}\n"
+                 f"Δcost {gate.get('cost_diff', 0):+.3f}")
+        if y0 == y1:  # in the gap between the two boxes, above the arrow
+            axes.annotate(label, ((x0 + x1) / 2, y0 + 0.08), ha="center", va="bottom", fontsize=6.3,
                           color=TEXT_SECONDARY)
         else:  # off the chain: label under the child box, clear of the arrow
-            axes.annotate(label, (x1, y1 - 0.42), ha="center", va="top", fontsize=6.5, color=TEXT_SECONDARY)
+            axes.annotate(label, (x1, y1 - 0.42), ha="center", va="top", fontsize=6.3, color=TEXT_SECONDARY)
     for v in archive["versions"]:
         x, y = pos[v["version"]]
         decision = _decision(v)
@@ -295,7 +294,7 @@ def figure_lineage(archive: dict[str, Any], out_dir: str) -> str:
     handles = [Line2D([], [], color=DECISION_STYLE["accepted"]["colour"], linewidth=1.6, label="accepted"),
                Line2D([], [], color=DECISION_STYLE["rejected"]["colour"], linewidth=1.6, linestyle=(0, (3, 2)),
                       label="rejected")]
-    axes.legend(handles=handles, frameon=False, fontsize=8, loc="lower right")
+    axes.legend(handles=handles, frameon=False, fontsize=8, loc="upper right")
     return _save(figure, out_dir, "lineage.png")
 
 
@@ -328,11 +327,18 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
     need = states[0]["goals"][0]["rotation"]
     rotation_changes = [i for i in range(1, n) if states[i]["rotation"] != states[i - 1]["rotation"]
                         and states[i]["lives"] == states[i - 1]["lives"]]
+    # A life ends when the move counter runs out; ls20 then puts the player
+    # back at the start AND resets its rotation, which undoes a rotation step.
+    life_lost = [i for i in range(1, n) if states[i]["lives"] != states[i - 1]["lives"]]
     best_i = next(i for i in range(n) if states[i]["action_index"] == episode["goal"]["best_state"]["action_index"])
     keys = [0]
-    for i in rotation_changes[:2]:
+    for i in rotation_changes[:1]:
         keys += [max(0, i - 1), i]
-    keys += [best_i, n - 1]
+    keys.append(best_i)
+    after_best = [i for i in life_lost if i > best_i][:1]
+    for i in after_best:
+        keys += [i - 1, i]
+    keys.append(n - 1)
     keys = sorted(dict.fromkeys(k for k in keys if 0 <= k < n))[:8]
 
     def caption(i: int) -> str:
@@ -344,8 +350,10 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
             tag = "  ← ROTATED (stepped on the switch)"
         elif i == best_i:
             tag = "  ← best state"
+        elif i in life_lost:
+            tag = "  ← counter ran out: life lost, rotation reset"
         return (f"after action {s['action_index']}{tag}\nrotation {s['rotation']} ({rot}), "
-                f"{moves} move{'' if moves == 1 else 's'} to goal")
+                f"{moves} move{'' if moves == 1 else 's'} to goal, counter {s['moves_left']} left")
 
     def draw(axes: plt.Axes, i: int) -> None:
         axes.imshow(_rgb(np.asarray(frames[i])), interpolation="nearest")
@@ -370,8 +378,9 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
         draw(axes, i)
     for axes in flat[len(keys):]:
         axes.axis("off")
-    figure.suptitle(f"Replay: {best['version']} (best mean progress {best['score_mean']:.3f}), seed {episode['seed']}, "
-                    f"episode progress {episode['score']:.3f}. Dashed: HUD (shows the rotation), switch, goal.",
+    figure.suptitle(f"Replay: {best['version']} (highest mean progress {best['score_mean']:.3f}; gate: {_decision(best)}), "
+                    f"seed {episode['seed']}, episode progress {episode['score']:.3f}. "
+                    "Dashed: HUD (shows the rotation), switch, goal.",
                     fontsize=9, color=TEXT_PRIMARY, x=0.01, ha="left")
     figure.tight_layout()
     name = f"replay_{best['version']}_seed{episode['seed']}"
