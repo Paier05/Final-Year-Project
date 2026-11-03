@@ -1,0 +1,516 @@
+{
+ "totals": {
+  "episodes": 30,
+  "moves": 5811,
+  "blocked_moves": 3219,
+  "blocked_share": 0.554,
+  "reached_under_goal_unrotated": 24,
+  "presses_into_goal": 659,
+  "max_presses_into_goal": 56,
+  "rotated": 9,
+  "rotated_after_action_130": 6,
+  "within_3_moves_while_rotated": 1,
+  "rotation_lost_to_life_loss": 3
+ },
+ "per_version": [
+  {
+   "version": "v0",
+   "blocked_share": 0.489,
+   "under_goal_unrotated": 4,
+   "presses_into_goal": 76,
+   "rotated": 0,
+   "first_rotation_actions": [],
+   "closest_while_rotated": [],
+   "n": 5
+  },
+  {
+   "version": "v1",
+   "blocked_share": 0.58,
+   "under_goal_unrotated": 4,
+   "presses_into_goal": 85,
+   "rotated": 1,
+   "first_rotation_actions": [
+    170
+   ],
+   "closest_while_rotated": [
+    7
+   ],
+   "n": 5
+  },
+  {
+   "version": "v2",
+   "blocked_share": 0.652,
+   "under_goal_unrotated": 3,
+   "presses_into_goal": 71,
+   "rotated": 2,
+   "first_rotation_actions": [
+    54,
+    136
+   ],
+   "closest_while_rotated": [
+    7,
+    6
+   ],
+   "n": 5
+  },
+  {
+   "version": "v3",
+   "blocked_share": 0.513,
+   "under_goal_unrotated": 5,
+   "presses_into_goal": 152,
+   "rotated": 3,
+   "first_rotation_actions": [
+    180,
+    199,
+    158
+   ],
+   "closest_while_rotated": [
+    7,
+    6,
+    7
+   ],
+   "n": 5
+  },
+  {
+   "version": "v4",
+   "blocked_share": 0.55,
+   "under_goal_unrotated": 5,
+   "presses_into_goal": 172,
+   "rotated": 1,
+   "first_rotation_actions": [
+    26
+   ],
+   "closest_while_rotated": [
+    3
+   ],
+   "n": 5
+  },
+  {
+   "version": "v5",
+   "blocked_share": 0.539,
+   "under_goal_unrotated": 3,
+   "presses_into_goal": 103,
+   "rotated": 2,
+   "first_rotation_actions": [
+    160,
+    62
+   ],
+   "closest_while_rotated": [
+    5,
+    7
+   ],
+   "n": 5
+  }
+ ],
+ "episodes": [
+  {
+   "moves": 200,
+   "blocked_moves": 104,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v0",
+   "seed": 1,
+   "progress": 0.4286
+  },
+  {
+   "moves": 128,
+   "blocked_moves": 25,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 7,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v0",
+   "seed": 2,
+   "progress": 0.5429
+  },
+  {
+   "moves": 174,
+   "blocked_moves": 94,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 9,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v0",
+   "seed": 3,
+   "progress": 0.5429
+  },
+  {
+   "moves": 184,
+   "blocked_moves": 113,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 4,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v0",
+   "seed": 4,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 97,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 56,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v0",
+   "seed": 5,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 102,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 31,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v1",
+   "seed": 1,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 128,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 1,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v1",
+   "seed": 2,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 138,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v1",
+   "seed": 3,
+   "progress": 0.2571
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 117,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 20,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v1",
+   "seed": 4,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 95,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 33,
+   "rotations": [
+    {
+     "action": 170,
+     "counter_left_before": 35
+    }
+   ],
+   "closest_moves_while_rotated": 7,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v1",
+   "seed": 5,
+   "progress": 0.6
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 124,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 49,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v2",
+   "seed": 1,
+   "progress": 0.5429
+  },
+  {
+   "moves": 136,
+   "blocked_moves": 82,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [
+    {
+     "action": 54,
+     "counter_left_before": 32
+    },
+    {
+     "action": 62,
+     "counter_left_before": 25
+    }
+   ],
+   "closest_moves_while_rotated": 7,
+   "rotation_lost_to_life_loss": 1,
+   "version": "v2",
+   "seed": 2,
+   "progress": 0.6
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 156,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 13,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v2",
+   "seed": 3,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 128,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v2",
+   "seed": 4,
+   "progress": 0.2571
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 120,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 9,
+   "rotations": [
+    {
+     "action": 136,
+     "counter_left_before": 36
+    }
+   ],
+   "closest_moves_while_rotated": 6,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v2",
+   "seed": 5,
+   "progress": 0.6571
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 140,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 2,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v3",
+   "seed": 1,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 88,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 35,
+   "rotations": [
+    {
+     "action": 180,
+     "counter_left_before": 27
+    }
+   ],
+   "closest_moves_while_rotated": 7,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v3",
+   "seed": 2,
+   "progress": 0.6
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 92,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 30,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v3",
+   "seed": 3,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 101,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 43,
+   "rotations": [
+    {
+     "action": 199,
+     "counter_left_before": 16
+    }
+   ],
+   "closest_moves_while_rotated": 6,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v3",
+   "seed": 4,
+   "progress": 0.6571
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 92,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 42,
+   "rotations": [
+    {
+     "action": 158,
+     "counter_left_before": 2
+    }
+   ],
+   "closest_moves_while_rotated": 7,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v3",
+   "seed": 5,
+   "progress": 0.6
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 98,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 15,
+   "rotations": [
+    {
+     "action": 26,
+     "counter_left_before": 18
+    }
+   ],
+   "closest_moves_while_rotated": 3,
+   "rotation_lost_to_life_loss": 1,
+   "version": "v4",
+   "seed": 1,
+   "progress": 0.8286
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 93,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 53,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v4",
+   "seed": 2,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 95,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 49,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v4",
+   "seed": 3,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 163,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 8,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v4",
+   "seed": 4,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 101,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 47,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v4",
+   "seed": 5,
+   "progress": 0.5429
+  },
+  {
+   "moves": 192,
+   "blocked_moves": 87,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 37,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v5",
+   "seed": 1,
+   "progress": 0.5429
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 125,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v5",
+   "seed": 2,
+   "progress": 0.2571
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 130,
+   "reached_under_goal_unrotated": false,
+   "presses_into_goal": 0,
+   "rotations": [],
+   "closest_moves_while_rotated": null,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v5",
+   "seed": 3,
+   "progress": 0.2571
+  },
+  {
+   "moves": 197,
+   "blocked_moves": 84,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 38,
+   "rotations": [
+    {
+     "action": 160,
+     "counter_left_before": 3
+    }
+   ],
+   "closest_moves_while_rotated": 5,
+   "rotation_lost_to_life_loss": 0,
+   "version": "v5",
+   "seed": 4,
+   "progress": 0.7143
+  },
+  {
+   "moves": 200,
+   "blocked_moves": 107,
+   "reached_under_goal_unrotated": true,
+   "presses_into_goal": 28,
+   "rotations": [
+    {
+     "action": 62,
+     "counter_left_before": 30
+    }
+   ],
+   "closest_moves_while_rotated": 7,
+   "rotation_lost_to_life_loss": 1,
+   "version": "v5",
+   "seed": 5,
+   "progress": 0.6
+  }
+ ]
+}

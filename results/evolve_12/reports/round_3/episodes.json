@@ -1,0 +1,364 @@
+[
+  {
+    "round_index": 3,
+    "episode": 1,
+    "seed": 1,
+    "version": "v3",
+    "solved": false,
+    "steps_to_clear": null,
+    "end_reason": "budget_actions",
+    "actions_used": 200,
+    "turns": 109,
+    "resets_used": 1,
+    "tokens_in": 524064,
+    "tokens_out": 59095,
+    "llm_calls": 118,
+    "wall_time_s": 5131.2,
+    "parse_failures": 12,
+    "fallback_turns": 3,
+    "cell_errors": 27,
+    "timeouts": 0,
+    "trajectory": "results/evolve_12/trajectories/round_3/seed_1.jsonl",
+    "frames": "results/evolve_12/frames/round_3/seed_1.npz",
+    "error": null,
+    "score": 0.5429,
+    "goal": {
+      "score": 0.5429,
+      "cleared": false,
+      "parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "contributions": {
+        "position": 0.3429,
+        "rotation": 0.0,
+        "shape": 0.1,
+        "colour": 0.1
+      },
+      "failing_parts": [
+        "position",
+        "rotation"
+      ],
+      "best_state": {
+        "action_index": 10,
+        "moves_to_goal": 1
+      },
+      "ever": {
+        "rotation_matched": false,
+        "first_rotation_match_action": null,
+        "states_with_all_attributes_matched": 0,
+        "closest_moves_to_goal": 1,
+        "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "logged game_state"
+    },
+    "cost": {
+      "tokens_in": 524064,
+      "tokens_out": 59095,
+      "tokens": 583159,
+      "llm_calls": 118,
+      "env_steps": 200,
+      "wall_time_s": 5131.2,
+      "normalised": {
+        "tokens": 0.486,
+        "llm_calls": 0.59,
+        "env_steps": 1.0
+      },
+      "cost": 0.692
+    },
+    "gate_score": 0.1969
+  },
+  {
+    "round_index": 3,
+    "episode": 2,
+    "seed": 2,
+    "version": "v3",
+    "solved": false,
+    "steps_to_clear": null,
+    "end_reason": "budget_actions",
+    "actions_used": 200,
+    "turns": 126,
+    "resets_used": 1,
+    "tokens_in": 642498,
+    "tokens_out": 91756,
+    "llm_calls": 129,
+    "wall_time_s": 7022.7,
+    "parse_failures": 3,
+    "fallback_turns": 0,
+    "cell_errors": 3,
+    "timeouts": 0,
+    "trajectory": "results/evolve_12/trajectories/round_3/seed_2.jsonl",
+    "frames": "results/evolve_12/frames/round_3/seed_2.npz",
+    "error": null,
+    "score": 0.6,
+    "goal": {
+      "score": 0.6,
+      "cleared": false,
+      "parts": {
+        "position": 0.0,
+        "rotation": 1.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "contributions": {
+        "position": 0.0,
+        "rotation": 0.4,
+        "shape": 0.1,
+        "colour": 0.1
+      },
+      "failing_parts": [
+        "position"
+      ],
+      "best_state": {
+        "action_index": 180,
+        "moves_to_goal": 7
+      },
+      "ever": {
+        "rotation_matched": true,
+        "first_rotation_match_action": 180,
+        "states_with_all_attributes_matched": 6,
+        "closest_moves_to_goal": 1,
+        "closest_moves_to_goal_attributes_matched": 7
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "logged game_state"
+    },
+    "cost": {
+      "tokens_in": 642498,
+      "tokens_out": 91756,
+      "tokens": 734254,
+      "llm_calls": 129,
+      "env_steps": 200,
+      "wall_time_s": 7022.7,
+      "normalised": {
+        "tokens": 0.6119,
+        "llm_calls": 0.645,
+        "env_steps": 1.0
+      },
+      "cost": 0.7523
+    },
+    "gate_score": 0.2238
+  },
+  {
+    "round_index": 3,
+    "episode": 3,
+    "seed": 3,
+    "version": "v3",
+    "solved": false,
+    "steps_to_clear": null,
+    "end_reason": "budget_actions",
+    "actions_used": 200,
+    "turns": 191,
+    "resets_used": 1,
+    "tokens_in": 1049319,
+    "tokens_out": 129331,
+    "llm_calls": 195,
+    "wall_time_s": 8830.5,
+    "parse_failures": 4,
+    "fallback_turns": 0,
+    "cell_errors": 0,
+    "timeouts": 0,
+    "trajectory": "results/evolve_12/trajectories/round_3/seed_3.jsonl",
+    "frames": "results/evolve_12/frames/round_3/seed_3.npz",
+    "error": null,
+    "score": 0.5429,
+    "goal": {
+      "score": 0.5429,
+      "cleared": false,
+      "parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "contributions": {
+        "position": 0.3429,
+        "rotation": 0.0,
+        "shape": 0.1,
+        "colour": 0.1
+      },
+      "failing_parts": [
+        "position",
+        "rotation"
+      ],
+      "best_state": {
+        "action_index": 6,
+        "moves_to_goal": 1
+      },
+      "ever": {
+        "rotation_matched": false,
+        "first_rotation_match_action": null,
+        "states_with_all_attributes_matched": 0,
+        "closest_moves_to_goal": 1,
+        "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "logged game_state"
+    },
+    "cost": {
+      "tokens_in": 1049319,
+      "tokens_out": 129331,
+      "tokens": 1178650,
+      "llm_calls": 195,
+      "env_steps": 200,
+      "wall_time_s": 8830.5,
+      "normalised": {
+        "tokens": 0.9822,
+        "llm_calls": 0.975,
+        "env_steps": 1.0
+      },
+      "cost": 0.9857
+    },
+    "gate_score": 0.0501
+  },
+  {
+    "round_index": 3,
+    "episode": 4,
+    "seed": 4,
+    "version": "v3",
+    "solved": false,
+    "steps_to_clear": null,
+    "end_reason": "budget_actions",
+    "actions_used": 200,
+    "turns": 160,
+    "resets_used": 1,
+    "tokens_in": 821000,
+    "tokens_out": 108860,
+    "llm_calls": 164,
+    "wall_time_s": 8090.4,
+    "parse_failures": 4,
+    "fallback_turns": 0,
+    "cell_errors": 2,
+    "timeouts": 0,
+    "trajectory": "results/evolve_12/trajectories/round_3/seed_4.jsonl",
+    "frames": "results/evolve_12/frames/round_3/seed_4.npz",
+    "error": null,
+    "score": 0.6571,
+    "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+        "position": 0.1429,
+        "rotation": 1.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "contributions": {
+        "position": 0.0571,
+        "rotation": 0.4,
+        "shape": 0.1,
+        "colour": 0.1
+      },
+      "failing_parts": [
+        "position"
+      ],
+      "best_state": {
+        "action_index": 200,
+        "moves_to_goal": 6
+      },
+      "ever": {
+        "rotation_matched": true,
+        "first_rotation_match_action": 199,
+        "states_with_all_attributes_matched": 2,
+        "closest_moves_to_goal": 1,
+        "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "logged game_state"
+    },
+    "cost": {
+      "tokens_in": 821000,
+      "tokens_out": 108860,
+      "tokens": 929860,
+      "llm_calls": 164,
+      "env_steps": 200,
+      "wall_time_s": 8090.4,
+      "normalised": {
+        "tokens": 0.7749,
+        "llm_calls": 0.82,
+        "env_steps": 1.0
+      },
+      "cost": 0.865
+    },
+    "gate_score": 0.2246
+  },
+  {
+    "round_index": 3,
+    "episode": 5,
+    "seed": 5,
+    "version": "v3",
+    "solved": false,
+    "steps_to_clear": null,
+    "end_reason": "budget_actions",
+    "actions_used": 200,
+    "turns": 163,
+    "resets_used": 1,
+    "tokens_in": 830452,
+    "tokens_out": 112143,
+    "llm_calls": 168,
+    "wall_time_s": 8335.0,
+    "parse_failures": 5,
+    "fallback_turns": 0,
+    "cell_errors": 2,
+    "timeouts": 0,
+    "trajectory": "results/evolve_12/trajectories/round_3/seed_5.jsonl",
+    "frames": "results/evolve_12/frames/round_3/seed_5.npz",
+    "error": null,
+    "score": 0.6,
+    "goal": {
+      "score": 0.6,
+      "cleared": false,
+      "parts": {
+        "position": 0.0,
+        "rotation": 1.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "contributions": {
+        "position": 0.0,
+        "rotation": 0.4,
+        "shape": 0.1,
+        "colour": 0.1
+      },
+      "failing_parts": [
+        "position"
+      ],
+      "best_state": {
+        "action_index": 158,
+        "moves_to_goal": 7
+      },
+      "ever": {
+        "rotation_matched": true,
+        "first_rotation_match_action": 158,
+        "states_with_all_attributes_matched": 4,
+        "closest_moves_to_goal": 1,
+        "closest_moves_to_goal_attributes_matched": 7
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "logged game_state"
+    },
+    "cost": {
+      "tokens_in": 830452,
+      "tokens_out": 112143,
+      "tokens": 942595,
+      "llm_calls": 168,
+      "env_steps": 200,
+      "wall_time_s": 8335.0,
+      "normalised": {
+        "tokens": 0.7855,
+        "llm_calls": 0.84,
+        "env_steps": 1.0
+      },
+      "cost": 0.8752
+    },
+    "gate_score": 0.1624
+  }
+]

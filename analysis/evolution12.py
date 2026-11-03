@@ -212,15 +212,30 @@ def figure_cost(archive: dict[str, Any], out_dir: str) -> str:
             if 0 <= ys[-1] <= 1.03:
                 right.annotate(f"g={g:.1f}", (grid_c[-1], ys[-1]), fontsize=6, color=TEXT_SECONDARY,
                                textcoords="offset points", xytext=(2, -2))
-    for index, v in enumerate(versions):
+    means = [(v["cost_mean"], v["score_mean"]) for v in versions]
+    placed: list[tuple[float, float]] = []
+    for v in versions:
         style = DECISION_STYLE[_decision(v)]
         right.scatter([e["cost"]["cost"] for e in v["episodes"]], [e["score"] for e in v["episodes"]], s=16,
                       color=style["colour"], alpha=0.35, edgecolors="none", zorder=2)
         right.scatter([v["cost_mean"]], [v["score_mean"]], s=100, marker=style["marker"], color=style["colour"],
                       edgecolors=SURFACE, linewidths=2, zorder=4)
-        # Versions can land on nearly the same point: alternate above / below.
-        right.annotate(v["version"], (v["cost_mean"], v["score_mean"]), textcoords="offset points",
-                       xytext=(7, 6) if index % 2 == 0 else (7, -13), fontsize=8, color=TEXT_PRIMARY)
+        # Versions can land close together: put each label on the side (of
+        # four) farthest from the other versions' marks and labels placed so far.
+        x, y = v["cost_mean"], v["score_mean"]
+        span_x, span_y = (hi + 0.04 - lo), 1.05
+        options = [((8, 5), (0.03, 0.025)), ((8, -13), (0.03, -0.03)), ((-24, 5), (-0.03, 0.025)),
+                   ((-24, -13), (-0.03, -0.03))]
+
+        def clearance(offset: tuple[float, float]) -> float:
+            lx, ly = x + offset[0] * span_x, y + offset[1] * span_y / 1.05
+            others = [p for p in means if p != (x, y)] + placed
+            return min((((lx - px) / span_x) ** 2 + ((ly - py) / span_y) ** 2 for px, py in others), default=1.0)
+
+        points, data_offset = max(options, key=lambda option: clearance(option[1]))
+        placed.append((x + data_offset[0] * span_x, y + data_offset[1]))
+        right.annotate(v["version"], (x, y), textcoords="offset points", xytext=points, fontsize=8,
+                       color=TEXT_PRIMARY, zorder=5)
     right.set_xlim(lo, hi + 0.04)
     right.set_ylim(0, 1.05)
     right.set_xlabel("Normalised cost per episode", fontsize=9, color=TEXT_PRIMARY)
@@ -263,13 +278,14 @@ def figure_lineage(archive: dict[str, Any], out_dir: str) -> str:
                                   "connectionstyle": "arc3,rad=0.0" if y0 == y1 else "arc3,rad=-0.15"})
         gate = v.get("gate") or {}
         rule = "tie-break" if gate.get("rule", "").startswith("tie") else "gate score"
-        label = (f"{decision} ({rule})\nΔprog {gate.get('progress_diff', 0):+.3f}\n"
+        label = (f"{decision}\n({rule})\nΔprog {gate.get('progress_diff', 0):+.3f}\n"
                  f"Δcost {gate.get('cost_diff', 0):+.3f}")
         if y0 == y1:  # in the gap between the two boxes, above the arrow
-            axes.annotate(label, ((x0 + x1) / 2, y0 + 0.08), ha="center", va="bottom", fontsize=6.3,
-                          color=TEXT_SECONDARY)
+            axes.annotate(label, ((x0 + x1) / 2, y0 + 0.06), ha="center", va="bottom", fontsize=6.3,
+                          color=TEXT_SECONDARY, zorder=5)
         else:  # off the chain: label under the child box, clear of the arrow
-            axes.annotate(label, (x1, y1 - 0.42), ha="center", va="top", fontsize=6.3, color=TEXT_SECONDARY)
+            axes.annotate(label, (x1, y1 - 0.42), ha="center", va="top", fontsize=6.3, color=TEXT_SECONDARY,
+                          zorder=5)
     for v in archive["versions"]:
         x, y = pos[v["version"]]
         decision = _decision(v)

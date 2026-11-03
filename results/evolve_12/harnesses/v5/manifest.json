@@ -1,0 +1,27 @@
+{
+  "version": "v5",
+  "parent": "v3",
+  "round": 5,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "get_cluster_centroid",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r5-e3",
+      "source": "meta",
+      "what": "edit skill move_cluster_to",
+      "rationale": "The previous version was fine, but I'm keeping it to ensure it's present and correct. The main issue was the player not using it effectively due to lack of rotation handling."
+    }
+  ]
+}

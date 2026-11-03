@@ -77,3 +77,47 @@ Dropped at Validate (2):
     - FALSE "'target': (row, col) of the nearest cyan(8) or grey(5) target" (colour_role): cyan is lives
 - `r3-e4` [meta] add skill try_rotate — static tests: sandbox rules: line 45: bare 'except:' is not allowed; catch Exception
 
+Gate for v3 vs v2: **accepted** (gate score) — gate-score gain +0.0190 > 0 and drop -0.1680 <= 0.1 (progress 0.5886 vs 0.52, cost 0.834 vs 0.7348, gate score 0.1716 vs 0.1526, worst gate score 0.0501 vs -0.1179)
+
+## v4 (parent v3, round 4) — 2026-11-03T11:38:57
+Accepted edits (3):
+- `r4-e1` [meta] **UNVERIFIABLE** edit skill move_cluster_to — The previous version could oscillate if the target was close but not within tolerance. This version is identical but I will ensure the step logic is robust. Actually, the main issue was likely the player not using it enough or the target being wrong. I will keep the logic but ensure it's used. Wait, the previous rejection was for `analyze_cluster_state`. `move_cluster_to` was accepted. I will refine it to be more robust against 'no change' loops by breaking immediately.
+  - fact-check: 6 claims: 4 true, 0 false, 2 unverifiable
+    - UNVERIFIABLE "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]" (colour_role): role 'other' is not checkable
+    - UNVERIFIABLE "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]" (colour_role): role 'other' is not checkable
+- `r4-e2` [meta] **UNVERIFIABLE** add skill try_rotate — The player needs to know which action rotates the cluster. This skill systematically tests the remaining simple actions (5 and 7) and returns the one that works, saving the player from manual trial and error.
+  - fact-check: 1 claims: 0 true, 0 false, 1 unverifiable
+    - UNVERIFIABLE "Try ACTION5 and ACTION7 to find which one rotates the cluster." (other): outside the checkable vocabulary
+- `r4-e4` [meta] edit step 4 — Reinforces the use of `try_rotate` and `move_cluster_to` to minimize manual action selection and reduce token usage from verbose planning.
+  - fact-check: 0 claims: 0 true, 0 false, 0 unverifiable
+Dropped at Validate (1):
+- `r4-e3` [meta] edit prompt knowledge — fact-check: contradicted by the game: 'try_rotate() to find the action that flips it (likely ACTION5 or ACTION7)'
+  - fact-check: 8 claims: 5 true, 1 false, 2 unverifiable
+    - UNVERIFIABLE "ACTION2 usually causes a tiny change, mostly lime -> green cells" (other): outside the checkable vocabulary
+    - UNVERIFIABLE "The teal/maroon cluster may have an orientation (horizontal/vertical)" (other): outside the checkable vocabulary
+    - FALSE "try_rotate() to find the action that flips it (likely ACTION5 or ACTION7)" (rotation_cause): no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
+
+Gate for v4 vs v3: **rejected** (tie-break on cost) — tie on progress (|+0.0114| <= eps 0.05); child not cheaper (cost +0.0217) (progress 0.6 vs 0.5886, cost 0.8557 vs 0.834, gate score 0.1722 vs 0.1716, worst gate score 0.0571 vs 0.0501)
+
+## v5 (parent v3, round 5) — 2026-11-03T14:01:04
+Accepted edits (1):
+- `r5-e3` [meta] **UNVERIFIABLE** edit skill move_cluster_to — The previous version was fine, but I'm keeping it to ensure it's present and correct. The main issue was the player not using it effectively due to lack of rotation handling.
+  - fact-check: 6 claims: 4 true, 0 false, 2 unverifiable
+    - UNVERIFIABLE "teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]" (colour_role): role 'other' is not checkable
+    - UNVERIFIABLE "mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]" (colour_role): role 'other' is not checkable
+Dropped at Validate (3):
+- `r5-e1` [meta] add skill get_cluster_orientation — skill test: test fails at state 'after 0 actions': IndexError: index 3 is out of bounds for axis 1 with size 3 (line 1)
+- `r5-e2` [meta] add skill try_rotate_cluster — fact-check: contradicted by the game: 'Try ACTION5 and ACTION7 to rotate the cluster'; 'Try ACTION5 and ACTION7 to rotate the cluster'
+  - fact-check: 2 claims: 0 true, 2 false, 0 unverifiable
+    - FALSE "Try ACTION5 and ACTION7 to rotate the cluster" (rotation_cause): no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
+    - FALSE "Try ACTION5 and ACTION7 to rotate the cluster" (rotation_cause): no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
+- `r5-e4` [meta] edit prompt knowledge — fact-check: contradicted by the game: 'likely ACTION5 or ACTION7'; 'likely ACTION5 or ACTION7'; 'Identify target location (cyan/grey box)'
+  - fact-check: 11 claims: 6 true, 3 false, 2 unverifiable
+    - UNVERIFIABLE "ACTION2 usually causes a tiny change, mostly lime -> green cells" (other): outside the checkable vocabulary
+    - UNVERIFIABLE "The teal/maroon cluster may have an orientation" (other): outside the checkable vocabulary
+    - FALSE "likely ACTION5 or ACTION7" (rotation_cause): no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
+    - FALSE "likely ACTION5 or ACTION7" (rotation_cause): no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
+    - FALSE "Identify target location (cyan/grey box)" (colour_role): cyan is lives
+
+Gate for v5 vs v3: **rejected** (gate score) — no gate-score gain (-0.1047; progress -0.1143, cost -0.0191) (progress 0.4743 vs 0.5886, cost 0.8149 vs 0.834, gate score 0.0669 vs 0.1716, worst gate score -0.1444 vs 0.0501)
+
