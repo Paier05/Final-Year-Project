@@ -72,18 +72,13 @@ Accepted edits, by round:
 | 5 | 19 | 10 | 5 | 4 | 2 (r5-e2, r5-e4) | 1 / 4.0k |
 | **all** | **84** | **50** | **12** | **22** | **6** | 5 / 19.3k |
 
-Claims labelled false:
+Claims labelled false (the evidence is the game's ground truth; the Meta LLM was told only that the claim is false):
 
-- round 1 `r1-e4` (edit prompt knowledge): "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22)." → blue is rotation_switch
-- round 1 `r1-e4` (edit prompt knowledge): "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22)." → black is rotation_switch
-- round 1 `r1-e4` (edit prompt knowledge): "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22)." → goal at rows 10-14, cols 34-38
-- round 1 `r1-e7` (edit step 1): "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite)." → blue is rotation_switch
-- round 1 `r1-e7` (edit step 1): "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite)." → black is rotation_switch
+- round 1 `r1-e4` (edit prompt knowledge): "The goal is to move the cluster into a target region (often a grey(5) box or near the blue(1)/black(0) sprite at rows 31-33, cols 20-22)." → blue is rotation_switch; black is rotation_switch; goal at rows 10-14, cols 34-38
+- round 1 `r1-e7` (edit step 1): "Identify the teal/maroon cluster centroid and the target location (grey box or blue/black sprite)." → blue is rotation_switch; black is rotation_switch
 - round 3 `r3-e3` (add skill analyze_cluster_state): "'target': (row, col) of the nearest cyan(8) or grey(5) target" → cyan is lives
 - round 4 `r4-e3` (edit prompt knowledge): "try_rotate() to find the action that flips it (likely ACTION5 or ACTION7)" → no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
 - round 5 `r5-e2` (add skill try_rotate_cluster): "Try ACTION5 and ACTION7 to rotate the cluster" → no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
-- round 5 `r5-e2` (add skill try_rotate_cluster): "Try ACTION5 and ACTION7 to rotate the cluster" → no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
-- round 5 `r5-e4` (edit prompt knowledge): "likely ACTION5 or ACTION7" → no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
 - round 5 `r5-e4` (edit prompt knowledge): "likely ACTION5 or ACTION7" → no action rotates the player directly; rotation switch at rows 30-34, cols 19-23
 - round 5 `r5-e4` (edit prompt knowledge): "Identify target location (cyan/grey box)" → cyan is lives
 

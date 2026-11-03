@@ -152,12 +152,20 @@ def table_factcheck(archive: dict[str, Any]) -> str:
     rows.append(f"| **all** | **{totals['n_claims']}** | **{totals['true']}** | **{totals['false']}** | "
                 f"**{totals['unverifiable']}** | **{totals['dropped']}** | {totals['extraction_calls']} / "
                 f"{totals['extraction_tokens'] / 1e3:.1f}k |")
-    false_claims = ["", "Claims labelled false:", ""]
+    # One line per quoted sentence: a sentence can hold several false claims
+    # (e.g. blue AND black called the target), and the same edit can appear
+    # in both Validate attempts.
+    grouped: dict[tuple, list[str]] = {}
     for round_index, facts in sorted(records, key=lambda x: x[0]):
         for c in (facts or {}).get("claims") or []:
             if c["label"] == "false":
-                false_claims.append(f"- round {round_index} `{c['edit']}` ({c['what']}): \"{c['quote']}\" → "
-                                    f"{c['evidence']}")
+                evidence = grouped.setdefault((round_index, c["edit"], c["what"], c["quote"]), [])
+                if c["evidence"] not in evidence:
+                    evidence.append(c["evidence"])
+    false_claims = ["", "Claims labelled false (the evidence is the game's ground truth; the Meta LLM was told only "
+                        "that the claim is false):", ""]
+    for (round_index, edit, what, quote), evidence in grouped.items():
+        false_claims.append(f"- round {round_index} `{edit}` ({what}): \"{quote}\" → {'; '.join(evidence)}")
     return "\n".join(rows + false_claims)
 
 
