@@ -1,0 +1,24 @@
+{
+  "version": "v0",
+  "parent": null,
+  "round": 0,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "bfs_to_target",
+    "grid_region",
+    "obstacle_map",
+    "player_detector"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "op": "seed",
+      "source": "issue #8 harness",
+      "note": "Build harness v0: issue #8's harness, ported to code-acting."
+    }
+  ]
+}

@@ -1,0 +1,1240 @@
+{
+ "note": "#9's episodes rescored with #12's goal-progress score and cost (analysis/rescore_9.py). #9's gate decisions used its own score and are unchanged.",
+ "weights": {
+  "position": 0.4,
+  "rotation": 0.4,
+  "shape": 0.1,
+  "colour": 0.1
+ },
+ "gate": {
+  "lambda": 0.5,
+  "epsilon": 0.05,
+  "delta": 0.1
+ },
+ "final_parent_9": "v2",
+ "best_by_progress": "v2",
+ "versions": [
+  {
+   "version": "v0",
+   "parent": null,
+   "round": 0,
+   "decision_9": "baseline",
+   "score_9_mean": 0.3333,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.4667,
+   "score_std": 0.15,
+   "score_worst": 0.2571,
+   "score_best": 0.6,
+   "parts_mean": {
+    "position": 0.3333,
+    "rotation": 0.3333,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.5451,
+   "gate_mean": 0.1942,
+   "gate_worst": -0.0001,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 200.0,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 338170.0,
+   "llm_calls_mean": 70.6667,
+   "wall_time_mean_s": 1575.3667,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.2571,
+     "score_9": 0.0877,
+     "gate_score": -0.0001,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 59,
+     "goal": {
+      "score": 0.2571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 0.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.0,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position",
+       "rotation"
+      ],
+      "best_state": {
+       "action_index": 1,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": false,
+       "first_rotation_match_action": null,
+       "states_with_all_attributes_matched": 0,
+       "closest_moves_to_goal": 6,
+       "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 250534,
+      "tokens_out": 41708,
+      "tokens": 292242,
+      "llm_calls": 60,
+      "env_steps": 200,
+      "wall_time_s": 1345.2,
+      "normalised": {
+       "tokens": 0.2435,
+       "llm_calls": 0.3,
+       "env_steps": 1.0
+      },
+      "cost": 0.5145
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.6,
+     "score_9": 0.4737,
+     "gate_score": 0.33,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 69,
+     "goal": {
+      "score": 0.6,
+      "cleared": false,
+      "parts": {
+       "position": 0.0,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 34,
+       "moves_to_goal": 7
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 34,
+       "states_with_all_attributes_matched": 10,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": 7
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 279658,
+      "tokens_out": 50253,
+      "tokens": 329911,
+      "llm_calls": 69,
+      "env_steps": 200,
+      "wall_time_s": 1565.5,
+      "normalised": {
+       "tokens": 0.2749,
+       "llm_calls": 0.345,
+       "env_steps": 1.0
+      },
+      "cost": 0.54
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.5429,
+     "score_9": 0.4386,
+     "gate_score": 0.2526,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 82,
+     "goal": {
+      "score": 0.5429,
+      "cleared": false,
+      "parts": {
+       "position": 0.8571,
+       "rotation": 0.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.3429,
+       "rotation": 0.0,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position",
+       "rotation"
+      ],
+      "best_state": {
+       "action_index": 51,
+       "moves_to_goal": 1
+      },
+      "ever": {
+       "rotation_matched": false,
+       "first_rotation_match_action": null,
+       "states_with_all_attributes_matched": 0,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 331675,
+      "tokens_out": 60682,
+      "tokens": 392357,
+      "llm_calls": 83,
+      "env_steps": 200,
+      "wall_time_s": 1815.4,
+      "normalised": {
+       "tokens": 0.327,
+       "llm_calls": 0.415,
+       "env_steps": 1.0
+      },
+      "cost": 0.5807
+     }
+    }
+   ]
+  },
+  {
+   "version": "v1",
+   "parent": "v0",
+   "round": 1,
+   "decision_9": "accepted",
+   "score_9_mean": 0.4035,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.6762,
+   "score_std": 0.1174,
+   "score_worst": 0.5429,
+   "score_best": 0.8286,
+   "parts_mean": {
+    "position": 0.5238,
+    "rotation": 0.6667,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.5169,
+   "gate_mean": 0.4178,
+   "gate_worst": 0.295,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 200.0,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 300678.3333,
+   "llm_calls_mean": 60.0,
+   "wall_time_mean_s": 1329.2,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.8286,
+     "score_9": 0.4737,
+     "gate_score": 0.5689,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 61,
+     "goal": {
+      "score": 0.8286,
+      "cleared": false,
+      "parts": {
+       "position": 0.5714,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.2286,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 163,
+       "moves_to_goal": 3
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 103,
+       "states_with_all_attributes_matched": 46,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": 3
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 261772,
+      "tokens_out": 42124,
+      "tokens": 303896,
+      "llm_calls": 61,
+      "env_steps": 200,
+      "wall_time_s": 1377.1,
+      "normalised": {
+       "tokens": 0.2532,
+       "llm_calls": 0.305,
+       "env_steps": 1.0
+      },
+      "cost": 0.5194
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.3895,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 66,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 181,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 180,
+       "states_with_all_attributes_matched": 3,
+       "closest_moves_to_goal": 4,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 286115,
+      "tokens_out": 44907,
+      "tokens": 331022,
+      "llm_calls": 66,
+      "env_steps": 200,
+      "wall_time_s": 1439.8,
+      "normalised": {
+       "tokens": 0.2759,
+       "llm_calls": 0.33,
+       "env_steps": 1.0
+      },
+      "cost": 0.5353
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.5429,
+     "score_9": 0.2632,
+     "gate_score": 0.295,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 53,
+     "goal": {
+      "score": 0.5429,
+      "cleared": false,
+      "parts": {
+       "position": 0.8571,
+       "rotation": 0.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.3429,
+       "rotation": 0.0,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position",
+       "rotation"
+      ],
+      "best_state": {
+       "action_index": 99,
+       "moves_to_goal": 1
+      },
+      "ever": {
+       "rotation_matched": false,
+       "first_rotation_match_action": null,
+       "states_with_all_attributes_matched": 0,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 232693,
+      "tokens_out": 34424,
+      "tokens": 267117,
+      "llm_calls": 53,
+      "env_steps": 200,
+      "wall_time_s": 1170.7,
+      "normalised": {
+       "tokens": 0.2226,
+       "llm_calls": 0.265,
+       "env_steps": 1.0
+      },
+      "cost": 0.4959
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2",
+   "parent": "v1",
+   "round": 2,
+   "decision_9": "accepted",
+   "score_9_mean": 0.4737,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.7143,
+   "score_std": 0.0808,
+   "score_worst": 0.6571,
+   "score_best": 0.8286,
+   "parts_mean": {
+    "position": 0.2857,
+    "rotation": 1.0,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.5462,
+   "gate_mean": 0.4412,
+   "gate_worst": 0.3687,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 200.0,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 356343.3333,
+   "llm_calls_mean": 68.3333,
+   "wall_time_mean_s": 1623.1,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.3687,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 78,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 183,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 182,
+       "states_with_all_attributes_matched": 2,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 347157,
+      "tokens_out": 61453,
+      "tokens": 408610,
+      "llm_calls": 78,
+      "env_steps": 200,
+      "wall_time_s": 1851.8,
+      "normalised": {
+       "tokens": 0.3405,
+       "llm_calls": 0.39,
+       "env_steps": 1.0
+      },
+      "cost": 0.5768
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.8286,
+     "score_9": 0.4737,
+     "gate_score": 0.5304,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 84,
+     "goal": {
+      "score": 0.8286,
+      "cleared": false,
+      "parts": {
+       "position": 0.5714,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.2286,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 196,
+       "moves_to_goal": 3
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 180,
+       "states_with_all_attributes_matched": 21,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": 3
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 373445,
+      "tokens_out": 69313,
+      "tokens": 442758,
+      "llm_calls": 84,
+      "env_steps": 200,
+      "wall_time_s": 2037.4,
+      "normalised": {
+       "tokens": 0.369,
+       "llm_calls": 0.42,
+       "env_steps": 1.0
+      },
+      "cost": 0.5963
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.4244,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 42,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 197,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 196,
+       "states_with_all_attributes_matched": 5,
+       "closest_moves_to_goal": 6,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 189401,
+      "tokens_out": 28261,
+      "tokens": 217662,
+      "llm_calls": 43,
+      "env_steps": 200,
+      "wall_time_s": 980.1,
+      "normalised": {
+       "tokens": 0.1814,
+       "llm_calls": 0.215,
+       "env_steps": 1.0
+      },
+      "cost": 0.4655
+     }
+    }
+   ]
+  },
+  {
+   "version": "v3",
+   "parent": "v2",
+   "round": 3,
+   "decision_9": "rejected",
+   "score_9_mean": 0.462,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.5809,
+   "score_std": 0.1077,
+   "score_worst": 0.4286,
+   "score_best": 0.6571,
+   "parts_mean": {
+    "position": 0.2857,
+    "rotation": 0.6667,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.4938,
+   "gate_mean": 0.334,
+   "gate_worst": 0.1736,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 200.0,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 269864.3333,
+   "llm_calls_mean": 51.3333,
+   "wall_time_mean_s": 1332.7667,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.4286,
+     "score_9": 0.4386,
+     "gate_score": 0.1736,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 56,
+     "goal": {
+      "score": 0.4286,
+      "cleared": false,
+      "parts": {
+       "position": 0.5714,
+       "rotation": 0.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.2286,
+       "rotation": 0.0,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position",
+       "rotation"
+      ],
+      "best_state": {
+       "action_index": 37,
+       "moves_to_goal": 3
+      },
+      "ever": {
+       "rotation_matched": false,
+       "first_rotation_match_action": null,
+       "states_with_all_attributes_matched": 0,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": null
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 246785,
+      "tokens_out": 46741,
+      "tokens": 293526,
+      "llm_calls": 57,
+      "env_steps": 200,
+      "wall_time_s": 1458.8,
+      "normalised": {
+       "tokens": 0.2446,
+       "llm_calls": 0.285,
+       "env_steps": 1.0
+      },
+      "cost": 0.5099
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.431,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 38,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 167,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 166,
+       "states_with_all_attributes_matched": 13,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 171637,
+      "tokens_out": 28778,
+      "tokens": 200415,
+      "llm_calls": 38,
+      "env_steps": 200,
+      "wall_time_s": 987.7,
+      "normalised": {
+       "tokens": 0.167,
+       "llm_calls": 0.19,
+       "env_steps": 1.0
+      },
+      "cost": 0.4523
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.3975,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 59,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 27,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 26,
+       "states_with_all_attributes_matched": 54,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 264862,
+      "tokens_out": 50790,
+      "tokens": 315652,
+      "llm_calls": 59,
+      "env_steps": 200,
+      "wall_time_s": 1551.8,
+      "normalised": {
+       "tokens": 0.263,
+       "llm_calls": 0.295,
+       "env_steps": 1.0
+      },
+      "cost": 0.5193
+     }
+    }
+   ]
+  },
+  {
+   "version": "v4",
+   "parent": "v2",
+   "round": 4,
+   "decision_9": "rejected",
+   "score_9_mean": 0.4737,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.6762,
+   "score_std": 0.027,
+   "score_worst": 0.6571,
+   "score_best": 0.7143,
+   "parts_mean": {
+    "position": 0.1905,
+    "rotation": 1.0,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.8516,
+   "gate_mean": 0.2504,
+   "gate_worst": 0.1989,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 147.3333,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 1015712.6667,
+   "llm_calls_mean": 196.6667,
+   "wall_time_mean_s": 5324.9667,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.1989,
+     "solved": false,
+     "actions_used": 176,
+     "turns": 200,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 59,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 56,
+       "states_with_all_attributes_matched": 25,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 177,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 868159,
+      "tokens_out": 174942,
+      "tokens": 1043101,
+      "llm_calls": 204,
+      "env_steps": 176,
+      "wall_time_s": 5348.5,
+      "normalised": {
+       "tokens": 0.8693,
+       "llm_calls": 1.0,
+       "env_steps": 0.88
+      },
+      "cost": 0.9164
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.7143,
+     "score_9": 0.4737,
+     "gate_score": 0.3265,
+     "solved": false,
+     "actions_used": 117,
+     "turns": 182,
+     "goal": {
+      "score": 0.7143,
+      "cleared": false,
+      "parts": {
+       "position": 0.2857,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.1143,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 71,
+       "moves_to_goal": 5
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 69,
+       "states_with_all_attributes_matched": 18,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": 5
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 118,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 815820,
+      "tokens_out": 176684,
+      "tokens": 992504,
+      "llm_calls": 183,
+      "env_steps": 117,
+      "wall_time_s": 5408.5,
+      "normalised": {
+       "tokens": 0.8271,
+       "llm_calls": 0.915,
+       "env_steps": 0.585
+      },
+      "cost": 0.7757
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.2258,
+     "solved": false,
+     "actions_used": 149,
+     "turns": 200,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 31,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 30,
+       "states_with_all_attributes_matched": 7,
+       "closest_moves_to_goal": 1,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 150,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 843146,
+      "tokens_out": 168387,
+      "tokens": 1011533,
+      "llm_calls": 203,
+      "env_steps": 149,
+      "wall_time_s": 5217.9,
+      "normalised": {
+       "tokens": 0.8429,
+       "llm_calls": 1.0,
+       "env_steps": 0.745
+      },
+      "cost": 0.8626
+     }
+    }
+   ]
+  },
+  {
+   "version": "v5",
+   "parent": "v2",
+   "round": 5,
+   "decision_9": "rejected",
+   "score_9_mean": 0.4737,
+   "n_episodes": 3,
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "score_mean": 0.6571,
+   "score_std": 0.0,
+   "score_worst": 0.6571,
+   "score_best": 0.6571,
+   "parts_mean": {
+    "position": 0.1429,
+    "rotation": 1.0,
+    "shape": 1.0,
+    "colour": 1.0
+   },
+   "cost_mean": 0.5207,
+   "gate_mean": 0.3968,
+   "gate_worst": 0.3745,
+   "clear_rate": 0.0,
+   "n_clears": 0,
+   "avg_steps": 200.0,
+   "avg_steps_to_clear": null,
+   "tokens_mean": 318313.6667,
+   "llm_calls_mean": 59.3333,
+   "wall_time_mean_s": 1473.7,
+   "episodes": [
+    {
+     "episode": 0,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.3991,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 58,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 120,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 119,
+       "states_with_all_attributes_matched": 31,
+       "closest_moves_to_goal": 3,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 265727,
+      "tokens_out": 43763,
+      "tokens": 309490,
+      "llm_calls": 58,
+      "env_steps": 200,
+      "wall_time_s": 1406.4,
+      "normalised": {
+       "tokens": 0.2579,
+       "llm_calls": 0.29,
+       "env_steps": 1.0
+      },
+      "cost": 0.516
+     }
+    },
+    {
+     "episode": 1,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.3745,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 73,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 57,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 56,
+       "states_with_all_attributes_matched": 28,
+       "closest_moves_to_goal": 6,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 334149,
+      "tokens_out": 62436,
+      "tokens": 396585,
+      "llm_calls": 73,
+      "env_steps": 200,
+      "wall_time_s": 1849.1,
+      "normalised": {
+       "tokens": 0.3305,
+       "llm_calls": 0.365,
+       "env_steps": 1.0
+      },
+      "cost": 0.5652
+     }
+    },
+    {
+     "episode": 2,
+     "score": 0.6571,
+     "score_9": 0.4737,
+     "gate_score": 0.4167,
+     "solved": false,
+     "actions_used": 200,
+     "turns": 47,
+     "goal": {
+      "score": 0.6571,
+      "cleared": false,
+      "parts": {
+       "position": 0.1429,
+       "rotation": 1.0,
+       "shape": 1.0,
+       "colour": 1.0
+      },
+      "contributions": {
+       "position": 0.0571,
+       "rotation": 0.4,
+       "shape": 0.1,
+       "colour": 0.1
+      },
+      "failing_parts": [
+       "position"
+      ],
+      "best_state": {
+       "action_index": 10,
+       "moves_to_goal": 6
+      },
+      "ever": {
+       "rotation_matched": true,
+       "first_rotation_match_action": 9,
+       "states_with_all_attributes_matched": 53,
+       "closest_moves_to_goal": 6,
+       "closest_moves_to_goal_attributes_matched": 6
+      },
+      "start_moves_to_goal": 7,
+      "n_states": 202,
+      "state_source": "replay of logged actions"
+     },
+     "cost": {
+      "tokens_in": 214609,
+      "tokens_out": 34257,
+      "tokens": 248866,
+      "llm_calls": 47,
+      "env_steps": 200,
+      "wall_time_s": 1165.6,
+      "normalised": {
+       "tokens": 0.2074,
+       "llm_calls": 0.235,
+       "env_steps": 1.0
+      },
+      "cost": 0.4808
+     }
+    }
+   ]
+  }
+ ]
+}

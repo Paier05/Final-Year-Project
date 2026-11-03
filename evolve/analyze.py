@@ -16,9 +16,12 @@ inline-helper usage -- plus what Propose needs to act on them:
 - the most common cell errors;
 - a short excerpt of the best and worst episodes.
 
-The progress measure itself (the mover/target roles in analysis/approach.py)
-is deliberately *not* described here: Propose sees the score per episode, not
-how the evaluator computes it, so no hint about the goal leaks into the harness.
+Issue #12: episodes arrive scored by goal progress (evolve/goal_score.py),
+and the report says which goal parts failed at each episode's best state
+("2 moves from the goal square; rotation WRONG"), as the issue asks. #9 kept
+the evaluator's internals out of the report. This one tells the Meta LLM which
+conditions the goal has (position, rotation, shape, colour), but not where
+the goal is.
 """
 
 from __future__ import annotations
@@ -31,6 +34,7 @@ from typing import Any
 import numpy as np
 
 from evolve.action_loop import load_frames, read_records
+from evolve.goal_score import PARTS, describe_failure
 from evolve.harness import Harness
 from evolve.replay import tool_calls
 from learning.mine import _translation
@@ -190,9 +194,18 @@ def episode_digest(episode: dict[str, Any]) -> dict[str, Any]:
     actions = [a["action"] for r in records for a in (r.get("actions") or [])]
     zero_action_turns = sum(1 for r in records if not r.get("actions"))
     counts = Counter(actions)
+    goal = episode.get("goal") or {}
+    cost = episode.get("cost") or {}
     return {
         "episode": episode["episode"],
+        "seed": episode.get("seed"),
         "score": episode["score"],
+        "goal_parts": goal.get("parts"),
+        "goal_failure": describe_failure(goal) if goal else None,
+        "cost": cost.get("cost"),
+        "gate_score": episode.get("gate_score"),
+        "tokens": cost.get("tokens"),
+        "llm_calls": cost.get("llm_calls"),
         "solved": episode["solved"],
         "steps_to_clear": episode.get("steps_to_clear"),
         "end_reason": episode["end_reason"],
@@ -222,6 +235,29 @@ def excerpt(episode: dict[str, Any], n_turns: int = 2, max_chars: int = 1400) ->
     return out
 
 
+def goal_parts_summary(episodes: list[dict[str, Any]]) -> dict[str, Any]:
+    """Across the version's episodes: how often each goal part was met at the
+    best state, and how often rotation was ever matched."""
+    scored = [e for e in episodes if e.get("goal")]
+    if not scored:
+        return {}
+    n = len(scored)
+    out: dict[str, Any] = {
+        "parts_mean_at_best_state": {
+            p: round(sum(e["goal"]["parts"][p] for e in scored) / n, 4) for p in PARTS
+        },
+        "failing_at_best_state": {
+            p: f"{sum(1 for e in scored if p in e['goal']['failing_parts'])}/{n} episodes" for p in PARTS
+        },
+        "rotation_ever_matched": f"{sum(1 for e in scored if e['goal']['ever']['rotation_matched'])}/{n} episodes",
+        "closest_moves_to_goal_while_rotation_shape_colour_matched": [
+            e["goal"]["ever"]["closest_moves_to_goal_attributes_matched"] for e in scored
+        ],
+        "closest_moves_to_goal_any_state": [e["goal"]["ever"]["closest_moves_to_goal"] for e in scored],
+    }
+    return out
+
+
 def load_episodes(entry: dict[str, Any]) -> list[dict[str, Any]]:
     episodes = []
     for item in entry["episodes"]:
@@ -246,8 +282,11 @@ def analyze(
             "round": e["round"],
             "score_mean": e.get("score_mean"),
             "score_worst": e.get("score_worst"),
+            "cost_mean": e.get("cost_mean"),
+            "gate_mean": e.get("gate_mean"),
             "clear_rate": e.get("clear_rate"),
             "decision": (e.get("gate") or {}).get("decision", "baseline"),
+            "gate_reason": (e.get("gate") or {}).get("reason"),
             "edits": [
                 {"source": x.get("source"), "what": x.get("what"), "rationale": (x.get("rationale") or "")[:200]}
                 for x in e.get("edits_accepted") or []
@@ -272,8 +311,9 @@ def analyze(
     return {
         "version": parent.version,
         "summary": {k: parent_entry.get(k) for k in
-                    ("score_mean", "score_worst", "clear_rate", "avg_steps_to_clear",
-                     "mean_closest_approach")},
+                    ("score_mean", "score_worst", "score_std", "cost_mean", "gate_mean", "gate_worst",
+                     "clear_rate", "avg_steps", "avg_steps_to_clear", "tokens_mean", "llm_calls_mean")},
+        "goal_parts": goal_parts_summary(episodes),
         "episodes": [episode_digest(e) for e in episodes],
         "skill_stats": skill_stats(parent, episodes, archive),
         "inline_helpers": inline_helpers(parent, episodes),

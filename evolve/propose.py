@@ -159,12 +159,20 @@ SANDBOX RULES (a skill that breaks them is rejected)
   docstring. At most {max_skill_lines} lines.
 
 SCORE (what you are optimising)
-Per episode: a Level-1 clear scores 0.5 + 0.5 * min(1, 22 / actions)^2.
-Otherwise 0.5 * progress, where progress in [0, 1] is a graded measure of how
-close the episode came to completing the level (computed by the evaluator; you
-see its value per episode). A version is accepted only if its mean score over 3
-episodes beats its parent's and its worst episode is at most {delta} below the
-parent's worst.
+Goal progress, per episode, in [0, 1]. A Level-1 clear scores 1.0. Otherwise
+the evaluator reads the game state after every action and scores the episode's
+best state as the weighted sum of the goal's conditions:
+  position {w_position} (progress along walkable paths from the start to the goal
+           square), rotation {w_rotation} (the player's orientation matches the
+           goal's), shape {w_shape}, colour {w_colour} (each 1 if it matches).
+The analysis shows each episode's parts at its best state and which failed.
+COST per episode, in [0, 1]: the mean of tokens / {cap_tokens}, model calls /
+{cap_calls} and actions / {max_actions}. GATE SCORE = progress - {lam} * cost.
+A version plays {n_episodes} episodes. It is accepted if its mean gate score
+beats its parent's and its worst episode's gate score is at most {delta} below
+the parent's worst. If the two mean progress scores are within {eps}, the
+cheaper version wins instead. So a version that needs fewer tokens or turns to
+reach the same progress is an improvement too.
 
 VALIDATION (edits that fail are dropped)
 - every skill you add, edit or merge needs a "test": a short Python snippet
@@ -172,6 +180,12 @@ VALIDATION (edits that fail are dropped)
   recorded game states (start, middle, late).
 - your edits are replayed against the recorded episodes; a skill that raises
   where the old one did not, or a merge that changes behaviour, is dropped.
+- FACT-CHECK: the factual claims about the game in every edit (prompt text,
+  steps, and what a skill's code and docstring assume -- e.g. what an action
+  does, which colour or object is the player, where things are, what the goal
+  requires) are tested against the game itself. An edit containing a claim the
+  game contradicts is dropped. Claims that cannot be tested are kept and
+  flagged. Write down only what the evidence establishes.
 - prompts must stay under {max_prompt_chars} characters each and the whole
   system prompt under {max_system_chars}; steps under {max_step_chars} each.
 
@@ -230,6 +244,12 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         imports=", ".join(sorted(ALLOWED_IMPORTS)),
         max_skill_lines=limits["max_skill_lines"],
         delta=cfg["gate"]["delta"],
+        lam=cfg["gate"]["lambda"],
+        eps=cfg["gate"]["epsilon"],
+        n_episodes=len(cfg["seeds"]),
+        cap_tokens=budget["max_tokens_per_episode"],
+        cap_calls=budget["max_turns"],
+        **{f"w_{part}": weight for part, weight in cfg["score"]["weights"].items()},
         max_prompt_chars=limits["max_prompt_chars"],
         max_system_chars=limits["max_system_chars"],
         max_step_chars=limits["max_step_chars"],

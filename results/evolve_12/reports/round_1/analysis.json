@@ -1,0 +1,691 @@
+{
+  "version": "v0",
+  "summary": {
+    "score_mean": 0.52,
+    "score_worst": 0.4286,
+    "score_std": 0.0457,
+    "cost_mean": 0.9038,
+    "gate_mean": 0.0682,
+    "gate_worst": -0.0043,
+    "clear_rate": 0.0,
+    "avg_steps": 177.2,
+    "avg_steps_to_clear": null,
+    "tokens_mean": 1067851.0,
+    "llm_calls_mean": 198.6
+  },
+  "goal_parts": {
+    "parts_mean_at_best_state": {
+      "position": 0.8,
+      "rotation": 0.0,
+      "shape": 1.0,
+      "colour": 1.0
+    },
+    "failing_at_best_state": {
+      "position": "5/5 episodes",
+      "rotation": "5/5 episodes",
+      "shape": "0/5 episodes",
+      "colour": "0/5 episodes"
+    },
+    "rotation_ever_matched": "0/5 episodes",
+    "closest_moves_to_goal_while_rotation_shape_colour_matched": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "closest_moves_to_goal_any_state": [
+      3,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "episodes": [
+    {
+      "episode": 1,
+      "seed": 1,
+      "score": 0.4286,
+      "goal_parts": {
+        "position": 0.5714,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "goal_failure": "best state after action 11: 3 moves from the goal square; rotation WRONG; shape matched; colour matched; rotation never matched in the episode",
+      "cost": 0.8658,
+      "gate_score": -0.0043,
+      "tokens": 878861,
+      "llm_calls": 173,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 159,
+      "turns_with_no_action": 63,
+      "cell_errors": 1,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 28,
+        "ACTION2": 99,
+        "ACTION3": 32,
+        "ACTION4": 41
+      },
+      "action_sequence": "A1x1 A3x1 A4x1 A2x1 A1x1 A3x1 A1x1 A3x1 A1x1 A3x1 A1x1 A3x1 A1x1 A4x1 A2x1 A1x1 A2x6 A4x4 A2x3 A4x2 A2x4 A4x8 A1x1 A2x9 A4x1 A2x2 A4x1 A2x4 A4x1 A2x9 A4x1 A2x15 A4x1 A2x3 A1x1 A2x1 A3x1 A4x2 A2x2 A1x1 A3x1 A4x1 A2x1 A1x2 A3x1 A4x1 A2x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A2x3 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A2x3 A4x3 A2x6 A4x2 A2x4 A1x1 A3x1 A4x1 A2x1 A1x1 A3x1 A2x1 A1x1 A3x1 A4x1 A2x1 A1x1 A2x1 A3x1 A4x1 A2x9 A1x1 A3x1 A4x1 A1x1 A3x1 A4x1 A1x1 A3x4 A2x1 A3x1 A2x1 A1x1 A3x1 A1x1 A3x7 A1x1 A4x1 A2x1",
+      "final_notes": "A1=up5 moves teal/maroon cluster. A3=left5 converts 2 lime cells row61-62 to green (does NOT move cluster). A4=right5 moves cluster right5 (teal/maroon cols34->39). A2=testing (lime->green per skill). Cluster stuck at cols34-38. Target black(0)@(31,21), blue(1)@(32,20),(33,21). Need cluster LEFT to cols20-22. No left-move action found yet. Only 1 action left this level."
+    },
+    {
+      "episode": 2,
+      "seed": 2,
+      "score": 0.5429,
+      "goal_parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "goal_failure": "best state after action 30: 1 moves from the goal square; rotation WRONG; shape matched; colour matched; rotation never matched in the episode",
+      "cost": 0.88,
+      "gate_score": 0.1029,
+      "tokens": 1208361,
+      "llm_calls": 211,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_tokens",
+      "actions_used": 128,
+      "turns": 185,
+      "turns_with_no_action": 92,
+      "cell_errors": 6,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 55,
+        "ACTION2": 29,
+        "ACTION3": 26,
+        "ACTION4": 18
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A1x3 A2x1 A3x1 A1x2 A2x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x3 A2x1 A1x1 A2x1 A1x1 A2x1 A3x1 A4x1 A2x1 A3x1 A4x1 A1x4 A2x1 A3x1 A4x1 A1x1 A2x1 A1x2 A2x1 A1x1 A3x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x3 A2x1 A1x1 A2x1 A1x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A1x1 A2x1 A1x1 A2x1 A1x5 A3x1 A1x1 A3x1 A4x1 A1x1 A2x2 A1x1 A3x1 A4x1 A1x2 A2x1 A3x1 A1x1 A3x1 A4x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A3x1 A4x1 A1x1 A3x1 A2x1 A1x1 A3x1 A4x1 A1x1 A2x1 A1x2 A2x1 A3x1 A4x1",
+      "final_notes": "LS20. Player=black(0)+blue(1) cross at rows31-33,cols20-22. ACTION1/2 toggle maroon/teal in middle area (rows20-24,cols34-38). ACTION3/4 convert lime->green at bottom (rows61-62). Player does NOT move. Need to find goal - possibly related to maroon/teal pattern matching or clearing. Currently 124 actions used, 76 left."
+    },
+    {
+      "episode": 3,
+      "seed": 3,
+      "score": 0.5429,
+      "goal_parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "goal_failure": "best state after action 24: 1 moves from the goal square; rotation WRONG; shape matched; colour matched; rotation never matched in the episode",
+      "cost": 0.9567,
+      "gate_score": 0.0646,
+      "tokens": 1200937,
+      "llm_calls": 211,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_tokens",
+      "actions_used": 174,
+      "turns": 185,
+      "turns_with_no_action": 95,
+      "cell_errors": 1,
+      "parse_failures": 1,
+      "action_counts": {
+        "ACTION1": 52,
+        "ACTION2": 86,
+        "ACTION3": 22,
+        "ACTION4": 14
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A2x1 A1x1 A3x1 A4x1 A2x1 A1x3 A2x1 A3x1 A4x1 A1x1 A2x1 A1x2 A3x1 A1x2 A3x1 A4x1 A3x1 A4x1 A1x1 A2x1 A1x2 A3x1 A4x1 A1x1 A2x1 A1x1 A3x1 A4x1 A1x1 A2x1 A1x2 A2x1 A1x4 A3x1 A4x1 A1x1 A3x1 A2x1 A4x1 A1x1 A2x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x2 A3x1 A1x1 A2x1 A3x1 A4x1 A1x4 A2x1 A1x1 A2x1 A3x1 A1x1 A2x1 A1x1 A4x1 A1x1 A3x1 A2x1 A1x1 A2x1 A1x1 A3x1 A1x1 A2x1 A1x1 A3x1 A1x1 A3x1 A1x1 A2x1 A1x6 A2x1 A3x1 A4x1 A3x1 A4x1 A2x4 A1x1 A2x1 A3x1 A2x23 A1x1 A2x36",
+      "final_notes": "LS20-like. Player=blue/black at (31-33,20-22). ACTION1 moves cursor up by 5 rows. When cursor reaches teal (rows 15-16), converts teal->green. ACTION2 converts lime->green at bottom strip (2 cells each, 1 column). ACTION3/ACTION4 cause oscillation. Goal: convert all lime to green. After reset, lime at cols 13-54 (42 cols). Converting from col 13 onward. Turn 183: 7 actions left after this turn, lime cols remaining tracked."
+    },
+    {
+      "episode": 4,
+      "seed": 4,
+      "score": 0.5429,
+      "goal_parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "goal_failure": "best state after action 18: 1 moves from the goal square; rotation WRONG; shape matched; colour matched; rotation never matched in the episode",
+      "cost": 0.9606,
+      "gate_score": 0.0626,
+      "tokens": 1154119,
+      "llm_calls": 234,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_turns",
+      "actions_used": 184,
+      "turns": 200,
+      "turns_with_no_action": 114,
+      "cell_errors": 2,
+      "parse_failures": 3,
+      "action_counts": {
+        "ACTION1": 27,
+        "ACTION2": 70,
+        "ACTION3": 18,
+        "ACTION4": 69
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A1x1 A2x2 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A1x6 A2x1 A1x2 A2x1 A1x2 A3x1 A4x1 A1x1 A4x20 A1x1 A2x1 A4x6 A1x1 A2x1 A3x1 A4x34 A1x1 A2x1 A3x1 A1x1 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x2 A2x1 A3x1 A4x1 A2x8 A1x1 A4x2 A2x16 A1x1 A3x1 A2x5 A4x1 A2x8 A3x4 A2x6 A3x1 A2x3 A1x1 A2x2 A4x1 A2x2 A1x1 A2x3 A3x2 A2x4 A3x1 A2x1",
+      "final_notes": "Sprite=blue/black STATIC rows31-33 cols20-22. Block=teal(5x2)+maroon(5x3) 5-wide, moves 5 cells/action. ACTION1=UP, ACTION2=DOWN, ACTION3=LEFT, ACTION4=RIGHT. Bottom row61-62: green block cols13-17, lime strip cols18-54, cyan cols56-63. ACTION2 on cyan caused GAME_OVER - avoid cyan. Goal likely: move block onto green target cols13-17. Moving block DOWN then LEFT to reach target."
+    },
+    {
+      "episode": 5,
+      "seed": 5,
+      "score": 0.5429,
+      "goal_parts": {
+        "position": 0.8571,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "goal_failure": "best state after action 15: 1 moves from the goal square; rotation WRONG; shape matched; colour matched; rotation never matched in the episode",
+      "cost": 0.8558,
+      "gate_score": 0.115,
+      "tokens": 896977,
+      "llm_calls": 164,
+      "solved": false,
+      "steps_to_clear": null,
+      "end_reason": "budget_actions",
+      "actions_used": 200,
+      "turns": 158,
+      "turns_with_no_action": 44,
+      "cell_errors": 6,
+      "parse_failures": 0,
+      "action_counts": {
+        "ACTION1": 114,
+        "ACTION2": 36,
+        "ACTION3": 28,
+        "ACTION4": 22
+      },
+      "action_sequence": "A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A3x1 A1x1 A4x1 A1x7 A2x1 A1x2 A3x1 A1x1 A4x1 A1x1 A2x1 A3x1 A1x2 A2x1 A1x4 A2x1 A4x1 A1x2 A3x2 A1x1 A2x1 A3x1 A4x1 A1x1 A2x1 A1x3 A2x1 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A4x1 A2x1 A1x2 A2x2 A1x2 A2x1 A3x1 A4x1 A1x1 A2x1 A1x1 A3x1 A1x5 A2x1 A3x1 A4x1 A1x7 A2x1 A3x1 A4x1 A1x3 A2x1 A1x3 A3x1 A1x1 A2x1 A3x1 A4x1 A1x1 A3x1 A1x2 A2x1 A4x1 A1x8 A2x1 A3x1 A4x1 A1x2 A2x1 A3x1 A4x1 A1x6 A2x1 A3x1 A1x2 A2x1 A1x1 A2x1 A3x1 A4x1 A1x4 A2x1 A1x2 A3x1 A4x1 A2x1 A1x4 A3x1 A1x1 A2x1 A1x1 A3x1 A4x1 A2x1 A1x3 A2x1 A3x1 A4x1 A1x3 A2x1 A3x1 A4x1 A1x10 A2x1 A3x1",
+      "final_notes": "Dynamics:\n- ACTION1: moves teal UP by 5 rows\n- ACTION2: moves teal DOWN by 5 rows\n- ACTION3: moves teal LEFT by 5 cols\n- ACTION4: moves teal RIGHT by 5 cols\n- Grey box at rows 9-15, cols 33-39\n- Goal: move teal INTO grey box\n- Teal is 2x5 (rows x cols)\n- Teal was at rows 15-16, cols 34-38 (touching grey box bottom)\n- ACTION1 moves up by 5, so from row 15 -> row 10 (inside grey box rows 9-15)\n- Teal already overlaps grey box at row 15 - need to check if level completes"
+    }
+  ],
+  "skill_stats": {
+    "bfs_to_target": {
+      "calls": 0,
+      "errors": 0,
+      "episodes_used": 0,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 5,
+      "lifetime_calls": 0,
+      "source_hash": "e752fbb21ac7"
+    },
+    "grid_region": {
+      "calls": 1163,
+      "errors": 0,
+      "episodes_used": 5,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 5,
+      "lifetime_calls": 1163,
+      "source_hash": "e3eed522331a"
+    },
+    "obstacle_map": {
+      "calls": 4,
+      "errors": 0,
+      "episodes_used": 2,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 5,
+      "lifetime_calls": 4,
+      "source_hash": "6fb17248a6d4"
+    },
+    "player_detector": {
+      "calls": 7,
+      "errors": 0,
+      "episodes_used": 4,
+      "last_error": null,
+      "times_redefined_by_player": 0,
+      "lifetime_episodes": 5,
+      "lifetime_calls": 7,
+      "source_hash": "a945430da87b"
+    }
+  },
+  "inline_helpers": [
+    {
+      "name": "find",
+      "other_names": [],
+      "key": "def _(g, c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 18,
+      "n_lines": 2,
+      "source": "def find(g, c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]"
+    },
+    {
+      "name": "block_info",
+      "other_names": [],
+      "key": "def _(g):\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 5,
+      "n_lines": 11,
+      "source": "def block_info(g):\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    mar = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 9]\n\n    def bb(cells):\n        if not cells:\n            return None\n        rs = [c[0] for c in cells]\n        cs = [c[1] for c in cells]\n        return (min(rs), max(rs), min(cs), max(cs))\n    return (bb(teal), bb(mar), len(teal), len(mar))"
+    },
+    {
+      "name": "teal_centroid",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 5,
+      "n_lines": 6,
+      "source": "def teal_centroid():\n    g = grid()\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (sum((r for r, c in cells)) / len(cells), sum((c for r, c in cells)) / len(cells))"
+    },
+    {
+      "name": "teal_centroid",
+      "other_names": [],
+      "key": "def _(g):\n    for o in objects(g):\n        if o['colour'] == 12:\n            return o['centroid']\n    return None",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 5,
+      "n_lines": 5,
+      "source": "def teal_centroid(g):\n    for o in objects(g):\n        if o['colour'] == 12:\n            return o['centroid']\n    return None"
+    },
+    {
+      "name": "tealpos",
+      "other_names": [],
+      "key": "def _(g):\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (sum(rs) / len(rs), sum(cs) / len(cs), len(cells))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 5,
+      "n_lines": 7,
+      "source": "def tealpos(g):\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (sum(rs) / len(rs), sum(cs) / len(cs), len(cells))"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(r0, c0, r1, c1, label):\n    print(f'--- {label} rows{r0}-{r1} cols{c0}-{c1} ---')\n    print(grid_region(r0, c0, r1, c1))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 4,
+      "n_lines": 3,
+      "source": "def show(r0, c0, r1, c1, label):\n    print(f'--- {label} rows{r0}-{r1} cols{c0}-{c1} ---')\n    print(grid_region(r0, c0, r1, c1))"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(r0, c0, r1, c1):\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d}', ''.join((f'{g[r, c]}' for c in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 4,
+      "n_lines": 3,
+      "source": "def show(r0, c0, r1, c1):\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d}', ''.join((f'{g[r, c]}' for c in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(r0, c0, r1, c1):\n    print('    ' + ''.join((str(c % 10) for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:3d} ' + ''.join((str(g[r, c] % 10) for c in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 4,
+      "n_lines": 4,
+      "source": "def show(r0, c0, r1, c1):\n    print('    ' + ''.join((str(c % 10) for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:3d} ' + ''.join((str(g[r, c] % 10) for c in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "dump",
+      "other_names": [],
+      "key": "def _(r0, r1, c0, c1, label):\n    print(f'=== {label} rows{r0}-{r1}, cols{c0}-{c1} ===')\n    print('    ' + ' '.join((str(c % 10) for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ''.join((f'{g[r, c]:x}' for c in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 3,
+      "n_lines": 5,
+      "source": "def dump(r0, r1, c0, c1, label):\n    print(f'=== {label} rows{r0}-{r1}, cols{c0}-{c1} ===')\n    print('    ' + ' '.join((str(c % 10) for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ''.join((f'{g[r, c]:x}' for c in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "player_cells",
+      "other_names": [],
+      "key": "def _(g):\n    cells = []\n    for r in range(64):\n        for c in range(64):\n            if g[r, c] in (0, 1):\n                cells.append((r, c, g[r, c]))\n    return cells",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 3,
+      "n_lines": 7,
+      "source": "def player_cells(g):\n    cells = []\n    for r in range(64):\n        for c in range(64):\n            if g[r, c] in (0, 1):\n                cells.append((r, c, g[r, c]))\n    return cells"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(r0, c0, r1, c1):\n    print('    ' + ' '.join((f'{c:2d}' for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ' '.join((f'{g[r, c]:2d}' for c in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 3,
+      "n_lines": 4,
+      "source": "def show(r0, c0, r1, c1):\n    print('    ' + ' '.join((f'{c:2d}' for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ' '.join((f'{g[r, c]:2d}' for c in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "teal_cells",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    return [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 3,
+      "n_lines": 3,
+      "source": "def teal_cells():\n    g = grid()\n    return [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]"
+    },
+    {
+      "name": "teal_pos",
+      "other_names": [],
+      "key": "def _(g):\n    cells = [(r, c) for r in range(g.shape[0]) for c in range(g.shape[1]) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (min((r for r, c in cells)), min((c for r, c in cells)))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 3,
+      "n_lines": 5,
+      "source": "def teal_pos(g):\n    cells = [(r, c) for r in range(g.shape[0]) for c in range(g.shape[1]) if g[r, c] == 12]\n    if not cells:\n        return None\n    return (min((r for r, c in cells)), min((c for r, c in cells)))"
+    },
+    {
+      "name": "dump",
+      "other_names": [],
+      "key": "def _(g, r0, r1, c0, c1):\n    print('     ' + ''.join((str(c % 10) for c in range(c0, c1))))\n    for r in range(r0, r1 + 1):\n        print('r%2d ' % r + ''.join((str(g[r, c] % 10) for c in range(c0, c1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 4,
+      "source": "def dump(g, r0, r1, c0, c1):\n    print('     ' + ''.join((str(c % 10) for c in range(c0, c1))))\n    for r in range(r0, r1 + 1):\n        print('r%2d ' % r + ''.join((str(g[r, c] % 10) for c in range(c0, c1))))"
+    },
+    {
+      "name": "dump",
+      "other_names": [],
+      "key": "def _(g, r0, r1, c0, c1):\n    hdr = '    ' + ''.join((str(c // 10 % 10) for c in range(c0, c1)))\n    hdr2 = '    ' + ''.join((str(c % 10) for c in range(c0, c1)))\n    print(hdr)\n    print(hdr2)\n    for r in range(r0, r1):\n        print(f'r{r:2d} ' + ''.join((format(int(g[r, c]), 'x') for c in range(c0, c1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 7,
+      "source": "def dump(g, r0, r1, c0, c1):\n    hdr = '    ' + ''.join((str(c // 10 % 10) for c in range(c0, c1)))\n    hdr2 = '    ' + ''.join((str(c % 10) for c in range(c0, c1)))\n    print(hdr)\n    print(hdr2)\n    for r in range(r0, r1):\n        print(f'r{r:2d} ' + ''.join((format(int(g[r, c]), 'x') for c in range(c0, c1))))"
+    },
+    {
+      "name": "find",
+      "other_names": [],
+      "key": "def _(c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 2,
+      "source": "def find(c):\n    return [(r, cc) for r in range(64) for cc in range(64) if g[r, cc] == c]"
+    },
+    {
+      "name": "maroon_cells",
+      "other_names": [],
+      "key": "def _(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 9])",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 2,
+      "source": "def maroon_cells(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 9])"
+    },
+    {
+      "name": "player_pos",
+      "other_names": [],
+      "key": "def _(g):\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] in (0, 1)]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (min(rs), max(rs), min(cs), max(cs), len(cells))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 7,
+      "source": "def player_pos(g):\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] in (0, 1)]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (min(rs), max(rs), min(cs), max(cs), len(cells))"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(g, r0, r1, c0, c1):\n    print('    ' + ''.join((f'{c % 16:x}' for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ''.join((f'{g[r, c] % 16:x}' for c in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 4,
+      "source": "def show(g, r0, r1, c0, c1):\n    print('    ' + ''.join((f'{c % 16:x}' for c in range(c0, c1 + 1))))\n    for r in range(r0, r1 + 1):\n        print(f'r{r:2d} ' + ''.join((f'{g[r, c] % 16:x}' for c in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "show",
+      "other_names": [],
+      "key": "def _(g, r0, c0, r1, c1, label):\n    print(label)\n    print('    ' + ' '.join((f'{c:2d}' for c in range(c0, c1 + 1))))\n    for rr in range(r0, r1 + 1):\n        print(f'r{rr:3d} ' + ' '.join((f'{g[rr, cc]:2d}' for cc in range(c0, c1 + 1))))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 5,
+      "source": "def show(g, r0, c0, r1, c1, label):\n    print(label)\n    print('    ' + ' '.join((f'{c:2d}' for c in range(c0, c1 + 1))))\n    for rr in range(r0, r1 + 1):\n        print(f'r{rr:3d} ' + ' '.join((f'{g[rr, cc]:2d}' for cc in range(c0, c1 + 1))))"
+    },
+    {
+      "name": "snap",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    maroon_mid = [(r, c) for r in range(20, 40) for c in range(20, 45) if g[r, c] == 9]\n    lime = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 11]\n    return (teal, maroon_mid, lime)",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 6,
+      "source": "def snap():\n    g = grid()\n    teal = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    maroon_mid = [(r, c) for r in range(20, 40) for c in range(20, 45) if g[r, c] == 9]\n    lime = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 11]\n    return (teal, maroon_mid, lime)"
+    },
+    {
+      "name": "teal_bbox",
+      "other_names": [],
+      "key": "def _(g=None):\n    g = grid() if g is None else g\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (min(rs), min(cs), max(rs), max(cs))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 8,
+      "source": "def teal_bbox(g=None):\n    g = grid() if g is None else g\n    cells = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not cells:\n        return None\n    rs = [p[0] for p in cells]\n    cs = [p[1] for p in cells]\n    return (min(rs), min(cs), max(rs), max(cs))"
+    },
+    {
+      "name": "teal_cells",
+      "other_names": [],
+      "key": "def _(g):\n    return [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 2,
+      "source": "def teal_cells(g):\n    return [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]"
+    },
+    {
+      "name": "teal_cells",
+      "other_names": [],
+      "key": "def _(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 12])",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 2,
+      "source": "def teal_cells(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 12])"
+    },
+    {
+      "name": "tealpos",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    t = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not t:\n        return None\n    return (min((r for r, c in t)), min((c for r, c in t)))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 2,
+      "n_lines": 6,
+      "source": "def tealpos():\n    g = grid()\n    t = [(r, c) for r in range(64) for c in range(64) if g[r, c] == 12]\n    if not t:\n        return None\n    return (min((r for r, c in t)), min((c for r, c in t)))"
+    },
+    {
+      "name": "bottom_bar",
+      "other_names": [],
+      "key": "def _():\n    g = grid()\n    out = []\n    for c in range(64):\n        for r in (61, 62):\n            if g[r, c] != 4:\n                out.append((r, c, int(g[r, c])))\n    return out",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 1,
+      "n_lines": 8,
+      "source": "def bottom_bar():\n    g = grid()\n    out = []\n    for c in range(64):\n        for r in (61, 62):\n            if g[r, c] != 4:\n                out.append((r, c, int(g[r, c])))\n    return out"
+    },
+    {
+      "name": "lime_cells",
+      "other_names": [],
+      "key": "def _(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 11])",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 1,
+      "n_lines": 2,
+      "source": "def lime_cells(g):\n    return sorted([(r, c) for r in range(64) for c in range(64) if g[r, c] == 11])"
+    },
+    {
+      "name": "rowstr",
+      "other_names": [],
+      "key": "def _(r):\n    return ''.join(('0123456789abcdef'[int(v)] for v in g[r]))",
+      "episodes_defined": 1,
+      "turns_defined": 1,
+      "calls": 1,
+      "n_lines": 2,
+      "source": "def rowstr(r):\n    return ''.join(('0123456789abcdef'[int(v)] for v in g[r]))"
+    }
+  ],
+  "action_effects": {
+    "ACTION1": {
+      "n": 276,
+      "effects": [
+        {
+          "effect": "rigid move (drow=-5, dcol=0)",
+          "share": 0.67
+        },
+        {
+          "effect": "no change",
+          "share": 0.28
+        },
+        {
+          "effect": "other change",
+          "share": 0.06
+        }
+      ]
+    },
+    "ACTION2": {
+      "n": 320,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.6
+        },
+        {
+          "effect": "rigid move (drow=5, dcol=0)",
+          "share": 0.39
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-15)",
+          "share": 0.0
+        }
+      ]
+    },
+    "ACTION3": {
+      "n": 126,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.52
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-5)",
+          "share": 0.48
+        }
+      ]
+    },
+    "ACTION4": {
+      "n": 164,
+      "effects": [
+        {
+          "effect": "other change",
+          "share": 0.57
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=5)",
+          "share": 0.42
+        },
+        {
+          "effect": "rigid move (drow=0, dcol=-15)",
+          "share": 0.01
+        }
+      ]
+    }
+  },
+  "common_errors": [
+    {
+      "error": "AttributeError: 'str' object has no attribute 'get'",
+      "count": 2
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 2
+    },
+    {
+      "error": "ValueError: ACTION7 is not available; available: ACTION1, ACTION2, ACTION3, ACTION4",
+      "count": 2
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: closing parenthesis ')' does not match opening parenthesis '{'",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: closing parenthesis '}' does not match opening parenthesis '['",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: unterminated string literal (detected at line 124)",
+      "count": 1
+    },
+    {
+      "error": "TypeError: string indices must be integers, not 'str'",
+      "count": 1
+    },
+    {
+      "error": "SandboxViolation: SyntaxError: unterminated string literal (detected at line 115)",
+      "count": 1
+    }
+  ],
+  "excerpts": {
+    "best_episode": [
+      {
+        "turn": 156,
+        "reply": "Looking at the current state, teal is at rows 15-16, cols 34-38. The grey box is at rows 9-15, cols 33-39. Teal is touching the bottom of the grey box. I need to move teal up by 5 more rows to get it inside the grey box (rows 10-11).\n\n```python\n# Teal is at rows 15-16, grey box is rows 9-15. Need to move teal up 5 more rows.\n# ACTION1 moves teal up by 5 rows.\nresult = action(1)\nprint(f\"After ACTION1: {result['effect']}\")\nprint(f\"State: {result['state']} levels: {result['levels_completed']}\")\n\n# Check where teal is now\ng = grid()\nteal = [o for o in objects(g) if o['colour'] == 12]\nprint(f\"Teal: {teal}\")\n\n# Check grey box\ngrey_box = [o for o in objects(g) if o['colour'] == 5 and o['bbox'][0] == 9]\nprint(f\"Grey box: {grey_box}\")\n\nnotes = \"\"\"Dynamics:\n- ACTION1: moves teal UP by 5 rows\n- ACTION2: moves teal DOWN by 5 rows\n- ACTION3: moves teal LEFT by 5 cols\n- ACTION4: moves teal RIGHT by 5 cols\n- Grey box at rows 9-15, cols 33-39\n- Goal: move teal INTO grey box\n- Teal is 2x5 (rows x cols)\n- Teal was at rows 15-16, cols 34-38 (touching grey box bottom)\n- ACTION1 moves up by 5, so from row 15 -> row 10 (inside grey box rows 9-15)\n\"\"\"\n```",
+        "actions": [
+          "ACTION1 -> no change"
+        ],
+        "error": null,
+        "stdout": "After ACTION1: no change\nState: NOT_FINISHED levels: 0\nTeal: [{'colour': 12, 'colour_name': 'teal', 'bbox': [15, 34, 16, 38], 'size': 10, 'centroid': [15.5, 36.0], 'id': 10}]\nGrey box: [{'colour': 5, 'colour_name': 'grey', 'bbox': [9, 33, 15, 39], 'size': 38, 'centroid': [11.6, 36.0], 'id': 5}]\n"
+      },
+      {
+        "turn": 157,
+        "reply": "Looking at the current state, teal is at rows 15-16, cols 34-38, which is touching the bottom of the grey box (rows 9-15, cols 33-39). The teal is already overlapping with the grey box at row 15. Let me try ACTION1 to move teal up into the grey box.\n\n```python\n# Teal is at rows 15-16, cols 34-38 - already touching grey box bottom (row 15)\n# Try ACTION1 to move teal up into the grey box\nr1 = action(1)\nprint(\"ACTION1:\", r1)\n\nif r1['n_changed'] > 0:\n    print(\"Changed! Checking state...\")\n    print(\"State:\", r1['state'], \"levels:\", r1['levels_completed'])\n    objs = objects()\n    for o in objs:\n        if o['colour'] in [12, 5]:  # teal or grey\n            print(f\"  {o['colour_name']} size={o['size']} bbox={o['bbox']} centroid={o['centroid']}\")\nelse:\n    print(\"No change from ACTION1\")\n    # Try ACTION2 (move down)\n    r2 = action(2)\n    print(\"ACTION2:\", r2)\n    if r2['n_changed'] > 0:\n        print(\"Changed! Checking state...\")\n        print(\"State:\", r2['state'], \"levels:\", r2['levels_completed'])\n        objs = objects()\n        for o in objs:\n            if o['colour'] in [12, 5]:\n                print(f\"  {o['colour_name']} size={o['size']} bbox={o['bbox']} centroid={o['centroid']}\")\n    else:\n        print(\"No change from ACTION2 either\")\n        # Try ACTION3 (move left)\n        r3 = action(3)\n        print(\"ACTION3:\", r3)\n        if r3['n_changed'] > 0:\n            print(",
+        "actions": [
+          "ACTION1 -> no change",
+          "ACTION2 -> 52 cells changed in rows15-62,cols27-38 (15x 9->3, 15x 3->9, 10x 3->12)"
+        ],
+        "error": null,
+        "stdout": "ACTION1: {'action': 'ACTION1', 'n_changed': 0, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'game_over': False, 'effect': 'no change'}\nNo change from ACTION1\nACTION2: {'action': 'ACTION2', 'n_changed': 52, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'game_over': False, 'effect': '52 cells changed in rows15-62,cols27-38 (15x 9->3, 15x 3->9, 10x 3->12)'}\nChanged! Checking state...\nState: NOT_"
+      }
+    ],
+    "worst_episode": [
+      {
+        "turn": 157,
+        "reply": "I'll start by checking status and testing ACTION4 (right) and ACTION2, since my notes say A3 converts lime but doesn't move the cluster, and A4 is untested.\n\n```python\nprint(\"STATUS:\", status())\ng0 = grid()\ndef snap():\n    g = grid()\n    # teal bbox, maroon cluster near mid, lime bbox\n    teal = [(r,c) for r in range(64) for c in range(64) if g[r,c]==12]\n    maroon_mid = [(r,c) for r in range(20,40) for c in range(20,45) if g[r,c]==9]\n    lime = [(r,c) for r in range(64) for c in range(64) if g[r,c]==11]\n    return teal, maroon_mid, lime\nt0,m0,l0 = snap()\nprint(\"teal\", t0[:3], \"n=\",len(t0))\nprint(\"maroon_mid\", m0[:3], \"n=\",len(m0))\nprint(\"lime\", l0[:3], \"n=\",len(l0))\n\n# Test ACTION4 (right)\nr = action(4)\nprint(\"A4:\", r[\"n_changed\"], r[\"effect\"])\nt1,m1,l1 = snap()\nprint(\"after A4 teal\", t1[:3], \"n=\",len(t1))\nprint(\"after A4 maroon_mid\", m1[:3], \"n=\",len(m1))\nprint(\"after A4 lime\", l1[:3], \"n=\",len(l1))\nprint(\"diff A4:\", diff(g0, grid())[:20])\n\nnotes = \"A1=up5 moves teal/maroon cluster (cols34-38) up. A3=left5 converts 2 lime cells row61-62 to green (does NOT move cluster). A2=lime->green. A4=right5: testing now. Cluster stuck at cols34-38. Target black(0)@(31,21), blue(1)@(32,20),(33,21). Need cluster LEFT to cols20-22. Only 2 actions left this level.\"\n```",
+        "actions": [
+          "ACTION4 -> 52 cells changed in rows25-62,cols34-43 (15x 9->3, 15x 3->9, 10x 12->3)"
+        ],
+        "error": null,
+        "stdout": "STATUS: {'actions_used': 198, 'actions_left': 2, 'turn': 157, 'turn_actions_left': 6, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'available_actions': [1, 2, 3, 4], 'resets': 1}\nteal [(25, 34), (25, 35), (25, 36)] n= 10\nmaroon_mid [(27, 34), (27, 35), (27, 36)] n= 15\nlime [(61, 39), (61, 40), (61, 41)] n= 32\nA4: 52 52 cells changed in rows25-62,cols34-43 (15x 9->3, 15x 3->9, 10x 12->3)\nafter A"
+      },
+      {
+        "turn": 158,
+        "reply": "I'll start by observing the current state and testing what ACTION2 does, since it's the only action I haven't characterized this level.\n\n```python\nimport numpy as np\ng0 = grid()\ndef find(g, c):\n    return [(r,cc) for r in range(64) for cc in range(64) if g[r,cc]==c]\nprint(\"STATUS:\", status())\nprint(\"teal\", find(g0,12)[:3], \"n=\", len(find(g0,12)))\nprint(\"maroon_mid\", find(g0,9)[:3], \"n=\", len(find(g0,9)))\nprint(\"lime\", find(g0,11)[:3], \"n=\", len(find(g0,11)))\nprint(\"black\", find(g0,0), \"blue\", find(g0,1))\nprint(\"green_bottom\", find(g0,3)[:3], \"n=\", len(find(g0,3)))\n\n# Test ACTION2 (only untested action this level)\nr = action(2)\ng1 = grid()\nprint(\"A2:\", r[\"n_changed\"], r[\"effect\"][:120] if r[\"effect\"] else \"\")\nprint(\"after A2 teal\", find(g1,12)[:3], \"n=\", len(find(g1,12)))\nprint(\"after A2 maroon_mid\", find(g1,9)[:3], \"n=\", len(find(g1,9)))\nprint(\"after A2 lime\", find(g1,11)[:3], \"n=\", len(find(g1,11)))\nprint(\"after A2 green_bottom\", find(g1,3)[:3], \"n=\", len(find(g1,3)))\nd = diff(g0,g1)\nprint(\"diff A2:\", d[:20])\n\nnotes = (\"A1=up5 moves teal/maroon cluster. A3=left5 converts 2 lime cells row61-62 to green (does NOT move cluster). \"\n         \"A4=right5 moves cluster right5 (teal/maroon cols34->39). A2=testing (lime->green per skill). \"\n         \"Cluster stuck at cols34-38. Target black(0)@(31,21), blue(1)@(32,20),(33,21). Need cluster LEFT to cols20-22. \"\n         \"No left-move act",
+        "actions": [
+          "ACTION2 -> 52 cells changed in rows25-62,cols39-43 (15x 9->3, 15x 3->9, 10x 12->3)"
+        ],
+        "error": null,
+        "stdout": "STATUS: {'actions_used': 199, 'actions_left': 1, 'turn': 158, 'turn_actions_left': 6, 'state': 'NOT_FINISHED', 'levels_completed': 0, 'available_actions': [1, 2, 3, 4], 'resets': 1}\nteal [(25, 39), (25, 40), (25, 41)] n= 10\nmaroon_mid [(11, 35), (11, 36), (11, 37)] n= 45\nlime [(61, 40), (61, 41), (61, 42)] n= 30\nblack [(31, 21), (32, 21), (32, 22)] blue [(32, 20), (33, 21)]\ngreen_bottom [(8, 32), "
+      }
+    ]
+  },
+  "history": [
+    {
+      "version": "v0",
+      "parent": null,
+      "round": 0,
+      "score_mean": 0.52,
+      "score_worst": 0.4286,
+      "cost_mean": 0.9038,
+      "gate_mean": 0.0682,
+      "clear_rate": 0.0,
+      "decision": "baseline",
+      "gate_reason": "v0 is the starting parent",
+      "edits": [],
+      "dropped_at_validate": []
+    }
+  ],
+  "recent_rejected_children": []
+}

@@ -117,8 +117,44 @@ class StubMeta:
                     "content": "STRATEGY\n- Stub strategy line.",
                     "rationale": "stub: prompt add",
                 },
+                {
+                    "op": "add", "target": "prompt", "name": "facts",
+                    "content": "FACTS\n- ACTION1 moves the player up 1 cell.",
+                    "rationale": "stub: must be dropped by the fact-check (moves are 5 cells)",
+                },
             ]
         }
         text = "Here are my edits:\n```json\n" + json.dumps(edits, indent=1) + "\n```"
         self.usage.add(1000, len(text) // 4)
         return ModelResponse(text=text, tokens_in=1000, tokens_out=len(text) // 4, latency_ms=1)
+
+
+ACTION_FACT_RE = re.compile(r"ACTION(\d) moves the player (up|down|left|right) (\d+) cells?")
+EDIT_RE = re.compile(r"^=== edit (\S+):", re.MULTILINE)
+
+
+@dataclass
+class StubExtractor:
+    """Stand-in for the fact-check's claim extractor. It turns "ACTIONk moves
+    the player <dir> N cell(s)" into move claims and calls the stub strategy
+    line an uncheckable claim, so Validate's fact-check stage runs with no
+    model and hits all three labels."""
+
+    model: str = "stub-extractor"
+    usage: Usage = field(default_factory=Usage)
+
+    def complete(self, messages, max_tokens=None) -> ModelResponse:
+        text = messages[-1]["content"]
+        claims = []
+        starts = [(m.start(), m.group(1)) for m in EDIT_RE.finditer(text)]
+        for i, (start, edit_id) in enumerate(starts):
+            body = text[start:starts[i + 1][0] if i + 1 < len(starts) else len(text)]
+            for m in ACTION_FACT_RE.finditer(body):
+                claims.append({"edit": edit_id, "quote": m.group(0), "kind": "move",
+                               "action": int(m.group(1)), "direction": m.group(2),
+                               "cells": int(m.group(3)), "unit": "cells"})
+            if "Stub strategy line" in body:
+                claims.append({"edit": edit_id, "quote": "Stub strategy line.", "kind": "other"})
+        out = json.dumps({"claims": claims})
+        self.usage.add(len(text) // 4, len(out) // 4)
+        return ModelResponse(text=out, tokens_in=len(text) // 4, tokens_out=len(out) // 4, latency_ms=1)

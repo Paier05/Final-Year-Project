@@ -50,12 +50,12 @@ OPEN_CODE_RE = re.compile(r"```[ \t]*(?:python|py)[ \t]*\n(.*)$", re.DOTALL | re
 MAX_NOTES_CHARS = 2000
 
 
-def trajectory_path(round_index: int, episode: int, root: str = TRAJ_ROOT) -> str:
-    return os.path.join(root, f"round_{round_index}", f"episode_{episode}.jsonl")
+def trajectory_path(round_index: int, seed: int, root: str = TRAJ_ROOT) -> str:
+    return os.path.join(root, f"round_{round_index}", f"seed_{seed}.jsonl")
 
 
-def frames_path(round_index: int, episode: int, root: str = FRAME_ROOT) -> str:
-    return os.path.join(root, f"round_{round_index}", f"episode_{episode}.npz")
+def frames_path(round_index: int, seed: int, root: str = FRAME_ROOT) -> str:
+    return os.path.join(root, f"round_{round_index}", f"seed_{seed}.npz")
 
 
 # ---------------------------------------------------------------------------
@@ -70,6 +70,11 @@ class EpisodeAPI:
     per-turn cap, the episode action budget and the reset cap, and raises
     `TurnOver` (not an error) to end the cell when one of them is hit or Level 1
     is cleared.
+
+    `probe(env)`, if given, reads the game's internal state after every action
+    into the action's trajectory record (`game_state`). That is what the
+    goal-progress score reads. Nothing in `preload()` exposes it, so the
+    player's code cannot see it.
     """
 
     def __init__(
@@ -79,6 +84,7 @@ class EpisodeAPI:
         max_actions: int,
         max_resets: int,
         target_level: int = 1,
+        probe: Callable[[Any], dict[str, Any]] | None = None,
     ) -> None:
         from arcengine.enums import GameAction
 
@@ -88,6 +94,7 @@ class EpisodeAPI:
         self.max_actions = max_actions
         self.max_resets = max_resets
         self.target_level = target_level
+        self.probe = probe
 
         frame = env.reset()
         self.grid = grid_from_frame(frame.frame if frame else None)
@@ -104,6 +111,7 @@ class EpisodeAPI:
         self.done_reason: str | None = None
         self.solved = False
         self.steps_to_clear: int | None = None
+        self.start_state = probe(env) if probe else None
 
     # -- turn bookkeeping (harness side) -------------------------------------
 
@@ -164,6 +172,8 @@ class EpisodeAPI:
             "levels_completed": self.levels_completed,
             "action_index": self.actions_used,
         }
+        if self.probe is not None:
+            record["game_state"] = self.probe(self.env)
         game_over = False
         if self.state == "GAME_OVER" and self.levels_completed < self.target_level:
             game_over = True
@@ -178,6 +188,8 @@ class EpisodeAPI:
                 self.available = list(frame.available_actions or []) if frame else self.available
                 record["effect"] += "; game over, the harness reset the level"
                 record["auto_reset_frame"] = len(self.frames) - 1
+                if self.probe is not None:
+                    record["auto_reset_state"] = self.probe(self.env)
         self.turn_actions.append(record)
         self.history.append(
             {"turn": self.turn, "action": name, "args": data or {}, "effect": record["effect"]}
@@ -457,6 +469,7 @@ def user_message(
 class EpisodeOutcome:
     round_index: int
     episode: int
+    seed: int
     version: str
     solved: bool
     steps_to_clear: int | None
@@ -466,6 +479,7 @@ class EpisodeOutcome:
     resets_used: int
     tokens_in: int
     tokens_out: int
+    llm_calls: int
     wall_time_s: float
     parse_failures: int
     fallback_turns: int
@@ -487,11 +501,15 @@ def run_episode(
     round_index: int,
     episode: int,
     cfg: dict[str, Any],
+    seed: int | None = None,
     stop_event: threading.Event | None = None,
     traj_root: str = TRAJ_ROOT,
     frame_root: str = FRAME_ROOT,
     log: Callable[[str], None] = print,
+    probe: Callable[[Any], dict[str, Any]] | None = None,
 ) -> EpisodeOutcome:
+    """Play one episode. `episode` names the files and records; #12 uses the
+    seed itself (1..5), so `seed` defaults to it."""
     budget = cfg["budget"]
     obs_cfg = cfg["observation"]
     per_turn = int(budget["actions_per_turn"])
@@ -499,12 +517,14 @@ def run_episode(
     wall_clock_s = float(budget["wall_clock_s"])
     max_tokens_episode = int(budget["max_tokens_per_episode"])
 
+    seed = episode if seed is None else seed
     started = time.monotonic()
     api = EpisodeAPI(
         env,
         actions_per_turn=per_turn,
         max_actions=int(budget["max_actions"]),
         max_resets=int(budget["max_resets"]),
+        probe=probe,
     )
     sandbox, counter, failed_skills = build_sandbox(
         api, harness, float(budget["cell_time_limit_s"])
@@ -517,9 +537,9 @@ def run_episode(
     os.makedirs(os.path.dirname(fpath), exist_ok=True)
 
     outcome = EpisodeOutcome(
-        round_index=round_index, episode=episode, version=harness.version,
+        round_index=round_index, episode=episode, seed=seed, version=harness.version,
         solved=False, steps_to_clear=None, end_reason="", actions_used=0, turns=0,
-        resets_used=0, tokens_in=0, tokens_out=0, wall_time_s=0.0,
+        resets_used=0, tokens_in=0, tokens_out=0, llm_calls=0, wall_time_s=0.0,
         parse_failures=0, fallback_turns=0, cell_errors=0, timeouts=0,
         trajectory=tpath.replace(os.sep, "/"), frames=fpath.replace(os.sep, "/"),
     )
@@ -531,12 +551,15 @@ def run_episode(
             "type": "episode_start",
             "round": round_index,
             "episode": episode,
+            "seed": seed,
             "version": harness.version,
             "system_prompt_chars": len(system_text),
             "skills": sorted(harness.skills),
             "skills_failed_to_load": failed_skills,
             "start_frame_hash": frame_hash(api.grid),
         }
+        if api.start_state is not None:
+            header["start_state"] = api.start_state
         handle.write(json.dumps(header) + "\n")
         try:
             for turn in range(max_turns):
@@ -552,11 +575,12 @@ def run_episode(
                     outcome.end_reason = "budget_tokens"
                     break
 
+                turn_started = time.monotonic()
                 notes = str(sandbox.namespace.get("notes", ""))[:MAX_NOTES_CHARS]
                 code: str | None = None
                 reply_text = ""
                 retry_note: str | None = None
-                tokens_in = tokens_out = latency_ms = 0
+                tokens_in = tokens_out = latency_ms = llm_calls = 0
                 parse_failed = False
                 for attempt in range(2):
                     user_text = user_message(
@@ -567,6 +591,7 @@ def run_episode(
                         {"role": "system", "content": system_text},
                         {"role": "user", "content": user_text},
                     ]
+                    llm_calls += 1
                     try:
                         response = client.complete(messages)
                     except ModelCallError as error:
@@ -584,6 +609,7 @@ def run_episode(
                     retry_note = "no ```python code block found. End your reply with exactly one."
                 outcome.tokens_in += tokens_in
                 outcome.tokens_out += tokens_out
+                outcome.llm_calls += llm_calls
 
                 api.begin_turn(turn)
                 start_hash = frame_hash(api.grid)
@@ -624,6 +650,7 @@ def run_episode(
                     "type": "tool_call",
                     "round": round_index,
                     "episode": episode,
+                    "seed": seed,
                     "version": harness.version,
                     "turn": turn,
                     "frame_hash_before": start_hash,
@@ -650,6 +677,11 @@ def run_episode(
                     "tokens_in": tokens_in,
                     "tokens_out": tokens_out,
                     "latency_ms": latency_ms,
+                    # cost of this tool call (#12): model calls incl. format
+                    # retries, env steps it took, and its wall time
+                    "llm_calls": llm_calls,
+                    "env_steps": len(api.turn_actions),
+                    "wall_time_s": round(time.monotonic() - turn_started, 2),
                 }
                 handle.write(json.dumps(record, default=_json_default) + "\n")
                 handle.flush()

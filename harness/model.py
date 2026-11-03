@@ -165,6 +165,10 @@ class ModelClient:
     # silently poison the dataset. Failing loudly is the whole point.
     abort_after_consecutive_call_failures: int = 5
     global_token_cap: int = 40_000_000
+    # Sent as the request's `seed` when set. Issue #12 fixes seeds 1..5 per
+    # episode; the endpoint was found to ignore it (2026-11-02), but it is
+    # sent so the run would be seeded on an endpoint that honours it.
+    seed: int | None = None
 
     usage: Usage = field(default_factory=Usage)
     _consecutive_rate_limits: int = 0
@@ -260,6 +264,8 @@ class ModelClient:
             "top_p": self.top_p,
             "max_tokens": max_tokens or self.max_tokens,
         }
+        if self.seed is not None:
+            body["seed"] = int(self.seed)
         # Qwen3.8 thinking control. "off" disables reasoning entirely; any other
         # value is passed through as the reasoning_effort level.
         if self.thinking and self.thinking.lower() not in ("off", "none", "false"):
