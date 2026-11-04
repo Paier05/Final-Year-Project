@@ -1,0 +1,120 @@
+# Issue #12, round 6 extension: one more round on top of #12's 5-round run.
+# Identical to config_evolve.yaml except: root, rounds, and the player/meta
+# model. qwen38-flash-next-autoround was down (HTTP 500 from its backend on
+# 2026-11-04), so the user chose Qwen/Qwen3.8-27B-FP8 (#9's model) for round 6.
+# Rounds 0-5 are #12's, run with flash; their entries are copied unchanged
+# from results/evolve_12/archive.json. v6 vs v3 therefore mixes a model change
+# with the harness change, and the cost term counts tokens, which depend on the
+# model.
+#
+# Credentials are NOT here. The endpoint URL and key are read from the
+# QWEN_BASE_URL and QWEN_API_KEY environment variables (or the gitignored
+# .env), and are never written to logs, archive.json or reports.
+
+experiment: "issue #12: evo-harness v2 on ls20 level 1"
+# results/evolve_12 (#12's committed run) stays untouched.
+root: "results/evolve_12_round6"
+
+game: "ls20-9607627b"
+# Level-1 human baseline for ls20 (arc-agi EnvironmentInfo.baseline_actions[0]).
+# #9's score used it; #12's goal-progress score does not (a clear = 1.0).
+human_baseline_actions: 22
+
+rounds: 6
+episodes_per_round: 5          # #9: 3
+# One episode per fixed seed, the same seeds for every version and round.
+# ls20 Level 1 is identical under every seed and the endpoint ignores the
+# sampling seed (both checked 2026-11-02), so a seed names an attempt.
+seeds: [1, 2, 3, 4, 5]         # #9: 0, 1, 2
+parallel_episodes: 5           # #9: 3
+
+score:
+  # Goal-progress score (evolve/goal_score.py), agreed with the user on
+  # 2026-11-02. A state scores sum(weight * part); an episode scores its best
+  # state; a clear = 1.0.
+  weights:
+    position: 0.4   # 1 - maze moves to the goal / moves from the start (7)
+    rotation: 0.4   # player's rotation index == the goal's
+    shape: 0.1      # shape index matches (already true at the start)
+    colour: 0.1     # colour index matches (already true at the start)
+
+gate:
+  # g = progress - lambda * cost per episode (evolve/score.py).
+  # |mean progress diff| > epsilon: accept iff mean-g gain > 0 and
+  #                                 worst-g drop <= delta
+  # within epsilon (tie):           accept iff the child is cheaper and
+  #                                 worst-g drop <= delta
+  delta: 0.1        # unchanged from #9
+  lambda: 0.5       # new
+  epsilon: 0.05     # new. The issue wrote 0.5; the user chose 0.05 (2026-11-02)
+
+player:
+  model: "Qwen/Qwen3.8-27B-FP8"   # #12 rounds 0-5: qwen38-flash-next-autoround
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 1500
+  thinking: "off"
+  request_timeout_s: 180
+  max_transient_retries: 2
+
+meta:
+  enabled: true
+  model: "Qwen/Qwen3.8-27B-FP8"   # #12 rounds 0-5: qwen38-flash-next-autoround
+  temperature: 0.3
+  top_p: 0.9
+  max_tokens: 8000
+  thinking: "off"
+  request_timeout_s: 600
+  max_transient_retries: 2
+  max_edits: 4
+
+factcheck:
+  # Claim extraction uses the meta model (one call per Validate attempt); the
+  # check itself is code against the env (evolve/factcheck.py).
+  enabled: true
+  max_tokens: 6000
+
+budget:
+  # Same as #9 (the issue: "step budget per episode: same as #9").
+  max_actions: 200
+  actions_per_turn: 6
+  max_turns: 200
+  # #9: 5400 (90 min). With 5 episodes in parallel the endpoint gives ~38 s
+  # per turn, and the first #12 attempt had 4 of 5 v0 episodes cut by the
+  # 90-min cap at 123-136 actions, so the score measured server speed. The
+  # user chose (2026-11-02) to raise it so the action / turn / token budgets
+  # above end episodes, as in #9, and to restart from round 0.
+  wall_clock_s: 14400
+  max_tokens_per_episode: 1200000
+  max_resets: 10
+  cell_time_limit_s: 10
+
+observation:
+  max_objects: 40
+  history_n: 10
+
+rules:
+  # Promote an inline helper to a skill when the player wrote it in this many
+  # episodes, OR called it this many times. Helpers with identical code are
+  # one helper, whatever their names (evolve/analyze.py inline_helpers).
+  promote_min_episodes: 1        # #9: 2
+  promote_min_calls: 2           # #9: 6
+  max_promotions: 3
+  # Delete a skill never called in this many evaluated episodes: 2 rounds at
+  # 5 episodes per round, as #9's 6 was at 3.
+  delete_min_episodes: 10        # #9: 6
+
+validate:
+  max_system_chars: 14000
+  max_prompt_chars: 3000
+  min_steps: 3
+  max_steps: 10
+  max_step_chars: 400
+  max_skill_lines: 80
+  test_state_fractions: [0.0, 0.5, 0.9]
+
+limits:
+  # Whole-run ceiling, checked before every round. Worst case 6 versions x 5
+  # episodes x 1.2M per-episode cap = 36M, plus Meta and fact-check calls.
+  global_token_cap: 40000000
+  abort_after_consecutive_rate_limits: 3

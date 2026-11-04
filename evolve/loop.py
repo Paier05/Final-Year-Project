@@ -255,6 +255,7 @@ def evaluate(
 
 def version_entry(
     harness: Harness, round_index: int, episodes: list[dict[str, Any]], paths: Paths,
+    cfg: dict[str, Any],
 ) -> dict[str, Any]:
     loaded = analyze_mod.load_episodes({"episodes": episodes})
     entry = {
@@ -266,6 +267,9 @@ def version_entry(
         "episodes": [{k: e.get(k) for k in EPISODE_FIELDS} for e in episodes],
         "tokens": sum(e["tokens_in"] + e["tokens_out"] for e in episodes),
         "skill_usage": analyze_mod.skill_usage_for_entry(harness, loaded),
+        # Per version, not only per run: a resumed run may switch models.
+        "player_model": cfg["player"]["model"],
+        "meta_model": cfg["meta"]["model"],
     }
     entry |= summarise(episodes)
     return entry
@@ -316,7 +320,7 @@ def run(
             append_changelog(paths, changelog_section(v0, [], []))
         log("round 0: evaluating v0")
         episodes = evaluate(v0, 0, cfg, paths, player_factory, log)
-        entry = version_entry(v0, 0, episodes, paths)
+        entry = version_entry(v0, 0, episodes, paths, cfg)
         entry |= {"edits_accepted": [], "edits_dropped": [], "accepted": True,
                   "gate": {"decision": "baseline", "reason": "v0 is the starting parent"}}
         archive["versions"].append(entry)
@@ -429,7 +433,7 @@ def run(
 
         # ---- evaluate + 5 · Gate ------------------------------------------------
         episodes = evaluate(child, round_index, cfg, paths, player_factory, log)
-        entry = version_entry(child, round_index, episodes, paths)
+        entry = version_entry(child, round_index, episodes, paths, cfg)
         decision = gate(entry, parent_entry, cfg)
         decision["compared_to"] = parent_name
         entry |= {"edits_accepted": _slim(passed), "edits_dropped": _slim(all_dropped),

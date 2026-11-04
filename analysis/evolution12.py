@@ -77,6 +77,15 @@ def best_version(archive: dict[str, Any]) -> dict[str, Any]:
     return max(archive["versions"], key=lambda v: (v["score_mean"], v["gate_mean"]))
 
 
+def player_models(archive: dict[str, Any]) -> str:
+    """The run's player model, plus any version that used another one (the
+    round-6 extension switched models; entries without the field are the run's)."""
+    default = archive["config"]["player_model"]
+    other = [f"{v['version']}: {v['player_model']}" for v in archive["versions"]
+             if v.get("player_model", default) != default]
+    return "; ".join([default] + other)
+
+
 def _legend_handles() -> list[Line2D]:
     return [Line2D([], [], marker=s["marker"], linestyle="none", color=s["colour"], markersize=8,
                    label=s["label"]) for s in DECISION_STYLE.values()]
@@ -128,7 +137,7 @@ def figure_score_per_round(archive: dict[str, Any], out_dir: str) -> str:
     axes.set_ylim(0, 1.08)
     axes.set_ylabel("Goal progress (dots: seeds 1-5, left to right; mark: mean ± SD)", fontsize=9,
                     color=TEXT_PRIMARY)
-    axes.set_title(f"Goal progress per round, ls20 Level 1 ({archive['config']['player_model']}, "
+    axes.set_title(f"Goal progress per round, ls20 Level 1 ({player_models(archive)}, "
                    f"{len(archive['config']['seeds'])} seeds per version)",
                    fontsize=11, color=TEXT_PRIMARY, loc="left")
     handles = _legend_handles() + [Line2D([], [], color=TEXT_SECONDARY, linestyle=(0, (4, 3)),
@@ -431,7 +440,7 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
 def figure_vs_issue9(archive: dict[str, Any], rescored: dict[str, Any], out_dir: str) -> str:
     figure, axes = plt.subplots(figsize=(8.8, 4.6), facecolor=SURFACE)
     _style(axes, grid_axis="y")
-    runs = (("#12", archive["versions"], f"#12: {archive['config']['player_model']}, 5 seeds", -0.08),
+    runs = (("#12", archive["versions"], f"#12: {player_models(archive)}, 5 seeds", -0.08),
             ("#9", rescored["versions"], "#9 rescored: Qwen3.8-27B, 3 episodes", 0.08))
     for key, versions, label, offset in runs:
         colour = RUN_COLOUR[key]
