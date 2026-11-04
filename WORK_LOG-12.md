@@ -587,6 +587,53 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
   - Credential scan of `results/evolve_12/`, `analysis/`, `evolve/`, the log
     and the config: no hits.
 
+### 2026-11-04 18:20–20:10 — Round 6 extension (user request), on Qwen3.8-27B-FP8
+
+- **Why a different model.** The user asked for one more round to see if v6
+  improves. The flash backend was down: preflight twice got HTTP 500
+  "connection reset by peer" from the gateway's backend. The user chose
+  `Qwen/Qwen3.8-27B-FP8` (#9's model) "for now", as player and Meta model.
+- **Kept apart from the 5-round run.**
+  - Config `config_evolve_round6.yaml`: identical except root, `rounds: 6`
+    and the two model names.
+  - Root `results/evolve_12_round6/`: `archive.json`, `CHANGELOG.md` and
+    `harnesses/v0–v5` copied from `results/evolve_12/` (unchanged; v0–v5
+    still point at #12's trajectories), plus a `round6_extension` note.
+  - `evolve/loop.py`: each version entry now records `player_model` and
+    `meta_model`, since a resumed run can switch models. Self-test passes.
+  - `analysis/evolution12.py`: figure titles list any version whose model
+    differs from the run's.
+- **Round 6, parent v3.**
+  - Analyze: 0 inline-helper groups, so the lower promotion thresholds had
+    nothing to promote.
+  - Propose: 0 rule edits, 4 Meta edits. Validate: 3 passed, 1 dropped. The
+    fact-check dropped `find_goal` (cyan, blue, black called goal colours:
+    false). It kept `check_orientation`, a rewritten step 4 (the first step
+    edit in #9 or #12), and a `knowledge` rewrite (5-cell moves: true).
+- **v6's episodes:** 0.543, 0.543, 0.543, 0.657, 0.543 (seeds 1–5); no clear.
+  - 4/5 stalled under the goal, unrotated; seed 4 rotated but stayed far.
+  - Mean progress 0.566, cost 0.642 (548k tokens per episode), gate score
+    0.244.
+- **Gate: accepted on the cost tie-break.** Progress −0.023 is within ε;
+  cost −0.192; worst-g drop −0.106. v6 is the new parent.
+- **What the acceptance does not show.**
+  - v6 is not better at the game: same progress, cheaper.
+  - The saving is mostly fewer turns on 4 of 5 seeds (65–133, against v3's
+    109–191; seed 3 used all 200), and it
+    can't be split between the model change and the edits without
+    re-running v3 on 27B.
+- **Two defects in the accepted text, found in the trajectories:**
+  - Step 4 and `knowledge` tell the player to call `find_goal()`, the skill
+    Validate dropped in the same round. Players called it in 47 cells, with
+    11 NameErrors. Validate checks each edit on its own, not whether
+    surviving text names a skill that no longer exists. v3's step 4 already
+    named two missing skills (`analyze_cluster_state`, `try_rotate`).
+  - Both say "try ACTION5 or ACTION7 to rotate"; ls20 offers ACTION1–4 only.
+    Players tried ACTION5 13 times and ACTION7 5 times, and got "not
+    available". The fact-check extracted no claim from this sentence or from
+    the step edit, so the claim rounds 4–5 dropped got back in.
+- **Tokens:** player 2.74M; Meta 26k; fact-check extraction 3k.
+
 ## Open questions / risks
 
 - **n = 5 is still small.**

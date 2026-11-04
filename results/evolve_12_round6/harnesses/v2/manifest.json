@@ -1,0 +1,39 @@
+{
+  "version": "v2",
+  "parent": "v1",
+  "round": 2,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "block_info",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r2-e1",
+      "source": "rule",
+      "what": "delete skill bfs_to_target",
+      "rationale": "never called in 10 evaluated episodes"
+    },
+    {
+      "id": "r2-e4",
+      "source": "meta",
+      "what": "edit step 4",
+      "rationale": "Prioritize rotation discovery since it's a major failing component. Only move once rotation is aligned."
+    },
+    {
+      "id": "r2-e5",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "Update knowledge to include rotation hypothesis and skills."
+    }
+  ]
+}

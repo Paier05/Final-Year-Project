@@ -1,0 +1,40 @@
+{
+  "version": "v6",
+  "parent": "v3",
+  "round": 6,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "check_orientation",
+    "get_cluster_centroid",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r6-e2",
+      "source": "meta",
+      "what": "add skill check_orientation",
+      "rationale": "The player needs to know its current orientation to compare it against the goal's orientation. This skill provides a simple way to determine the player's current orientation."
+    },
+    {
+      "id": "r6-e3",
+      "source": "meta",
+      "what": "edit step 4",
+      "rationale": "This step now explicitly instructs the player to use the new skills to determine the goal and orientation, and to take appropriate actions based on that information."
+    },
+    {
+      "id": "r6-e4",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "Updates the knowledge prompt to include the new skills and their usage, guiding the player to use them effectively."
+    }
+  ]
+}
