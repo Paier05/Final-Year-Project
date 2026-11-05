@@ -5836,6 +5836,647 @@
         "The player is failing to solve the level primarily due to a lack of a robust 'goal detection' mechanism and a failure to handle the 'rotation' constraint. In episodes 1 and 3, the player reached the goal location (position score 0.8571) but failed because the rotation was wrong (score 0.0). In episodes 2, 4, and 5, the player matched the rotation but failed to reach the goal location (position score 0.0-0.28). The current harness provides `move_cluster_to` but lacks a skill to identify the target coordinates and a skill to determine the required orientation. The player often wastes actions oscillating or moving in the wrong direction because it doesn't have a clear, code-verified target and orientation state."
       ],
       "meta_tokens": 26037
+    },
+    {
+      "version": "v7",
+      "parent": "v6",
+      "round": 7,
+      "harness_path": "results/evolve_12_round6/harnesses/v7",
+      "evaluated_at": "2026-11-05T17:28:19",
+      "episodes": [
+        {
+          "episode": 1,
+          "seed": 1,
+          "score": 0.5429,
+          "gate_score": 0.2414,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 90,
+          "resets_used": 1,
+          "tokens_in": 376419,
+          "tokens_out": 54265,
+          "llm_calls": 90,
+          "wall_time_s": 1921.7,
+          "parse_failures": 0,
+          "cell_errors": 16,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 6,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 376419,
+            "tokens_out": 54265,
+            "tokens": 430684,
+            "llm_calls": 90,
+            "env_steps": 200,
+            "wall_time_s": 1921.7,
+            "normalised": {
+              "tokens": 0.3589,
+              "llm_calls": 0.45,
+              "env_steps": 1.0
+            },
+            "cost": 0.603
+          },
+          "trajectory": "results/evolve_12_round6/trajectories/round_7/seed_1.jsonl",
+          "frames": "results/evolve_12_round6/frames/round_7/seed_1.npz"
+        },
+        {
+          "episode": 2,
+          "seed": 2,
+          "score": 0.5429,
+          "gate_score": 0.1575,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 142,
+          "resets_used": 1,
+          "tokens_in": 608541,
+          "tokens_out": 114692,
+          "llm_calls": 142,
+          "wall_time_s": 3600.9,
+          "parse_failures": 0,
+          "cell_errors": 17,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 6,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 608541,
+            "tokens_out": 114692,
+            "tokens": 723233,
+            "llm_calls": 142,
+            "env_steps": 200,
+            "wall_time_s": 3600.9,
+            "normalised": {
+              "tokens": 0.6027,
+              "llm_calls": 0.71,
+              "env_steps": 1.0
+            },
+            "cost": 0.7709
+          },
+          "trajectory": "results/evolve_12_round6/trajectories/round_7/seed_2.jsonl",
+          "frames": "results/evolve_12_round6/frames/round_7/seed_2.npz"
+        },
+        {
+          "episode": 3,
+          "seed": 3,
+          "score": 0.2571,
+          "gate_score": -0.0179,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 72,
+          "resets_used": 1,
+          "tokens_in": 301169,
+          "tokens_out": 46677,
+          "llm_calls": 72,
+          "wall_time_s": 1699.5,
+          "parse_failures": 0,
+          "cell_errors": 11,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.2571,
+            "cleared": false,
+            "parts": {
+              "position": 0.1429,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.0571,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 1,
+              "moves_to_goal": 6
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 6,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 301169,
+            "tokens_out": 46677,
+            "tokens": 347846,
+            "llm_calls": 72,
+            "env_steps": 200,
+            "wall_time_s": 1699.5,
+            "normalised": {
+              "tokens": 0.2899,
+              "llm_calls": 0.36,
+              "env_steps": 1.0
+            },
+            "cost": 0.55
+          },
+          "trajectory": "results/evolve_12_round6/trajectories/round_7/seed_3.jsonl",
+          "frames": "results/evolve_12_round6/frames/round_7/seed_3.npz"
+        },
+        {
+          "episode": 4,
+          "seed": 4,
+          "score": 0.5429,
+          "gate_score": 0.1956,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 119,
+          "resets_used": 1,
+          "tokens_in": 513592,
+          "tokens_out": 73047,
+          "llm_calls": 119,
+          "wall_time_s": 2456.1,
+          "parse_failures": 0,
+          "cell_errors": 26,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 6,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 513592,
+            "tokens_out": 73047,
+            "tokens": 586639,
+            "llm_calls": 119,
+            "env_steps": 200,
+            "wall_time_s": 2456.1,
+            "normalised": {
+              "tokens": 0.4889,
+              "llm_calls": 0.595,
+              "env_steps": 1.0
+            },
+            "cost": 0.6946
+          },
+          "trajectory": "results/evolve_12_round6/trajectories/round_7/seed_4.jsonl",
+          "frames": "results/evolve_12_round6/frames/round_7/seed_4.npz"
+        },
+        {
+          "episode": 5,
+          "seed": 5,
+          "score": 0.5429,
+          "gate_score": 0.2466,
+          "solved": false,
+          "steps_to_clear": null,
+          "end_reason": "budget_actions",
+          "actions_used": 200,
+          "turns": 85,
+          "resets_used": 1,
+          "tokens_in": 360811,
+          "tokens_out": 62461,
+          "llm_calls": 85,
+          "wall_time_s": 2157.3,
+          "parse_failures": 0,
+          "cell_errors": 11,
+          "timeouts": 0,
+          "goal": {
+            "score": 0.5429,
+            "cleared": false,
+            "parts": {
+              "position": 0.8571,
+              "rotation": 0.0,
+              "shape": 1.0,
+              "colour": 1.0
+            },
+            "contributions": {
+              "position": 0.3429,
+              "rotation": 0.0,
+              "shape": 0.1,
+              "colour": 0.1
+            },
+            "failing_parts": [
+              "position",
+              "rotation"
+            ],
+            "best_state": {
+              "action_index": 6,
+              "moves_to_goal": 1
+            },
+            "ever": {
+              "rotation_matched": false,
+              "first_rotation_match_action": null,
+              "states_with_all_attributes_matched": 0,
+              "closest_moves_to_goal": 1,
+              "closest_moves_to_goal_attributes_matched": null
+            },
+            "start_moves_to_goal": 7,
+            "n_states": 202,
+            "state_source": "logged game_state"
+          },
+          "cost": {
+            "tokens_in": 360811,
+            "tokens_out": 62461,
+            "tokens": 423272,
+            "llm_calls": 85,
+            "env_steps": 200,
+            "wall_time_s": 2157.3,
+            "normalised": {
+              "tokens": 0.3527,
+              "llm_calls": 0.425,
+              "env_steps": 1.0
+            },
+            "cost": 0.5926
+          },
+          "trajectory": "results/evolve_12_round6/trajectories/round_7/seed_5.jsonl",
+          "frames": "results/evolve_12_round6/frames/round_7/seed_5.npz"
+        }
+      ],
+      "tokens": 2511674,
+      "skill_usage": {
+        "check_orientation": {
+          "calls": 444,
+          "errors": 0,
+          "source_hash": "7942f255fe5e"
+        },
+        "get_cluster_centroid": {
+          "calls": 156,
+          "errors": 2,
+          "source_hash": "687c325f9443"
+        },
+        "grid_region": {
+          "calls": 154,
+          "errors": 0,
+          "source_hash": "e3eed522331a"
+        },
+        "move_cluster_to": {
+          "calls": 84,
+          "errors": 0,
+          "source_hash": "84ed4df8e74d"
+        },
+        "obstacle_map": {
+          "calls": 34,
+          "errors": 0,
+          "source_hash": "6fb17248a6d4"
+        },
+        "player_detector": {
+          "calls": 20,
+          "errors": 0,
+          "source_hash": "a945430da87b"
+        },
+        "teal_centroid": {
+          "calls": 628,
+          "errors": 8,
+          "source_hash": "1cfc95e84eeb"
+        }
+      },
+      "player_model": "Qwen/Qwen3.8-27B-FP8",
+      "meta_model": "Qwen/Qwen3.8-27B-FP8",
+      "n_episodes": 5,
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "score_mean": 0.4857,
+      "score_std": 0.1143,
+      "score_worst": 0.2571,
+      "score_best": 0.5429,
+      "parts_mean": {
+        "position": 0.7143,
+        "rotation": 0.0,
+        "shape": 1.0,
+        "colour": 1.0
+      },
+      "cost_mean": 0.6422,
+      "gate_mean": 0.1646,
+      "gate_worst": -0.0179,
+      "clear_rate": 0.0,
+      "n_clears": 0,
+      "avg_steps": 200.0,
+      "avg_steps_to_clear": null,
+      "tokens_mean": 502334.8,
+      "llm_calls_mean": 101.6,
+      "wall_time_mean_s": 2367.1,
+      "edits_accepted": [
+        {
+          "id": "r7-e2",
+          "source": "meta",
+          "what": "edit prompt knowledge",
+          "rationale": "The current knowledge prompt references non-existent skills and unavailable actions. This edit corrects the facts: ACTION5/7 are unavailable, and `find_goal` is now a real skill. It also clarifies the 'noise' issue.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8485 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "6 claims: 5 true, 0 false, 1 unverifiable"
+            }
+          ],
+          "op": "edit",
+          "target": "prompt",
+          "factcheck_verdict": "unverifiable"
+        },
+        {
+          "id": "r7-e3",
+          "source": "meta",
+          "what": "edit step 4",
+          "rationale": "Step 4 previously instructed to use ACTION5/7 for rotation, which causes errors. This edit removes that instruction and focuses on using the new `find_goal` skill and `move_cluster_to`.",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8530 chars)"
+            },
+            {
+              "check": "replay",
+              "result": "n/a (text edit: replay cannot test model behaviour)"
+            },
+            {
+              "check": "skill test",
+              "result": "n/a"
+            },
+            {
+              "check": "fact-check",
+              "result": "0 claims: 0 true, 0 false, 0 unverifiable"
+            }
+          ],
+          "op": "edit",
+          "target": "step",
+          "factcheck_verdict": "true"
+        }
+      ],
+      "edits_dropped": [
+        {
+          "id": "r7-e1",
+          "source": "meta",
+          "what": "add skill find_goal",
+          "stage": "replay",
+          "reason": "behaviour changed: episode 1 diverges at turn 49",
+          "checks": [
+            {
+              "check": "applies",
+              "result": "ok"
+            },
+            {
+              "check": "static tests",
+              "result": "static ok (system prompt 8813 chars)"
+            },
+            {
+              "check": "load test",
+              "result": "all 8 skills load"
+            },
+            {
+              "check": "replay",
+              "result": "behaviour changed: episode 1 diverges at turn 49"
+            }
+          ],
+          "op": "add",
+          "target": "skill"
+        }
+      ],
+      "gate": {
+        "rule": "gate score",
+        "progress_diff": -0.08,
+        "cost_diff": -0.0003,
+        "gain": -0.0799,
+        "drop": 0.1735,
+        "delta": 0.1,
+        "epsilon": 0.05,
+        "lambda": 0.5,
+        "decision": "rejected",
+        "reason": "no gate-score gain (-0.0799; progress -0.0800, cost -0.0003)",
+        "compared_to": "v6"
+      },
+      "accepted": false,
+      "factcheck": {
+        "n_claims": 6,
+        "true": 5,
+        "false": 0,
+        "unverifiable": 1,
+        "edits_dropped_for_false": [],
+        "extraction_tokens": 2284,
+        "extraction_calls": 1,
+        "claims": [
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "ACTION1 moves the moving object up by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 1,
+              "direction": "up",
+              "cells": 5,
+              "unit": "cells"
+            },
+            "label": "true",
+            "evidence": "ACTION1 moves the player up 5 cells; logged: {(0, 0): 121, (-5, 0): 116}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "ACTION2 usually causes a tiny change, mostly lime -> green cells.",
+            "kind": "other",
+            "claim": {
+              "kind": "other"
+            },
+            "label": "unverifiable",
+            "evidence": "outside the checkable vocabulary"
+          },
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "It also moves down by 5.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 2,
+              "direction": "down",
+              "cells": 5,
+              "unit": "cells"
+            },
+            "label": "true",
+            "evidence": "ACTION2 moves the player down 5 cells; logged: {(5, 0): 66, (0, 0): 57}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "ACTION3 moves the moving object left by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 3,
+              "direction": "left",
+              "cells": 5,
+              "unit": "cells"
+            },
+            "label": "true",
+            "evidence": "ACTION3 moves the player left 5 cells; logged: {(0, 0): 149, (0, -5): 42}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "ACTION4 moves the moving object right by 5 cells.",
+            "kind": "move",
+            "claim": {
+              "kind": "move",
+              "action": 4,
+              "direction": "right",
+              "cells": 5,
+              "unit": "cells"
+            },
+            "label": "true",
+            "evidence": "ACTION4 moves the player right 5 cells; logged: {(0, 0): 279, (0, 5): 61}"
+          },
+          {
+            "attempt": 1,
+            "edit": "r7-e2",
+            "source": "meta",
+            "what": "edit prompt knowledge",
+            "quote": "The goal requires matching 'rotation'.",
+            "kind": "goal_requirement",
+            "claim": {
+              "kind": "goal_requirement",
+              "requires": [
+                "rotation"
+              ]
+            },
+            "label": "true",
+            "evidence": "the level clears when the player stands on the goal with matching rotation, shape and colour"
+          }
+        ]
+      },
+      "meta_analysis": [
+        "The player is failing on 'rotation' (0.2 mean) and 'position' (0.71 mean). The 'knowledge' prompt and Step 4 instruct the player to use a `find_goal()` skill that does not exist (causing 11 NameErrors) and to use ACTION5/7 for rotation, which are not available (causing 13 ValueErrors). This leads to wasted turns and incorrect target identification (e.g., targeting cyan objects instead of the maroon goal). The player also wastes actions on 'noise' (lime->green changes) because it doesn't distinguish between cluster movement and background changes."
+      ],
+      "meta_tokens": 18964
     }
   ],
   "rounds": [
@@ -5887,11 +6528,18 @@
       "child": "v6",
       "decision": "accepted",
       "parent_after": "v6"
+    },
+    {
+      "round": 7,
+      "parent_before": "v6",
+      "child": "v7",
+      "decision": "rejected",
+      "parent_after": "v6"
     }
   ],
-  "updated": "2026-11-04T20:05:46",
+  "updated": "2026-11-05T17:28:19",
   "round6_extension": {
-    "note": "Rounds 0-5 and v0-v5 are copied unchanged from results/evolve_12/archive.json (#12, qwen38-flash-next-autoround). Round 6 was run on 2026-11-04 with Qwen/Qwen3.8-27B-FP8 as player and meta model because the flash backend was down; see config_evolve_round6.yaml. v6 vs v3 mixes a model change with the harness change.",
+    "note": "Rounds 0-5 and v0-v5 are copied unchanged from results/evolve_12/archive.json (#12, qwen38-flash-next-autoround). Round 6 was run on 2026-11-04 with Qwen/Qwen3.8-27B-FP8 as player and meta model because the flash backend was down; see config_evolve_round6.yaml. v6 vs v3 mixes a model change with the harness change. Round 7 was run on 2026-11-05 on the same 27B model (flash still down), so v7 vs v6 is a same-model comparison.",
     "player_model": "Qwen/Qwen3.8-27B-FP8",
     "meta_model": "Qwen/Qwen3.8-27B-FP8",
     "copied_from": "results/evolve_12/archive.json"

@@ -634,6 +634,48 @@ My question's preview had one wrong number: "rotated, 3 moves from goal" is
     the step edit, so the claim rounds 4–5 dropped got back in.
 - **Tokens:** player 2.74M; Meta 26k; fact-check extraction 3k.
 
+### 2026-11-05 15:08–17:28 — Round 7 (user request), rejected; stopped once for low memory
+
+- **Model.** The user asked for one more round, on flash if it was back and
+  on 27B if not. Flash still returned HTTP 500 from its backend (an earlier
+  check failed on a connection blip, so I retried before concluding). Round 7
+  ran on 27B in the same root, so **v7 vs v6 is a same-model comparison**,
+  unlike v6 vs v3.
+- **Redaction bug, found by that blip.** The connection error named the
+  endpoint host, and `redact` only masked the full URL. The host was printed
+  in this session's tool output only. `redact` now masks the host too;
+  `git grep` finds it in no tracked file.
+- **Round 7, parent v6.**
+  - Analyze: 0 inline-helper groups again.
+  - Propose: 0 rule edits, 3 Meta edits. Validate: 2 passed, 1 dropped.
+  - `find_goal` was proposed again and dropped by replay (episode 1 diverges
+    at turn 49).
+  - `knowledge` and step 4 were rewritten. `knowledge` now says ACTION5/7 are
+    not available, and suggests rotation may depend on moving elsewhere.
+- **Stopped by Claude Code for low memory** with all 5 seeds unfinished
+  (118–190 turns), losing ~3.15M tokens of play. I didn't restart it; the
+  user said "resume now". The saved analysis, edits and v7 were reused, and
+  all 5 seeds were re-run. The partial logs are in
+  `data/evolve12_partial_round7/` (gitignored).
+- **v7's episodes:** 0.543, 0.543, 0.257, 0.543, 0.543 (seeds 1–5); no clear.
+  - Mean progress 0.486, cost 0.642 (502k tokens per episode), gate score
+    0.165.
+  - 0/5 episodes ever held the goal's rotation (v6: 1/5).
+- **Gate: rejected.** Gate-score gain −0.080 (progress −0.080, cost −0.000),
+  and the worst-g drop 0.174 is over δ too. Final parent: v6.
+- **What changed in play:**
+  - The ACTION5/7 fix worked: "not available" errors fell from 15 to 1.
+  - The `find_goal` gap got worse: 79 cells called it, with 37 NameErrors
+    (v6: 47 and 11). Text still names a skill that has now been dropped in
+    two rounds running.
+- **0.543 is a ceiling, not a coincidence.** 8 of the 10 v6–v7 episodes score
+  exactly 0.5429: position 0.857 (just under the goal) with rotation 0. The
+  goal blocks a wrongly rotated player, so that's the most an unrotated
+  episode can score. Only rotating can get past it, and no accepted edit has
+  taught that.
+- **Tokens:** player 2.51M counted + ~3.15M lost; Meta 19k; fact-check
+  extraction 2k. Counted total across v0–v7: 31.1M (cap 40M).
+
 ## Open questions / risks
 
 - **n = 5 is still small.**

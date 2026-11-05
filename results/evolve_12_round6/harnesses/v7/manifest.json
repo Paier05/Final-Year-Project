@@ -1,0 +1,34 @@
+{
+  "version": "v7",
+  "parent": "v6",
+  "round": 7,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "check_orientation",
+    "get_cluster_centroid",
+    "grid_region",
+    "move_cluster_to",
+    "obstacle_map",
+    "player_detector",
+    "teal_centroid"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r7-e2",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The current knowledge prompt references non-existent skills and unavailable actions. This edit corrects the facts: ACTION5/7 are unavailable, and `find_goal` is now a real skill. It also clarifies the 'noise' issue."
+    },
+    {
+      "id": "r7-e3",
+      "source": "meta",
+      "what": "edit step 4",
+      "rationale": "Step 4 previously instructed to use ACTION5/7 for rotation, which causes errors. This edit removes that instruction and focuses on using the new `find_goal` skill and `move_cluster_to`."
+    }
+  ]
+}

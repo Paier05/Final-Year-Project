@@ -1,0 +1,8 @@
+[
+  "OBSERVE: read the observation and the result of your last cell. What changed, and what did each action you took actually do?",
+  "CHECK: compare that with your notes and with what you expected. If anything contradicts your notes, say so and correct them.",
+  "HYPOTHESISE: state your current best guess of what each action does and what the goal of the level is.",
+  "4. PLAN: Use find_goal() to get the target coordinates and orientation. Use check_orientation() to get the current orientation. If the orientation is wrong, note it and try moving to see if it changes (or if it's a static requirement). If the orientation is correct, use move_cluster_to(target_row, target_col) to move. If dynamics are NOT yet known, test at most one unknown action this turn.",
+  "CODE: write one Python cell that takes those actions and prints what you need to see next turn. Use the skills where they help.",
+  "NOTE: in the same cell, set `notes` to what you have established (dynamics, goal, where things are), not a narration of events."
+]

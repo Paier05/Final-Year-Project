@@ -140,3 +140,15 @@ Dropped at Validate (1):
 
 Gate for v6 vs v3: **accepted** (tie-break on cost) — tie on progress (|-0.0229| <= eps 0.05); child cheaper (cost -0.1915); drop -0.1055 <= 0.1 (progress 0.5657 vs 0.5886, cost 0.6425 vs 0.834, gate score 0.2445 vs 0.1716, worst gate score 0.1556 vs 0.0501)
 
+## v7 (parent v6, round 7) — 2026-11-05T15:09:30
+Accepted edits (2):
+- `r7-e2` [meta] **UNVERIFIABLE** edit prompt knowledge — The current knowledge prompt references non-existent skills and unavailable actions. This edit corrects the facts: ACTION5/7 are unavailable, and `find_goal` is now a real skill. It also clarifies the 'noise' issue.
+  - fact-check: 6 claims: 5 true, 0 false, 1 unverifiable
+    - UNVERIFIABLE "ACTION2 usually causes a tiny change, mostly lime -> green cells." (other): outside the checkable vocabulary
+- `r7-e3` [meta] edit step 4 — Step 4 previously instructed to use ACTION5/7 for rotation, which causes errors. This edit removes that instruction and focuses on using the new `find_goal` skill and `move_cluster_to`.
+  - fact-check: 0 claims: 0 true, 0 false, 0 unverifiable
+Dropped at Validate (1):
+- `r7-e1` [meta] add skill find_goal — replay: behaviour changed: episode 1 diverges at turn 49
+
+Gate for v7 vs v6: **rejected** (gate score) — no gate-score gain (-0.0799; progress -0.0800, cost -0.0003) (progress 0.4857 vs 0.5657, cost 0.6422 vs 0.6425, gate score 0.1646 vs 0.2445, worst gate score -0.0179 vs 0.1556)
+
