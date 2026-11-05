@@ -1,4 +1,6 @@
-# Issue #12, round 6 extension: one more round on top of #12's 5-round run.
+# Issue #12, rounds 6-7 extension: more rounds on top of #12's 5-round run.
+# Round 7 was added on 2026-11-05, with flash still down; its parent v6 also
+# ran on 27B, so v7 vs v6 is a same-model comparison.
 # Identical to config_evolve.yaml except: root, rounds, and the player/meta
 # model. qwen38-flash-next-autoround was down (HTTP 500 from its backend on
 # 2026-11-04), so the user chose Qwen/Qwen3.8-27B-FP8 (#9's model) for round 6.
@@ -20,7 +22,7 @@ game: "ls20-9607627b"
 # #9's score used it; #12's goal-progress score does not (a clear = 1.0).
 human_baseline_actions: 22
 
-rounds: 6
+rounds: 7
 episodes_per_round: 5          # #9: 3
 # One episode per fixed seed, the same seeds for every version and round.
 # ls20 Level 1 is identical under every seed and the endpoint ignores the
