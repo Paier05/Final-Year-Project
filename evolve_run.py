@@ -19,6 +19,7 @@ import json
 import os
 import sys
 import time
+from urllib.parse import urlsplit
 
 import yaml
 
@@ -36,6 +37,10 @@ def redact(text: str) -> str:
             continue
         if secret:
             text = str(text).replace(secret.rstrip("/"), placeholder)
+            # Connection errors name the host and path, not the configured URL.
+            host = urlsplit(secret).hostname
+            if host:
+                text = text.replace(host, placeholder)
     return text
 
 
