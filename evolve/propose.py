@@ -166,6 +166,9 @@ best state as the weighted sum of the goal's conditions:
            square), rotation {w_rotation} (the player's orientation matches the
            goal's), shape {w_shape}, colour {w_colour} (each 1 if it matches).
 The analysis shows each episode's parts at its best state and which failed.
+After the analysis JSON comes a FRAME EVIDENCE section: where the player's
+block went and which other screen cells changed, measured by plain code from
+the saved frames of the same episodes. It reports observations only.
 COST per episode, in [0, 1]: the mean of tokens / {cap_tokens}, model calls /
 {cap_calls} and actions / {max_actions}. GATE SCORE = progress - {lam} * cost.
 A version plays {n_episodes} episodes. It is accepted if its mean gate score
@@ -186,6 +189,13 @@ VALIDATION (edits that fail are dropped)
   requires) are tested against the game itself. An edit containing a claim the
   game contradicts is dropped. Claims that cannot be tested are kept and
   flagged. Write down only what the evidence establishes.
+- SKILL NAMES: after each edit, every text of the harness (prompts, steps,
+  skill docstrings and skill code) may name only skills that exist in it.
+  Text of the form name(...) and a backticked identifier are read as skill
+  names. An edit that leaves a name that is neither a skill of the edited
+  harness nor part of the sandbox API is dropped: for example a prompt that
+  tells the player to call a skill you did not add (or whose add was
+  dropped), or a delete that leaves the old name in a prompt or step.
 - prompts must stay under {max_prompt_chars} characters each and the whole
   system prompt under {max_system_chars}; steps under {max_step_chars} each.
 
@@ -220,6 +230,8 @@ GUIDANCE
 
 def _compact_report(report: dict[str, Any]) -> dict[str, Any]:
     compact = dict(report)
+    # The Frame evidence section goes in as text, after the JSON.
+    compact.pop("frame_evidence", None)
     helpers = []
     for helper in report["inline_helpers"][:6]:
         item = {k: v for k, v in helper.items() if k != "key"}
@@ -268,6 +280,7 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         f"PROMPTS\n{prompts}\n\nSTEPS\n{steps}\n\nSKILLS\n{skills or '(none)'}\n\n"
         f"ANALYSIS OF {parent.version}'s EPISODES (JSON)\n"
         f"{json.dumps(_compact_report(report), indent=1, ensure_ascii=False)}\n\n"
+        f"{(report.get('frame_evidence') or {}).get('text') or 'FRAME EVIDENCE: not available.'}\n\n"
         "Propose your edits now. JSON only."
     )
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]

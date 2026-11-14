@@ -22,6 +22,11 @@ and the report says which goal parts failed at each episode's best state
 the evaluator's internals out of the report. This one tells the Meta LLM which
 conditions the goal has (position, rotation, shape, colour), but not where
 the goal is.
+
+Issue #14: the report gains a Frame evidence section (evolve/frame_evidence.py):
+where the player's block went and what else changed on screen, measured from
+the saved frames only. It is observations, with no game facts added and no
+advice; the full per-step table is written next to each trajectory.
 """
 
 from __future__ import annotations
@@ -33,6 +38,7 @@ from typing import Any
 
 import numpy as np
 
+from evolve import frame_evidence
 from evolve.action_loop import load_frames, read_records
 from evolve.goal_score import PARTS, describe_failure
 from evolve.harness import Harness
@@ -267,6 +273,22 @@ def load_episodes(entry: dict[str, Any]) -> list[dict[str, Any]]:
     return episodes
 
 
+def frame_evidence_section(version: str, episodes: list[dict[str, Any]]) -> dict[str, Any]:
+    """The Frame evidence section for one version's episodes: the rendered
+    text the Meta LLM reads, the data behind it, and the per-step files."""
+    evidence = frame_evidence.build([
+        {"seed": e.get("seed", e["episode"]), "records": e["records"], "frames": load_frames(e["frames"])}
+        for e in episodes
+    ])
+    files = frame_evidence.write_per_step(
+        evidence, {e.get("seed", e["episode"]): e["trajectory"] for e in episodes}
+    )
+    section = {k: v for k, v in evidence.items() if k != "per_step"}
+    section["text"] = frame_evidence.render(evidence, version)
+    section["per_step_files"] = files
+    return section
+
+
 def analyze(
     parent: Harness, parent_entry: dict[str, Any], archive: list[dict[str, Any]],
     extra_entries: list[dict[str, Any]] | None = None,
@@ -319,6 +341,7 @@ def analyze(
         "inline_helpers": inline_helpers(parent, episodes),
         "action_effects": action_effects(episodes),
         "common_errors": common_errors(episodes),
+        "frame_evidence": frame_evidence_section(parent.version, episodes),
         "excerpts": {
             "best_episode": excerpt(ranked[-1]) if ranked else [],
             "worst_episode": excerpt(ranked[0]) if ranked else [],
