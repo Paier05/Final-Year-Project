@@ -178,6 +178,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     runner = sub.add_parser("run")
     runner.add_argument("commands", nargs="+")
+    runner.add_argument("--timeout", type=int, default=900, help="seconds without output before giving up")
     sub.add_parser("upload")
     sub.add_parser("put-env")
     sub.add_parser("rm-env")
@@ -191,7 +192,7 @@ def main() -> None:
         if args.command == "run":
             code = 0
             for command in args.commands:
-                code = run(client, command) or code
+                code = run(client, command, timeout=args.timeout) or code
         elif args.command == "upload":
             code = cmd_upload(client)
         elif args.command == "put-env":
