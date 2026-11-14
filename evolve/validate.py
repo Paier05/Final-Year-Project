@@ -28,6 +28,15 @@ passed. An edit is kept only if every check that applies to it passes:
    step, or skill code and docstring) are tested against the game
    (evolve/factcheck.py). A false claim drops the edit; unverifiable claims
    keep it, flagged in the CHANGELOG.
+7. **skill-name check** (#14) -- every text of the harness *with this edit
+   applied* (prompts, steps, skill docstrings, skill code) may name only
+   skills that exist in it, or sandbox built-ins (evolve/skill_names.py). An
+   edit that leaves a missing name is dropped: a prompt naming a skill nobody
+   added, or a delete, merge or rename that leaves the old name in a prompt.
+   Runs second, right after the static tests, because it is cheap. An edit
+   that fails only this check is retried once the other edits of the set have
+   been tried, so text may name a skill that a later edit of the same set
+   adds, and a delete may precede the edit that removes the name.
 """
 
 from __future__ import annotations
@@ -40,6 +49,7 @@ from evolve.edits import EditError, Workspace, apply_edit, describe, normalise
 from evolve.factcheck import FactChecker, meta_facing_reason
 from evolve.harness import Harness
 from evolve.replay import ReplayResult, api_at_state, replay, states_along
+from evolve import skill_names
 from evolve.sandbox import SandboxViolation, check_source, strip_function_defs
 
 
@@ -261,68 +271,137 @@ def validate(
         # One extraction call for every edit of this attempt.
         factchecker.prepare([e for *_x, e in normalised if e is not None])
 
-    for edit_id, source, _raw, edit in normalised:
-        if edit is None:
-            continue
-        what = describe(edit)
-        trial = ws.clone()
-        checks: list[dict[str, str]] = []
+    # Names the parent already gets wrong are not this round's edits' doing
+    # (v0 has none; see the audit in WORK_LOG-14.md).
+    names_parent = skill_names.check_harness(parent)
+    names_checked: list[str] = []
+    names_rejected: list[dict[str, Any]] = []
 
-        def drop(stage: str, reason: str) -> None:
-            log(f"    drop {edit_id} [{source}] {what}: {reason}")
-            dropped.append({"id": edit_id, "source": source, "what": what, "stage": stage,
-                            "reason": reason, "edit": edit, "checks": checks})
+    def attempt(base: Workspace, edit: dict[str, Any]) -> dict[str, Any]:
+        """Run every check for one edit on top of `base`. `trial` in the
+        result is the workspace with the edit applied, if it passed."""
+        trial = base.clone()
+        checks: list[dict[str, str]] = []
+        out: dict[str, Any] = {"ok": False, "checks": checks, "detail": {}, "facts": None, "missing": []}
+
+        def fail(stage: str, reason: str) -> dict[str, Any]:
+            return out | {"stage": stage, "reason": reason}
 
         try:
             apply_edit(trial, edit)
         except EditError as error:
-            drop("applies", str(error))
-            continue
+            return fail("applies", str(error))
         checks.append({"check": "applies", "result": "ok"})
 
         ok, message = static_tests(trial.harness, edit, cfg)
         checks.append({"check": "static tests", "result": message})
         if not ok:
-            drop("static tests", message)
-            continue
+            return fail("static tests", message)
+
+        missing = skill_names.new_violations(
+            skill_names.check_harness(base.harness), skill_names.check_harness(trial.harness)
+        )
+        out["names_checked"] = True
+        if missing:
+            out["missing"] = missing
+            message = skill_names.describe(missing)
+            checks.append({"check": "skill-name check", "result": message})
+            return fail("skill-name check", message)
+        checks.append({"check": "skill-name check", "result": "every name used like a skill exists"})
+
         if edit["target"] == "skill":
             ok, message = load_test(trial.harness, cfg)
             checks.append({"check": "load test", "result": message})
             if not ok:
-                drop("load test", message)
-                continue
+                return fail("load test", message)
         ok, message, detail = replay_test(trial.harness, edit, episodes, baselines, cfg)
+        out["detail"] = detail
         checks.append({"check": "replay" if edit["op"] != "merge" else "replay + merge-equivalence",
                        "result": message})
         if not ok:
-            drop("replay", message)
-            continue
+            return fail("replay", message)
         ok, message = skill_test(trial.harness, edit, states, cfg)
         checks.append({"check": "skill test", "result": message})
         if not ok:
-            drop("skill test", message)
-            continue
-        facts = None
+            return fail("skill test", message)
         if factchecker is not None:
             facts = factchecker.check(edit, trial.harness, states)
+            out["facts"] = facts
             checks.append({"check": "fact-check", "result": facts["summary"]})
             if facts["verdict"] == "false":
-                drop("fact-check", meta_facing_reason(facts))
-                dropped[-1]["factcheck"] = facts
-                continue
+                return fail("fact-check", meta_facing_reason(facts))
+        return out | {"ok": True, "trial": trial}
 
-        ws = trial
-        log(f"    pass {edit_id} [{source}] {what}" + (f" ({facts['summary']})" if facts else ""))
-        passed.append({"id": edit_id, "source": source, "what": what, "edit": edit,
-                       "rationale": edit.get("rationale", ""), "checks": checks,
-                       "replay_detail": detail, "factcheck": facts})
+    def settle(edit_id: str, source: str, edit: dict[str, Any], result: dict[str, Any]) -> None:
+        what = describe(edit)
+        if result.get("names_checked") and edit_id not in names_checked:
+            names_checked.append(edit_id)
+        if result["ok"]:
+            facts = result["facts"]
+            log(f"    pass {edit_id} [{source}] {what}" + (f" ({facts['summary']})" if facts else ""))
+            passed.append({"id": edit_id, "source": source, "what": what, "edit": edit,
+                           "rationale": edit.get("rationale", ""), "checks": result["checks"],
+                           "replay_detail": result["detail"], "factcheck": facts})
+            return
+        log(f"    drop {edit_id} [{source}] {what}: {result['reason']}")
+        item = {"id": edit_id, "source": source, "what": what, "stage": result["stage"],
+                "reason": result["reason"], "edit": edit, "checks": result["checks"]}
+        if result["stage"] == "fact-check":
+            item["factcheck"] = result["facts"]
+        if result["stage"] == "skill-name check":
+            item["missing_names"] = result["missing"]
+            names_rejected.append({"id": edit_id, "source": source, "what": what,
+                                   "missing": result["missing"]})
+        dropped.append(item)
+
+    # First pass, in order. An edit that fails only the skill-name check waits:
+    # a later edit of the same set may add the skill it names, or remove the
+    # text that names the skill it deletes.
+    waiting: list[tuple[str, str, dict[str, Any], dict[str, Any]]] = []
+    for edit_id, source, _raw, edit in normalised:
+        if edit is None:
+            continue
+        result = attempt(ws, edit)
+        if not result["ok"] and result["stage"] == "skill-name check":
+            log(f"    hold {edit_id} [{source}] {describe(edit)}: {result['reason']} "
+                "(retried after the other edits)")
+            waiting.append((edit_id, source, edit, result))
+            continue
+        if result["ok"]:
+            ws = result["trial"]
+        settle(edit_id, source, edit, result)
+    # Retry the waiting edits until none of them newly passes.
+    progress = True
+    while waiting and progress:
+        progress = False
+        for item in list(waiting):
+            edit_id, source, edit, _old = item
+            result = attempt(ws, edit)
+            if not result["ok"] and result["stage"] == "skill-name check":
+                waiting[waiting.index(item)] = (edit_id, source, edit, result)
+                continue
+            if result["ok"]:
+                ws = result["trial"]
+                progress = True
+            waiting.remove(item)
+            settle(edit_id, source, edit, result)
+    for edit_id, source, edit, result in waiting:
+        settle(edit_id, source, edit, result)
 
     child = ws.harness
     child.edits = [
         {"id": p["id"], "source": p["source"], "what": p["what"], "rationale": p["rationale"]}
         for p in passed
     ]
-    info = {"fidelity": fidelity, "test_states": [s[0] for s in states]}
+    info = {"fidelity": fidelity, "test_states": [s[0] for s in states],
+            "skill_names": {
+                "edits_checked": len(names_checked),
+                "edits_rejected": len(names_rejected),
+                "rejected": names_rejected,
+                "missing_in_parent": names_parent,
+                # No edit may add one, so this is never more than the parent's.
+                "missing_in_child": skill_names.check_harness(child),
+            }}
     if factchecker is not None:
         info["factcheck_extraction"] = {k: v for k, v in factchecker.extraction.items()}
     return child, passed, dropped, info

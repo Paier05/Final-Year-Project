@@ -1,0 +1,25 @@
+results/evolve_12/harnesses/v0: 0 missing skill name(s)
+results/evolve_12/harnesses/v1: 0 missing skill name(s)
+results/evolve_12/harnesses/v2: 3 missing skill name(s)
+  detect_orientation       prompts.json[knowledge] line 19 [prompt]: Use detect_orientation() to check. If rotation is wrong, try rotate_cluster() to find the action that flips it.
+  rotate_cluster           prompts.json[knowledge] line 19 [prompt]: Use detect_orientation() to check. If rotation is wrong, try rotate_cluster() to find the action that flips it.
+  rotate_cluster           steps.json[4] line 1 [step]: 4. PLAN: If the action dynamics are already in your notes, do NOT re-test them. Check if rotation matches the goal. If n
+results/evolve_12/harnesses/v3: 4 missing skill name(s)
+  analyze_cluster_state    prompts.json[knowledge] line 19 [prompt]: Use analyze_cluster_state() to check orientation and target distance.
+  try_rotate               prompts.json[knowledge] line 20 [prompt]: If rotation is wrong, try try_rotate() to find the action that flips it (likely ACTION5 or ACTION7).
+  analyze_cluster_state    steps.json[4] line 1 [step]: 4. PLAN: Use analyze_cluster_state() to get current state. If orientation is wrong (check against target orientation if 
+  try_rotate               steps.json[4] line 1 [step]: 4. PLAN: Use analyze_cluster_state() to get current state. If orientation is wrong (check against target orientation if 
+results/evolve_12/harnesses/v4: 2 missing skill name(s)
+  analyze_cluster_state    prompts.json[knowledge] line 19 [prompt]: Use analyze_cluster_state() to check orientation and target distance.
+  analyze_cluster_state    steps.json[4] line 1 [step]: 4. PLAN: Use analyze_cluster_state() to get current state. If orientation is wrong (check against target orientation if 
+results/evolve_12/harnesses/v5: 4 missing skill name(s)
+  analyze_cluster_state    prompts.json[knowledge] line 19 [prompt]: Use analyze_cluster_state() to check orientation and target distance.
+  try_rotate               prompts.json[knowledge] line 20 [prompt]: If rotation is wrong, try try_rotate() to find the action that flips it (likely ACTION5 or ACTION7).
+  analyze_cluster_state    steps.json[4] line 1 [step]: 4. PLAN: Use analyze_cluster_state() to get current state. If orientation is wrong (check against target orientation if 
+  try_rotate               steps.json[4] line 1 [step]: 4. PLAN: Use analyze_cluster_state() to get current state. If orientation is wrong (check against target orientation if 
+results/evolve_12_round6/harnesses/v6: 2 missing skill name(s)
+  find_goal                prompts.json[knowledge] line 20 [prompt]: Use find_goal() to get the target orientation.
+  find_goal                steps.json[4] line 1 [step]: 4. PLAN: Use find_goal() to get the target coordinates and orientation. Use check_orientation() to get the current orien
+results/evolve_12_round6/harnesses/v7: 2 missing skill name(s)
+  find_goal                prompts.json[knowledge] line 16 [prompt]: - Use find_goal() to get the target orientation.
+  find_goal                steps.json[4] line 1 [step]: 4. PLAN: Use find_goal() to get the target coordinates and orientation. Use check_orientation() to get the current orien
