@@ -9,6 +9,9 @@ replayed states, the cost-aware gate with its tie-break, the fact-check's
 checker on known true and false ls20 claims (several are the false beliefs #9
 wrote into its harness), parallel-env isolation, and the fact-check stage
 inside Validate.
+
+#14 adds evolve/selftest14.py, run from here: the skill-name check, the frame
+evidence, the rotation score, checkpoint and resume, and the leak test.
 """
 
 from __future__ import annotations
@@ -16,6 +19,10 @@ from __future__ import annotations
 import os
 import tempfile
 import threading
+
+# The game runs from environment_files/; no ARC API is needed (set before the
+# first environment is made).
+os.environ.setdefault("OPERATION_MODE", "offline")
 
 from evolve.action_loop import EpisodeAPI, read_records, run_episode
 from evolve.edits import EditError, Workspace, apply_edit, normalise
@@ -315,6 +322,9 @@ def main() -> None:
     factcheck_rules()
     parallel_isolation()
     validation_paths()
+    from evolve import selftest14
+
+    selftest14.main()
     print("all self-tests passed")
 
 

@@ -14,8 +14,10 @@ code block (the parse-failure / retry path).
 from __future__ import annotations
 
 import json
+import os
 import random
 import re
+import time
 from dataclasses import dataclass, field
 
 from harness.model import ModelResponse, Usage
@@ -42,6 +44,11 @@ class StubPlayer:
 
     def complete(self, messages, max_tokens=None) -> ModelResponse:
         self._calls += 1
+        # The checkpoint tests slow the stub down so a run can be killed in
+        # the middle of an episode (#14).
+        delay = float(os.environ.get("EVO_STUB_DELAY_S") or 0)
+        if delay:
+            time.sleep(delay)
         prompt = messages[-1]["content"]
         turn = int(TURN_RE.search(prompt).group(1)) if TURN_RE.search(prompt) else 0
         rng = random.Random(hash((self.seed, turn, "FORMAT ERROR" in prompt)) & 0xFFFFFFFF)
@@ -75,6 +82,29 @@ class StubPlayer:
         tokens_out = len(text) // 4
         self.usage.add(tokens_in, tokens_out)
         return ModelResponse(text=text, tokens_in=tokens_in, tokens_out=tokens_out, latency_ms=1)
+
+    def preflight(self) -> dict:
+        return {"stub": True}
+
+
+@dataclass
+class ScriptedPlayer:
+    """Plays a fixed list of actions, up to `per_turn` per turn, then stops
+    acting. For tests that need a trajectory with known positions (#14)."""
+
+    actions: list[int]
+    per_turn: int = 6
+    model: str = "scripted-player"
+    usage: Usage = field(default_factory=Usage)
+
+    def complete(self, messages, max_tokens=None) -> ModelResponse:
+        prompt = messages[-1]["content"]
+        turn = int(TURN_RE.search(prompt).group(1)) if TURN_RE.search(prompt) else 0
+        chunk = self.actions[turn * self.per_turn:(turn + 1) * self.per_turn]
+        lines = [f"action({a})" for a in chunk] or ["pass"]
+        text = "OBSERVE: scripted.\n```python\n" + "\n".join(lines) + "\n```"
+        self.usage.add(10, 10)
+        return ModelResponse(text=text, tokens_in=10, tokens_out=10, latency_ms=1)
 
     def preflight(self) -> dict:
         return {"stub": True}
