@@ -11,7 +11,17 @@ Parts of one state, each in [0, 1]:
 
     position  max(0, 1 - moves_to_goal / moves_to_goal_from_start)
               moves = shortest path on the maze (5-cell moves, walls only)
-    rotation  1 if the player's rotation index equals the goal's, else 0
+    rotation  from the HELD pattern's rotation index and the goal's required
+              one, the two values the win check compares (`cklxociuu` and
+              `ehwheiwsk[i]` in `bejndxqqzf`). The index advances by one, mod
+              4, at each touch of the switch, so
+                  touches still needed = (goal - held) mod 4
+              and the part is max(0, 1 - needed / needed at the start): 1 when
+              none is needed, 0 at the start, and 0 again after one touch too
+              many (#14, fix 3). On Level 1 the start needs 1 touch (held 3,
+              goal 0), so the part is 1 exactly when the two indices are
+              equal, which is what #12 computed. The look of the player's
+              moving block is never read: it does not change.
     shape     1 if the shape index matches, else 0
     colour    1 if the colour index matches, else 0
 
@@ -48,8 +58,15 @@ LIVES = "aqygnziho"           # lives left (3 at the start)
 WALL_TAG = "ihdgageizm"       # wall sprites
 STEP_UI = "_step_counter_ui"  # the lime move counter; .current_steps
 
+ROTATION_STEPS = 4            # rotation indices cycle 0..3 (len of the game's `dhksvilbb`)
+
 PARTS = ("position", "rotation", "shape", "colour")
 DEFAULT_WEIGHTS = {"position": 0.4, "rotation": 0.4, "shape": 0.1, "colour": 0.1}
+
+
+def touches_needed(held: int, goal: int) -> int:
+    """Switch touches that turn the held rotation index into the goal's."""
+    return (int(goal) - int(held)) % ROTATION_STEPS
 
 
 def read_state(env: Any) -> dict[str, Any]:
@@ -84,8 +101,11 @@ class Maze:
     """Level 1's walkable squares and the shortest-path distance to the goal."""
 
     def __init__(self, walls: set[tuple[int, int]], step: int, start: tuple[int, int],
-                 goal: tuple[int, int], size: int = 64) -> None:
+                 goal: tuple[int, int], size: int = 64, start_touches: int = 1) -> None:
         self.walls, self.step, self.start, self.goal, self.size = walls, step, start, goal, size
+        # Switch touches the start state needs; normalises the rotation part
+        # as start_moves normalises the position part.
+        self.start_touches = start_touches
         self.to_goal = self.distances(goal)
         self.start_moves = self.to_goal.get(start)
         if not self.start_moves:
@@ -98,7 +118,9 @@ class Maze:
         player = getattr(game, PLAYER)
         goal = getattr(game, GOALS)[0]
         walls = {(int(w.x), int(w.y)) for w in game.current_level.get_sprites_by_tag(WALL_TAG)}
-        return cls(walls, int(player.width), (int(player.x), int(player.y)), (int(goal.x), int(goal.y)))
+        start_touches = touches_needed(getattr(game, ROTATION), getattr(game, GOAL_ROTATION)[0])
+        return cls(walls, int(player.width), (int(player.x), int(player.y)), (int(goal.x), int(goal.y)),
+                   start_touches=start_touches)
 
     def distances(self, source: tuple[int, int]) -> dict[tuple[int, int], int]:
         step, limit = self.step, self.size - self.step
@@ -128,12 +150,18 @@ def state_parts(state: dict[str, Any], maze: Maze) -> dict[str, float] | None:
         return None
     goal = goals[0]  # Level 1 has exactly one goal
     moves = maze.moves_to_goal(state["x"], state["y"])
+    needed = touches_needed(state["rotation"], goal["rotation"])
+    if needed == 0:
+        rotation = 1.0
+    else:
+        rotation = max(0.0, 1.0 - needed / maze.start_touches) if maze.start_touches else 0.0
     return {
         "position": 0.0 if moves is None else max(0.0, 1.0 - moves / maze.start_moves),
-        "rotation": float(state["rotation"] == goal["rotation"]),
+        "rotation": rotation,
         "shape": float(state["shape"] == goal["shape"]),
         "colour": float(state["colour"] == goal["colour"]),
         "_moves": moves,
+        "_touches": needed,
     }
 
 
@@ -214,8 +242,10 @@ def score_states(
     if not scored:
         raise ValueError("no Level-1 state to score")
     best_value, best_state, best_parts = max(scored, key=lambda item: item[0])  # first max wins
-    attrs_ok = [(s, p) for _v, s, p in scored if p["rotation"] and p["shape"] and p["colour"]]
-    rotated = [s for _v, s, p in scored if p["rotation"]]
+    attrs_ok = [(s, p) for _v, s, p in scored if p["_touches"] == 0 and p["shape"] and p["colour"]]
+    rotated = [s for _v, s, p in scored if p["_touches"] == 0]
+    # Further from the goal's rotation than the start was: touched too often.
+    overshot = [s for _v, s, p in scored if p["_touches"] > maze.start_touches]
     moves_any = [p["_moves"] for _v, _s, p in scored if p["_moves"] is not None]
     moves_ok = [p["_moves"] for _s, p in attrs_ok if p["_moves"] is not None]
     if cleared:
@@ -231,15 +261,20 @@ def score_states(
         "best_state": {
             "action_index": best_state["action_index"],
             "moves_to_goal": 0 if cleared else best_parts["_moves"],
+            "rotation_touches_needed": 0 if cleared else best_parts["_touches"],
         },
         "ever": {
             "rotation_matched": bool(rotated),
             "first_rotation_match_action": rotated[0]["action_index"] if rotated else None,
+            "rotation_touches_needed_min": min(p["_touches"] for _v, _s, p in scored),
+            "rotation_overshot": bool(overshot),
+            "first_rotation_overshoot_action": overshot[0]["action_index"] if overshot else None,
             "states_with_all_attributes_matched": len(attrs_ok),
             "closest_moves_to_goal": min(moves_any) if moves_any else None,
             "closest_moves_to_goal_attributes_matched": min(moves_ok) if moves_ok else None,
         },
         "start_moves_to_goal": maze.start_moves,
+        "start_rotation_touches_needed": maze.start_touches,
         "n_states": len(states),
     }
 
