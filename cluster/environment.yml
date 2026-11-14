@@ -1,0 +1,22 @@
+# conda env for the issue #14 run on TC1:
+#     module load anaconda
+#     conda env create -f cluster/environment.yml
+# conda packages first; pip only for the two packages conda does not have.
+# arc-agi 0.9.9 and arcengine 0.9.3 need Python >= 3.12.
+name: evo-harness
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - pyyaml
+  - requests
+  - pydantic>=2.10.6
+  - python-dotenv
+  - flask
+  - matplotlib
+  - pillow
+  - pip
+  - pip:
+      - arcengine==0.9.3
+      - arc-agi==0.9.9

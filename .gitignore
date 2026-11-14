@@ -15,3 +15,7 @@ recordings/
 data/
 results/episodes_stub.jsonl
 results/summary_stub.csv
+
+# Cluster job logs and smoke-test run directories (#14)
+logs/
+runs/smoke*/

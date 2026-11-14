@@ -1,0 +1,3 @@
+# Job scripts run on Linux: keep Unix line endings whatever the checkout does.
+*.sh text eol=lf
+cluster/*.yml text eol=lf
