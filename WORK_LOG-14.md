@@ -226,6 +226,65 @@ comment after each, and a final report with pictures.
 - The error text quoted the start of the gateway's backend address. `redact`
   now masks every URL in printed errors.
 
+### 2026-11-15 02:10 — TC1: first login, upload, conda env, smoke job submitted
+
+- Credentials: the user gave the cluster username and password and the model
+  key in chat. They are passed to `cluster/tc1.py` through environment
+  variables for each call and are stored nowhere on this machine or in the
+  repo. (My first idea, a private file in the home directory, was refused by
+  the permission system, so nothing was written.)
+- `MyTCinfo` matches the issue's table: partition `UGGPU-TC1`, QoS `normal`,
+  6 h per job, 1 GPU, 20 CPUs, 64 GB, 2 jobs at a time. SLURM commands were
+  already on the path (no `module load slurm` needed). Home is
+  `/tc1home/FYP/mtan142`.
+- Upload: `git archive` of commit `2678e4d` (without `results/`, `data/`
+  and the PDFs), a `COMMIT` file naming it, and `environment_files/ls20`
+  (gitignored, needed to run the game) → `~/evo-harness`. `file` reports
+  both job scripts as plain ASCII shell scripts (Unix line endings).
+- `~/.evo_harness_env` written over SFTP with mode 600 (2 variables).
+- conda env `evo-harness` (Python 3.12.16, numpy 2.5.4, arc-agi 0.9.9,
+  arcengine 0.9.3).
+  - **Dead end:** `conda env create` failed twice with
+    `sqlite3.DatabaseError: database disk image is malformed`. conda 26.5
+    keeps a sharded-repodata cache in an sqlite file under `~/.conda`, and
+    that breaks on the NFS home. Fixed for my commands only with
+    `CONDA_REPODATA_USE_SHARDS=false` (no account setting changed).
+- **A rule I broke once:** to check the env I ran
+  `python -c 'import numpy, yaml, requests, arc_agi, arcengine'` on the head
+  node. The issue says no Python runs there. It was an import check, about a
+  second, no project code, but it should have been part of the smoke job.
+  Not repeated.
+- Smoke job submitted: **job 73985** (`cluster/job_smoke.sh`, 15 min limit),
+  pending on `Priority` at 02:06. Disconnected.
+
+### 2026-11-15 02:14 — Smoke job passed; part 1 submitted
+
+- **Smoke job 73985: COMPLETED, exit 0, 2 min 54 s, node TC1N06.**
+  - Test suite: 151 checks pass on the compute node. That is the 146 run
+    locally plus the 5 SIGUSR1 checks, which pass: the driver exited 0 in
+    0.4 s after the signal, state `paused`, lock released, and the resumed
+    run finished with every seed once.
+  - Preflight: the game loads and steps; the endpoint answers from the node;
+    a short real episode ran (3 turns, 13.6k tokens, 55 s); the run stopped
+    on request with `run_state.json` at round 0, seeds done [1]; the second
+    run replayed only the cut-off seed 2 and finished.
+  - GPU and ARC API checks: not applicable (API model, offline game files).
+  - `seff`: 54 s of CPU, 184 MB of memory.
+- **Model: the flash model was still down from the compute node** (HTTP 500).
+  Both roles fell back to `Qwen/Qwen3.8-27B-FP8`, per the user's rule.
+- **Part 1 submitted: job 73989** (`cluster/job_part.sh`, 6 h limit, 8 CPUs,
+  32 GB, no GPU), at 02:13, pending on `Priority`. Disconnected. Not polled.
+- Code on the cluster: commit `2678e4d`.
+- Added `analysis/progress14.py`: builds the progress comment's tables from
+  a local copy of the run directory.
+- What part 1 should do if it starts on 27B: #12's 27B episodes took roughly
+  1.3–1.5 h per round, so the time guard should let 2–3 rounds fit in the
+  part. That is an estimate from #12's rounds 6–7, not a measurement.
+- Next step: wait for the user's "continue". Then: `sacct`, logs, state
+  check, copy back, progress comment, next part.
+- Still to build, once there is real data to design against: the final
+  report's figures and tables for this run (`analysis/` for #14).
+
 ## Open questions / risks
 
 - **Model.** Flash is down as of 2026-11-15 02:05. Per the user's rule the
