@@ -112,7 +112,10 @@ class Harness:
         return os.path.join(HARNESS_ROOT, self.version)
 
     def save(self, root: str = HARNESS_ROOT) -> str:
-        path = os.path.join(root, self.version)
+        # Written to a temp directory and renamed (#14): a job killed while
+        # saving must not leave a half-written version that a resume would load.
+        final = os.path.join(root, self.version)
+        path = final + ".tmp"
         if os.path.exists(path):
             shutil.rmtree(path)
         os.makedirs(os.path.join(path, "skills"))
@@ -133,7 +136,10 @@ class Harness:
         for name, source in self.skills.items():
             with open(os.path.join(path, "skills", f"{name}.py"), "w", encoding="utf-8") as handle:
                 handle.write(source.rstrip() + "\n")
-        return path
+        if os.path.exists(final):
+            shutil.rmtree(final)
+        os.replace(path, final)
+        return final
 
     def child(self, version: str, round_index: int) -> "Harness":
         """A deep copy that edits are applied to; the parent is never mutated."""

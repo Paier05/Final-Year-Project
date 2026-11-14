@@ -1,14 +1,17 @@
-# Issue #12 — evo-harness v2 on ls20, Level 1, qwen38-flash-next-autoround.
-# Follow-up to #9. Where a value changed, "#9: ..." gives the old one; #9's
-# full config is also stored in results/evolve/archive.json.
+# Issue #14 — evo-harness v3 on ls20, Level 1, qwen38-flash-next-autoround.
+# Follow-up to #12, run on the TC1 cluster in 6-hour parts. The setup is #12's
+# (model, rounds, seeds, score weights, gate, promotion and delete rules, v0);
+# what #14 adds is marked "#14". "#9: ..." gives a value #9 used; #9's and
+# #12's full configs are stored in their archive.json files.
 #
 # Credentials are NOT here. The endpoint URL and key are read from the
 # QWEN_BASE_URL and QWEN_API_KEY environment variables (or the gitignored
 # .env), and are never written to logs, archive.json or reports.
 
-experiment: "issue #12: evo-harness v2 on ls20 level 1"
-# #9 wrote to results/evolve, which stays untouched.
-root: "results/evolve_12"
+experiment: "issue #14: evo-harness v3 on ls20 level 1"
+# #14: the run directory (run_state.json, archive.json, trajectories, ...).
+# #9 wrote to results/evolve and #12 to results/evolve_12; both stay untouched.
+root: "runs/v3"
 
 game: "ls20-9607627b"
 # Level-1 human baseline for ls20 (arc-agi EnvironmentInfo.baseline_actions[0]).
@@ -45,6 +48,9 @@ gate:
 
 player:
   model: "qwen38-flash-next-autoround"   # #9: Qwen/Qwen3.8-27B-FP8
+  # #14 (the user, 2026-11-15): if the flash model is down when a part starts,
+  # use the normal one for that part. The model each episode used is recorded.
+  fallback_model: "Qwen/Qwen3.8-27B-FP8"
   temperature: 0.2
   top_p: 0.9
   max_tokens: 1500
@@ -55,6 +61,7 @@ player:
 meta:
   enabled: true
   model: "qwen38-flash-next-autoround"   # #9: Qwen/Qwen3.8-27B-FP8
+  fallback_model: "Qwen/Qwen3.8-27B-FP8"
   temperature: 0.3
   top_p: 0.9
   max_tokens: 8000
@@ -107,6 +114,16 @@ validate:
   max_step_chars: 400
   max_skill_lines: 80
   test_state_fractions: [0.0, 0.5, 0.9]
+
+checkpoint:
+  # #14: checkpoint and resume across cluster jobs (evolve/checkpoint.py).
+  job_time_limit_min: 360   # TC1 QoS normal: 6 h per job
+  stop_by_min: 340          # stop, save and exit cleanly by 5 h 40 min
+  # Do not start an episode batch or a stage unless the longest one seen so
+  # far, times this factor, fits before stop_by_min.
+  factor: 1.5
+  stop_grace_s: 120         # at stop_by_min: wait this long for turns in flight, then exit
+  signal_grace_s: 10        # on SIGUSR1 / SIGTERM: save and exit at once
 
 limits:
   # Whole-run ceiling, checked before every round. Worst case 6 versions x 5
