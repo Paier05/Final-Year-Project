@@ -34,7 +34,6 @@ import itertools
 import math
 import sys
 import time
-from contextlib import redirect_stdout
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
@@ -236,8 +235,14 @@ class Sandbox:
             return result
 
         try:
-            with redirect_stdout(self._buffer):
-                self._execute(tree, filename)
+            # No contextlib.redirect_stdout here (#14). It swaps sys.stdout for
+            # the whole process, so with episodes in parallel threads two
+            # overlapping cells could restore each other's buffer and leave
+            # sys.stdout pointing at a dead StringIO: every later progress
+            # line was lost. That is why #12's run log stopped mid-run
+            # (WORK_LOG-12, 2026-11-02 17:05). Cells print through the
+            # sandbox's own `print` (safe_builtins), which needs no redirect.
+            self._execute(tree, filename)
         except TurnOver as stop:
             result.stopped_by = stop.reason
         except SandboxTimeout as error:
