@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from urllib.parse import urlsplit
@@ -52,7 +53,12 @@ def redact(text: str) -> str:
             host = urlsplit(secret).hostname
             if host:
                 text = text.replace(host, placeholder)
-    return text
+    # A gateway error can quote the address of the backend behind it (seen
+    # 2026-11-15: 'Post "http://12...'). No URL in an error is worth printing.
+    return _URL_RE.sub("<url>", str(text))
+
+
+_URL_RE = re.compile(r"https?://[^\s\"'\\<>]+")
 
 
 # Progress lines also go to this file, opened and closed on every write. On
@@ -276,6 +282,12 @@ def main() -> None:
               f"{config_hash(cfg)}). Refusing to resume: results would mix settings.", file=sys.stderr)
         raise SystemExit(3)
     digest = config_hash(cfg)  # before preflight: a model fallback must not change the run's identity
+    # The run keeps the models its first part used, so versions are compared
+    # on one model. If that model is down when a later part starts, the part
+    # falls back to the other configured one and the switch is recorded.
+    for section, pinned in ((state or {}).get("models") or {}).items():
+        if pinned and pinned != cfg[section]["model"]:
+            cfg[section]["fallback_model"], cfg[section]["model"] = cfg[section]["model"], pinned
 
     lock = RunLock(root)
     try:
@@ -323,6 +335,10 @@ def main() -> None:
         )
         ckpt.state["config_hash"] = digest
         ckpt.state["status"] = "running"
+        if not args.stub:
+            used = {section: cfg[section]["model"] for section in ("player", "meta")}
+            ckpt.state.setdefault("models", used)
+            ckpt.segment["models"] = used
         for text in notes:
             ckpt.state.setdefault("notes", []).append({"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "note": text})
         ckpt.on_forced_exit = lock.release
