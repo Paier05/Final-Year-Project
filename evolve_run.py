@@ -15,7 +15,9 @@ QWEN_API_KEY and QWEN_BASE_URL, from the environment or .env.
 Checkpoint and resume (#14, evolve/checkpoint.py): the run saves
 run_state.json after every episode and stage. `--resume` continues a run from
 its state; without it, a run directory that already holds a run is refused.
-A finished run resumes to nothing. `--time-limit-min` (default: the config's
+A finished run resumes to nothing, unless `--rounds` asks for more rounds than
+it has recorded: then it goes on from its last parent (the config, and so the
+config hash, stay as they were). `--time-limit-min` (default: the config's
 `checkpoint.job_time_limit_min` under SLURM, none otherwise) is the job's
 limit; the run stops by `checkpoint.stop_by_min` and on SIGUSR1.
 Exit codes: 0 = finished or cleanly paused, 2 = stopped on an error,
@@ -273,10 +275,18 @@ def main() -> None:
         print(f"*** {root} already holds a run. Pass --resume to continue it, or choose another --run-dir.",
               file=sys.stderr)
         raise SystemExit(3)
+    extended_from = None
     if state is not None and state.get("status") == "finished":
-        print(f"{root}: the run is finished (round {state['round']}, parent {state['parent_version']}). "
-              "Nothing to do.")
-        return
+        # A finished run goes on only when more rounds are asked for on the
+        # command line than it has recorded (`--rounds`; the config, and so
+        # the run's identity, stays as it was).
+        archive = read_json(os.path.join(root, "archive.json")) or {"rounds": []}
+        last_round = max((r["round"] for r in archive["rounds"]), default=0)
+        if args.rounds is None or rounds <= last_round or archive.get("stopped_early"):
+            print(f"{root}: the run is finished (round {state['round']}, parent {state['parent_version']}). "
+                  "Nothing to do.")
+            return
+        extended_from = last_round
     if state is not None and state["config_hash"] != config_hash(cfg):
         print(f"*** {root} was started with a different config (hash {state['config_hash']}, now "
               f"{config_hash(cfg)}). Refusing to resume: results would mix settings.", file=sys.stderr)
@@ -339,6 +349,10 @@ def main() -> None:
             used = {section: cfg[section]["model"] for section in ("player", "meta")}
             ckpt.state.setdefault("models", used)
             ckpt.segment["models"] = used
+        if extended_from is not None:
+            notes.append(f"run extended: it had finished at round {extended_from} "
+                         f"(config rounds={cfg['rounds']}); --rounds {rounds} asked for more")
+            log(f"*** {notes[-1]}")
         for text in notes:
             ckpt.state.setdefault("notes", []).append({"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "note": text})
         ckpt.on_forced_exit = lock.release

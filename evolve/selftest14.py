@@ -532,13 +532,13 @@ def checkpoint_meta_stage() -> None:
           f"the state file ends finished after {len(state['segments'])} parts")
 
 
-def _driver(root: str, *extra: str, delay: float | None = None) -> subprocess.Popen:
+def _driver(root: str, *extra: str, delay: float | None = None, rounds: int = 1) -> subprocess.Popen:
     env = dict(os.environ, OPERATION_MODE="offline", PYTHONUNBUFFERED="1")
     env.pop("EVO_STUB_DELAY_S", None)
     if delay:
         env["EVO_STUB_DELAY_S"] = str(delay)
     return subprocess.Popen(
-        [sys.executable, "evolve_run.py", "--stub", "--rounds", "1", "--run-dir", root, "--resume", *extra],
+        [sys.executable, "evolve_run.py", "--stub", "--rounds", str(rounds), "--run-dir", root, "--resume", *extra],
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, env=env,
     )
 
@@ -620,6 +620,25 @@ def checkpoint_kill_and_resume() -> None:
     refused = subprocess.run([sys.executable, "evolve_run.py", "--stub", "--rounds", "1", "--run-dir", root],
                              capture_output=True, text=True, env=env)
     check(refused.returncode == 3, "without --resume an existing run directory is refused")
+
+    # -- a finished run goes on when more rounds are asked for ----------------
+    before_state = read_json(os.path.join(root, STATE_FILE))
+    before_archive = read_json(os.path.join(root, "archive.json"))
+    proc = _driver(root, rounds=2)
+    out, _ = proc.communicate(timeout=600)
+    state = read_json(os.path.join(root, STATE_FILE))
+    archive = read_json(os.path.join(root, "archive.json"))
+    kept = archive["versions"][:len(before_archive["versions"])] == before_archive["versions"] \
+        and archive["rounds"][:2] == before_archive["rounds"]
+    check(proc.returncode == 0 and "run extended" in out and state["status"] == "finished"
+          and [r["round"] for r in archive["rounds"]] == [0, 1, 2] and kept,
+          "asking a finished run for one more round runs round 2 only; rounds 0-1 are unchanged")
+    check(state["config_hash"] == before_state["config_hash"]
+          and any("run extended" in n["note"] for n in state.get("notes") or [])
+          and len(state["segments"]) == len(before_state["segments"]) + 1,
+          "the extension keeps the config hash, is noted in the state file and counts as one more part")
+    counts = _units(state)
+    check(all(n == 1 for n in counts.values()), "after the extension every stage is still recorded exactly once")
 
 
 def checkpoint_sigusr1() -> None:
