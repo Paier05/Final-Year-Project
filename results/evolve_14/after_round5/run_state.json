@@ -1,0 +1,476 @@
+{
+  "run_id": "v3",
+  "created": "2026-11-15T02:14:07",
+  "status": "finished",
+  "round": 5,
+  "stage": "gate",
+  "stage_status": "done",
+  "seeds_done": [],
+  "parent_version": "v4",
+  "git_commit": "2678e4dc4883fa0a046512f3bebd2a75f66e7b6b",
+  "git_commits": [
+    "2678e4dc4883fa0a046512f3bebd2a75f66e7b6b"
+  ],
+  "config_hash": "a55d483ab28feb95",
+  "slurm_job_ids": [
+    "73989"
+  ],
+  "time_used_s": 16574.6,
+  "longest_s": {
+    "episode": 4788.4,
+    "evaluate": 4788.5,
+    "gate": 0.1,
+    "analyze": 1.0,
+    "propose.1": 46.6,
+    "validate.1": 67.0,
+    "propose.2": 33.0,
+    "validate.2": 46.6,
+    "write": 0.0
+  },
+  "segments": [
+    {
+      "started": "2026-11-15T02:14:07",
+      "slurm_job_id": "73989",
+      "host": "TC1N01",
+      "git_commit": "2678e4dc4883fa0a046512f3bebd2a75f66e7b6b",
+      "seconds": 16574.6,
+      "ended": "2026-11-15T06:50:19",
+      "stop_reason": "all rounds done",
+      "models": {
+        "player": "Qwen/Qwen3.8-27B-FP8",
+        "meta": "Qwen/Qwen3.8-27B-FP8"
+      }
+    }
+  ],
+  "completed": [
+    {
+      "round": 0,
+      "unit": "episode",
+      "seed": 3,
+      "seconds": 1491.1,
+      "at": "2026-11-15T02:39:00"
+    },
+    {
+      "round": 0,
+      "unit": "episode",
+      "seed": 4,
+      "seconds": 2124.0,
+      "at": "2026-11-15T02:49:33"
+    },
+    {
+      "round": 0,
+      "unit": "episode",
+      "seed": 1,
+      "seconds": 2343.0,
+      "at": "2026-11-15T02:53:12"
+    },
+    {
+      "round": 0,
+      "unit": "episode",
+      "seed": 2,
+      "seconds": 2371.1,
+      "at": "2026-11-15T02:53:40"
+    },
+    {
+      "round": 0,
+      "unit": "episode",
+      "seed": 5,
+      "seconds": 2512.4,
+      "at": "2026-11-15T02:56:02"
+    },
+    {
+      "round": 0,
+      "unit": "stage",
+      "stage": "evaluate",
+      "seconds": 2514.6,
+      "at": "2026-11-15T02:56:02"
+    },
+    {
+      "round": 0,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.0,
+      "at": "2026-11-15T02:56:02"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "analyze",
+      "seconds": 0.5,
+      "at": "2026-11-15T02:56:02"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "propose.1",
+      "seconds": 46.6,
+      "at": "2026-11-15T02:56:49"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "validate.1",
+      "seconds": 46.9,
+      "at": "2026-11-15T02:57:36"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "propose.2",
+      "seconds": 33.0,
+      "at": "2026-11-15T02:58:09"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "validate.2",
+      "seconds": 46.6,
+      "at": "2026-11-15T02:58:55"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "write",
+      "seconds": 0.0,
+      "at": "2026-11-15T02:58:56"
+    },
+    {
+      "round": 1,
+      "unit": "episode",
+      "seed": 4,
+      "seconds": 2613.4,
+      "at": "2026-11-15T03:42:29"
+    },
+    {
+      "round": 1,
+      "unit": "episode",
+      "seed": 3,
+      "seconds": 3111.3,
+      "at": "2026-11-15T03:50:47"
+    },
+    {
+      "round": 1,
+      "unit": "episode",
+      "seed": 5,
+      "seconds": 3112.6,
+      "at": "2026-11-15T03:50:48"
+    },
+    {
+      "round": 1,
+      "unit": "episode",
+      "seed": 2,
+      "seconds": 3249.7,
+      "at": "2026-11-15T03:53:05"
+    },
+    {
+      "round": 1,
+      "unit": "episode",
+      "seed": 1,
+      "seconds": 3320.9,
+      "at": "2026-11-15T03:54:17"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "evaluate",
+      "seconds": 3321.0,
+      "at": "2026-11-15T03:54:17"
+    },
+    {
+      "round": 1,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.0,
+      "at": "2026-11-15T03:54:17"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "analyze",
+      "seconds": 1.0,
+      "at": "2026-11-15T03:54:18"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "propose.1",
+      "seconds": 28.5,
+      "at": "2026-11-15T03:54:46"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "validate.1",
+      "seconds": 67.0,
+      "at": "2026-11-15T03:55:53"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "propose.2",
+      "seconds": 32.1,
+      "at": "2026-11-15T03:56:25"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "validate.2",
+      "seconds": 41.1,
+      "at": "2026-11-15T03:57:07"
+    },
+    {
+      "round": 2,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.0,
+      "at": "2026-11-15T03:57:07"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "analyze",
+      "seconds": 0.5,
+      "at": "2026-11-15T03:57:07"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "propose.1",
+      "seconds": 25.0,
+      "at": "2026-11-15T03:57:32"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "validate.1",
+      "seconds": 42.6,
+      "at": "2026-11-15T03:58:15"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "write",
+      "seconds": 0.0,
+      "at": "2026-11-15T03:58:15"
+    },
+    {
+      "round": 3,
+      "unit": "episode",
+      "seed": 1,
+      "seconds": 1409.8,
+      "at": "2026-11-15T04:21:45"
+    },
+    {
+      "round": 3,
+      "unit": "episode",
+      "seed": 2,
+      "seconds": 1475.1,
+      "at": "2026-11-15T04:22:50"
+    },
+    {
+      "round": 3,
+      "unit": "episode",
+      "seed": 5,
+      "seconds": 1599.6,
+      "at": "2026-11-15T04:24:55"
+    },
+    {
+      "round": 3,
+      "unit": "episode",
+      "seed": 3,
+      "seconds": 1836.7,
+      "at": "2026-11-15T04:28:52"
+    },
+    {
+      "round": 3,
+      "unit": "episode",
+      "seed": 4,
+      "seconds": 2061.6,
+      "at": "2026-11-15T04:32:37"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "evaluate",
+      "seconds": 2061.8,
+      "at": "2026-11-15T04:32:37"
+    },
+    {
+      "round": 3,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.0,
+      "at": "2026-11-15T04:32:37"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "analyze",
+      "seconds": 0.5,
+      "at": "2026-11-15T04:32:37"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "propose.1",
+      "seconds": 30.9,
+      "at": "2026-11-15T04:33:08"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "validate.1",
+      "seconds": 38.5,
+      "at": "2026-11-15T04:33:47"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "write",
+      "seconds": 0.0,
+      "at": "2026-11-15T04:33:47"
+    },
+    {
+      "round": 4,
+      "unit": "episode",
+      "seed": 5,
+      "seconds": 1543.5,
+      "at": "2026-11-15T04:59:31"
+    },
+    {
+      "round": 4,
+      "unit": "episode",
+      "seed": 4,
+      "seconds": 2067.6,
+      "at": "2026-11-15T05:08:15"
+    },
+    {
+      "round": 4,
+      "unit": "episode",
+      "seed": 1,
+      "seconds": 2104.6,
+      "at": "2026-11-15T05:08:51"
+    },
+    {
+      "round": 4,
+      "unit": "episode",
+      "seed": 3,
+      "seconds": 2618.8,
+      "at": "2026-11-15T05:17:26"
+    },
+    {
+      "round": 4,
+      "unit": "episode",
+      "seed": 2,
+      "seconds": 3312.9,
+      "at": "2026-11-15T05:29:00"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "evaluate",
+      "seconds": 3313.0,
+      "at": "2026-11-15T05:29:00"
+    },
+    {
+      "round": 4,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.0,
+      "at": "2026-11-15T05:29:00"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "analyze",
+      "seconds": 0.4,
+      "at": "2026-11-15T05:29:00"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "propose.1",
+      "seconds": 44.5,
+      "at": "2026-11-15T05:29:45"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "validate.1",
+      "seconds": 45.5,
+      "at": "2026-11-15T05:30:30"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "write",
+      "seconds": 0.0,
+      "at": "2026-11-15T05:30:31"
+    },
+    {
+      "round": 5,
+      "unit": "episode",
+      "seed": 3,
+      "seconds": 3076.3,
+      "at": "2026-11-15T06:21:47"
+    },
+    {
+      "round": 5,
+      "unit": "episode",
+      "seed": 5,
+      "seconds": 3683.3,
+      "at": "2026-11-15T06:31:54"
+    },
+    {
+      "round": 5,
+      "unit": "episode",
+      "seed": 4,
+      "seconds": 4051.5,
+      "at": "2026-11-15T06:38:02"
+    },
+    {
+      "round": 5,
+      "unit": "episode",
+      "seed": 1,
+      "seconds": 4420.1,
+      "at": "2026-11-15T06:44:11"
+    },
+    {
+      "round": 5,
+      "unit": "episode",
+      "seed": 2,
+      "seconds": 4788.4,
+      "at": "2026-11-15T06:50:19"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "evaluate",
+      "seconds": 4788.5,
+      "at": "2026-11-15T06:50:19"
+    },
+    {
+      "round": 5,
+      "unit": "stage",
+      "stage": "gate",
+      "seconds": 0.1,
+      "at": "2026-11-15T06:50:19"
+    }
+  ],
+  "replayed_after_cutoff": [],
+  "models": {
+    "player": "Qwen/Qwen3.8-27B-FP8",
+    "meta": "Qwen/Qwen3.8-27B-FP8"
+  },
+  "notes": [
+    {
+      "at": "2026-11-15T02:14:07",
+      "note": "player: qwen38-flash-next-autoround did not answer (<QWEN_BASE_URL> lists qwen38-flash-next-autoround and accepts the key, but chat completions are failing: Server error 500: {\"error\":{\"message\":\"Post \\\"<url>\\\": ); using the fallback model Qwen/Qwen3.8-27B-FP8"
+    },
+    {
+      "at": "2026-11-15T02:14:07",
+      "note": "meta: qwen38-flash-next-autoround did not answer (<QWEN_BASE_URL> lists qwen38-flash-next-autoround and accepts the key, but chat completions are failing: Server error 500: {\"error\":{\"message\":\"Post \\\"<url>\\\": ); using the fallback model Qwen/Qwen3.8-27B-FP8"
+    }
+  ],
+  "updated": "2026-11-15T06:50:19"
+}

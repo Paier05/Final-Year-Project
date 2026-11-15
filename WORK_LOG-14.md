@@ -285,6 +285,91 @@ comment after each, and a final report with pictures.
 - Still to build, once there is real data to design against: the final
   report's figures and tables for this run (`analysis/` for #14).
 
+### 2026-11-15 11:20 — Part 1 ended: all 5 rounds done in one part
+
+The user asked to check progress, see what went wrong, and "continue the
+experiment for another 6 hours".
+
+- **Job 73989: COMPLETED, exit 0:0, 4 h 36 min 53 s of the 6 h, node TC1N01.**
+  Error log empty. `run_state.json`: status `finished`, round 5, stage `gate`
+  done, stop reason "all rounds done". Lock gone. `--stage status` (run
+  locally on the copy): consistent, no problems. Nothing was cut off, no
+  episode replayed.
+- **So there was no part 2 to run.** My estimate was 2–3 rounds per part; the
+  whole run fitted because one round had no child (round 2) and the 27B
+  episodes were shorter than in #12 (mean 44 min, longest 80 min).
+- `seff 73989`: CPU 4 min 59 s = 0.22% of 8 cores; memory 156 MB. The job
+  waits on the model. `job_part.sh` now asks for 4 CPUs and 8 GB.
+- Results copied back (130 files, 16.6 MB) to `runs/v3/` and `logs/`. The
+  state files and the job log after round 5 are also kept in
+  `results/evolve_14/after_round5/`, so the issue's 5-round result stays
+  as it was whatever the extension does.
+
+| version | parent | progress (mean ± SD) | rotation part | clears | cost | gate score | decision |
+|---|---|---|---|---|---|---|---|
+| v0 | - | 0.531 ± 0.117 | 0.40 | 0/5 | 0.618 | 0.223 | baseline |
+| v1 | v0 | 0.554 ± 0.246 | 0.20 | 1/5 | 0.591 | 0.259 | rejected (worst-episode drop 0.123 > 0.1) |
+| (round 2) | v0 | - | - | - | - | - | no child: all 5 edits dropped at Validate |
+| v3 | v0 | 0.211 ± 0.023 | 0.00 | 0/5 | 0.525 | -0.051 | rejected |
+| v4 | v0 | 0.657 ± 0.177 | 0.40 | 1/5 | 0.599 | 0.358 | **accepted** |
+| v5 | v4 | 0.611 ± 0.056 | 0.60 | 0/5 | 0.799 | 0.212 | rejected (tie, not cheaper) |
+
+**What went wrong (the run itself did not fail; these are about the result):**
+
+1. **The whole run is on `Qwen/Qwen3.8-27B-FP8`.** Flash answered HTTP 500 at
+   the job's start, as in the smoke job. Not comparable model-for-model with
+   #12's v0–v5.
+2. **The Meta LLM did not use the frame evidence about the rare change.** The
+   evidence was right every round: one rare region (rows 55–60, cols 3–8)
+   that changed on 6 of the 6 steps where the block entered (30,19). No
+   accepted edit says to go to that cell. The edits were about the 5-cell
+   step, ACTION2 being "down", and a `plan_moves` skill. v4's whole gain is
+   one corrected line in the knowledge prompt (v0 said ACTION2 recolours).
+   The rotation part moves 0.40 → 0.20 → 0.00 → 0.40 → 0.60 by chance of
+   which episodes walked over the cell, not by design.
+3. **`plan_moves` made things worse twice.** It plans a straight line and
+   knows nothing about walls. v3 (skill + a step telling the player to use
+   it): position part 0 in four of five episodes. v5: same progress as v4
+   within the tie band, but 107–178 turns per episode against 52–124, so
+   cost 0.80 against 0.60. In v4's own evidence the block is blocked on
+   ACTION4 at (45,49) 132 times in one episode: walls are the bottleneck and
+   no edit addresses them.
+4. **The fact-check dropped a true claim, twice, in round 1.** "The block
+   moves 5 cells per action" was extracted as a move claim with no action
+   and direction "none", and that shape is labelled false (evidence quoted:
+   "ACTION1 moves the player up 5 cells"). It cost the `plan_path` skill in
+   both attempts. A #12 fact-check defect, not one of this issue's fixes. I
+   have **not** changed it: it would change the apparatus between rounds 1–5
+   and the extension.
+5. **The skill-name check did its job** and shows the cost of dropping the
+   skill: rounds 1 and 2 each had a prompt edit that named `plan_path` after
+   the skill itself was dropped; the check rejected it (2 rejections in 17
+   edits checked) and the retry in round 1 produced a clean prompt edit.
+6. **Round 2 had no child**: 5 edits, all dropped (3 by the fact-check, 2
+   skill tests failed, 1 of those also the name check on retry).
+7. **Gateway errors during v1's evaluation**: 10 × HTTP 524 (timeout page)
+   and 5 × HTTP 500 across the five episodes, all retried and recovered. v1's
+   episodes took 44–55 min against 25–42 for v0.
+8. Only 2 clears in 25 episodes (v1 seed 4, v4 seed 5). Level 1 is not
+   solved reliably by any version.
+
+**Decision: extend the same run, as the user asked.** The 5 rounds the issue
+asks for are done, so "another 6 hours" can only mean more rounds. Choice:
+rounds 6–10 from parent v4, same config, same pinned model, one 6-hour part;
+the time guard stops it cleanly before a round that would not fit (a round's
+evaluation needs 80 min × 1.5 = 120 min before minute 340, so I expect 3–4
+more rounds, not 5). Tokens so far 12.4 M of the 40 M cap.
+
+- `evolve_run.py`: a finished run now goes on when `--rounds N` on the
+  command line asks for more rounds than are recorded. The config file is
+  not changed, so the config hash stays `a55d483ab28feb95`. A note
+  "run extended" is written to the state file and the log.
+- `cluster/job_part.sh`: optional `EVO_ROUNDS` passes `--rounds`.
+- Self-test: 3 new checks (extension runs only the new round, earlier rounds
+  untouched, hash kept, note recorded, each stage once). 149 pass locally.
+- Rounds 6+ are **outside the issue's "5 rounds"** and will be reported
+  separately from the 5-round result.
+
 ## Open questions / risks
 
 - **Model.** Flash is down as of 2026-11-15 02:05. Per the user's rule the
