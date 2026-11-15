@@ -394,6 +394,23 @@ more rounds, not 5). Tokens so far 12.4 M of the 40 M cap.
   (anonymous key) because `OPERATION_MODE=offline` was not set locally.
   Nothing from the run was sent. Set it for the report tooling.
 
+### 2026-11-15 11:35 — Extension cut to one round (round 6): job 74031
+
+- After seeing the pictures the user asked for **one more round only**.
+- A running job cannot be told a new round count. So: paused job 74030 with
+  `scancel --signal=USR1 --batch 74030` (the tested path) and queued the next
+  part with `--dependency=afterany:74030 --export=ALL,EVO_ROUNDS=6`.
+- 74030: COMPLETED, exit 0, 6 min 31 s; "stop requested: SIGUSR1 received".
+  This is the first real use of the SIGUSR1 path on the real run, and it
+  worked: state saved, lock released.
+- **74031** started at 11:33 on TC1N04, moved v6's five cut-off episodes to
+  `runs/v3/partial/round_6/` and is replaying them. Cost of the switch: 6
+  minutes of model calls for five episodes that are replayed.
+- v6 = v4 + one knowledge-prompt edit. Dropped: a `check_move` skill (test
+  failed) and a step edit naming it (skill-name check).
+- Next: wait for the user's "continue"; then copy back, report round 6
+  separately from the 5-round result, final report, delete the secrets file.
+
 ## Open questions / risks
 
 - **Model.** Flash is down as of 2026-11-15 02:05. Per the user's rule the
