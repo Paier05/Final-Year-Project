@@ -370,6 +370,30 @@ more rounds, not 5). Tokens so far 12.4 M of the 40 M cap.
 - Rounds 6+ are **outside the issue's "5 rounds"** and will be reported
   separately from the 5-round result.
 
+### 2026-11-15 11:30 — Extension submitted and running; pictures of the 5 rounds
+
+- Uploaded commit `16b2d4a`. Kept a copy of the 5-round run on the cluster
+  (`runs/v3_after_round5/`).
+- **Smoke job 74029: COMPLETED, exit 0, 3 min 16 s, TC1N04.** 154 checks on
+  the node (149 local + 5 SIGUSR1); preflight passed.
+- **Part 2 = job 74030**, submitted with `--dependency=afterok:74029
+  --kill-on-invalid-dep=yes --export=ALL,EVO_ROUNDS=10`, so it could only
+  start after a passing smoke job and I did not have to wait in between.
+  Running since 11:27 on TC1N04. One check at 11:29: round 6 wrote v6 (1 of
+  3 edits passed; the name check rejected a step edit naming `check_move`,
+  whose skill had failed its test) and v6 is being evaluated.
+- The user asked for pictures to decide whether to keep the extension
+  going. Built with #12's figure code from the round-5 archive:
+  `results/evolve_14/after_round5/figures/` (score, goal parts, cost,
+  lineage, replay of v4 seed 5). Posted on the issue with the job id.
+- **Figure bug found:** the replay's last panel is captioned "counter ran
+  out: life lost, rotation reset" when action 134 in fact cleared Level 1
+  and the frame is Level 2. #12's caption logic does not know the cleared
+  case. To fix in the #14 report code.
+- The figure code fetched the game list from the ARC API on my machine
+  (anonymous key) because `OPERATION_MODE=offline` was not set locally.
+  Nothing from the run was sent. Set it for the report tooling.
+
 ## Open questions / risks
 
 - **Model.** Flash is down as of 2026-11-15 02:05. Per the user's rule the
