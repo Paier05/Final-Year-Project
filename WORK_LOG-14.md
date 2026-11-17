@@ -436,6 +436,10 @@ The user asked for the result and a conclusion.
 - Fixed the replay caption for a cleared episode (`analysis/evolution12.py`):
   the last frame is Level 2, not a lost life; redrew v4 seed 5.
 - Tokens used: 15.4 M of the 40 M cap.
+- Skill-name check totals from `archive.json`: 19 edits checked, 3 rejected
+  over six rounds. **Correction:** the 11:20 entry and my part 1 comment
+  said 17 checked for rounds 1–5; the right number is 16 (2 rejected).
+- Posted the result and conclusion on the issue (comment 6938026991).
 - **Not done: deleting `~/.evo_harness_env` on the cluster.** The head node
   stopped answering (connection timed out twice at 12:08, minutes after the
   fetch worked). No jobs are queued (checked at 12:05). Must be done as soon
