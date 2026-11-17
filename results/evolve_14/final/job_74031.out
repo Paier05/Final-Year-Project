@@ -1,0 +1,30 @@
+preflight ...
+player: Qwen/Qwen3.8-27B-FP8 OK (probe reply 'OK')
+meta: Qwen/Qwen3.8-27B-FP8 OK (probe reply 'OK')
+--- run resumed, rounds=6, run dir=runs/v3, commit=16b2d4a63f91b8641e49cdded63fbb7d752612e5, config=a55d483ab28feb95, job=74031, time limit=360 min, stop by=340.0 min, used so far 4.71 h
+
+round 6: parent v4 (progress 0.6572, cost 0.5986, gate 0.3579)
+  1 analyze: 0 inline-helper groups, skills called 131 times; frame evidence: 8 rare on-screen changes
+  4 write: v6 with 1 edits
+  [v6 seed1] was cut off: kept in runs/v3/partial/round_6, replaying
+  [v6 seed2] was cut off: kept in runs/v3/partial/round_6, replaying
+  [v6 seed3] was cut off: kept in runs/v3/partial/round_6, replaying
+  [v6 seed4] was cut off: kept in runs/v3/partial/round_6, replaying
+  [v6 seed5] was cut off: kept in runs/v3/partial/round_6, replaying
+  evaluating v6: seeds [1, 2, 3, 4, 5] in parallel
+INFO:arc_agi.scorecard:Initialized ScorecardManager with idle_for=0:15:00 and max_open_for=3 days, 0:00:00
+2026-11-15 11:33:36 | INFO | Created new scorecard: fc7b83cf-8463-4b57-8d6f-c2a346f40f17
+2026-11-15 11:33:36 | INFO | Successfully loaded game class Ls20 from environment_files/ls20/9607627b/ls20.py
+  [v6 seed5] not cleared progress=0.657 parts={'position': 0.1429, 'rotation': 1.0, 'shape': 1.0, 'colour': 1.0} cost=0.581 g=0.367 actions=200 turns=79 calls=79 end=budget_actions tok=416249 2343s
+  [v6 seed4] not cleared progress=0.543 parts={'position': 0.8571, 'rotation': 0.0, 'shape': 1.0, 'colour': 1.0} cost=0.650 g=0.218 actions=200 turns=103 calls=103 end=budget_actions tok=523471 2537s
+  [v6 seed3] not cleared progress=0.657 parts={'position': 0.1429, 'rotation': 1.0, 'shape': 1.0, 'colour': 1.0} cost=0.643 g=0.336 actions=200 turns=99 calls=99 end=budget_actions tok=520027 2675s
+  [v6 seed1] CLEARED progress=1.000 parts={'position': 1.0, 'rotation': 1.0, 'shape': 1.0, 'colour': 1.0} cost=0.700 g=0.650 actions=174 turns=131 calls=132 end=level1_solved tok=684634 3216s
+  [v6 seed2] not cleared progress=0.543 parts={'position': 0.8571, 'rotation': 0.0, 'shape': 1.0, 'colour': 1.0} cost=0.870 g=0.108 actions=200 turns=171 calls=171 end=budget_actions tok=905325 4479s
+  5 gate: rejected (tie on progress (|+0.0228| <= eps 0.05); child not cheaper (cost +0.0902)); parent is now v4
+--- run finished in this job after 74.7 min; total 5.96 h over 3 part(s)
+   v0 parent=  - progress=0.5314 cost=0.6179 gate=0.2225 clears=0/5 decision=baseline
+   v1 parent= v0 progress=0.5543 cost=0.5909 gate=0.2589 clears=1/5 decision=rejected
+   v3 parent= v0 progress=0.2114 cost=0.5251 gate=-0.0511 clears=0/5 decision=rejected
+   v4 parent= v0 progress=0.6572 cost=0.5986 gate=0.3579 clears=1/5 decision=accepted
+   v5 parent= v4 progress=0.6114 cost=0.7991 gate=0.2119 clears=0/5 decision=rejected
+   v6 parent= v4 progress=0.68 cost=0.6888 gate=0.3356 clears=1/5 decision=rejected

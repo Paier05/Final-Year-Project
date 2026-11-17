@@ -357,6 +357,10 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
     # A life ends when the move counter runs out; ls20 then puts the player
     # back at the start AND resets its rotation, which undoes a rotation step.
     life_lost = [i for i in range(1, n) if states[i]["lives"] != states[i - 1]["lives"]]
+    # A cleared episode ends on the first frame of Level 2: not a lost life,
+    # and Level 1's switch, goal and move count do not apply to it.
+    cleared_i = n - 1 if episode.get("solved") else None
+    life_lost = [i for i in life_lost if i != cleared_i]
     best_i = next(i for i in range(n) if states[i]["action_index"] == episode["goal"]["best_state"]["action_index"])
     keys = [0]
     for i in rotation_changes[:1]:
@@ -370,6 +374,8 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
 
     def caption(i: int) -> str:
         s = states[i]
+        if i == cleared_i:
+            return f"after action {s['action_index']}  ← LEVEL 1 CLEARED\n(the game has loaded Level 2)"
         moves = maze.moves_to_goal(s["x"], s["y"])
         rot = "matches" if s["rotation"] == need else f"needs {need}"
         tag = ""
@@ -390,8 +396,8 @@ def figure_replay(archive: dict[str, Any], out_dir: str, gif: bool = True) -> li
             spine.set_color(TEXT_SECONDARY)
         # The bottom-left HUD shows the player's current rotation; the switch
         # and the goal are outlined so the rotation step can be followed.
-        for (r0, c0, h, w), colour in (((53, 1, 10, 10), "#ffffff"), ((30, 19, 5, 5), "#ffffff"),
-                                       ((10, 34, 5, 5), "#ffffff")):
+        boxes = (((53, 1, 10, 10), "#ffffff"), ((30, 19, 5, 5), "#ffffff"), ((10, 34, 5, 5), "#ffffff"))
+        for (r0, c0, h, w), colour in (() if i == cleared_i else boxes):
             axes.add_patch(Rectangle((c0 - 0.5, r0 - 0.5), w, h, fill=False, edgecolor=colour, linewidth=1.0,
                                      linestyle=(0, (2, 1))))
         axes.set_title(caption(i), fontsize=6.5, color=TEXT_PRIMARY, loc="left")

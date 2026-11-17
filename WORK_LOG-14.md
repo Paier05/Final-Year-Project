@@ -411,6 +411,39 @@ more rounds, not 5). Tokens so far 12.4 M of the 40 M cap.
 - Next: wait for the user's "continue"; then copy back, report round 6
   separately from the 5-round result, final report, delete the secrets file.
 
+### 2026-11-17 12:10 — Round 6 result; conclusion
+
+The user asked for the result and a conclusion.
+
+- **Job 74031: COMPLETED, exit 0, 1 h 14 min 43 s, TC1N04.** Error log empty.
+  State `finished`, round 6, gate done, parent v4; lock gone; status check
+  consistent. The five v6 episodes cut off by the switch of jobs are recorded
+  as replayed. `seff`: 21 s CPU, 131 MB. Total run time 5.96 h over 3 parts.
+- Copied back (44 files, 4.4 MB). Final state files, job logs and figures:
+  `results/evolve_14/final/`.
+- **v6 (v4 + one knowledge-prompt edit): progress 0.680 ± 0.168, 1 clear in
+  5, cost 0.689, gate score 0.336. Rejected**: progress ties v4 (+0.023,
+  inside the 0.05 band) and it costs more (+0.090). Final parent: v4.
+- v6's prompt says the rotation must match and to "move away and back"; it
+  still does not name the cell where the rare change happens.
+- Paired by seed against v0: v4 +0.126 (SD 0.153, t = 1.83, n = 5), v6
+  +0.149 (SD 0.234, t = 1.42). Neither is distinguishable from noise at 5
+  seeds. v6 − v4 by seed: +0.457, −0.114, +0.114, 0, −0.343.
+- Clears: 3 of 30 episodes (v1 seed 4, v4 seed 5, v6 seed 1). #12 had none
+  in 40, but #12's v0–v5 ran on flash, so this is not a clean comparison.
+- Both replayed clears reach the switch late (action 127 and action 160 of
+  200) and then walk straight to the goal.
+- Fixed the replay caption for a cleared episode (`analysis/evolution12.py`):
+  the last frame is Level 2, not a lost life; redrew v4 seed 5.
+- Tokens used: 15.4 M of the 40 M cap.
+- **Not done: deleting `~/.evo_harness_env` on the cluster.** The head node
+  stopped answering (connection timed out twice at 12:08, minutes after the
+  fetch worked). No jobs are queued (checked at 12:05). Must be done as soon
+  as the head node is reachable.
+- Still owed for the issue's final report: score and rotation per round
+  against #12 on one chart, the level map with paths and rare-change
+  positions, before/after frames of a rare change. And the PR.
+
 ## Open questions / risks
 
 - **Model.** Flash is down as of 2026-11-15 02:05. Per the user's rule the
