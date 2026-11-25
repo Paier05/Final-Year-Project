@@ -140,6 +140,73 @@ def stage_pilot(cfg: dict, root: str) -> None:
     print(json.dumps(row, indent=1, default=str))
 
 
+def apply_game(cfg: dict, name: str) -> None:
+    """--game (#15): the game the config runs, and that game's score weights
+    (`score.by_game`). Applied before the config hash, so each game's run has
+    its own identity."""
+    from scorer import game_id, short_name
+
+    cfg["game"] = game_id(name)
+    short = short_name(cfg["game"])
+    by_game = (cfg.get("score") or {}).get("by_game") or {}
+    if short in by_game:
+        cfg["score"] = {"weights": dict(by_game[short]["weights"])}
+    cfg["experiment"] = str(cfg.get("experiment", "")).replace("{game}", short)
+
+
+def stage_baseline(cfg: dict, root: str, harness_dir: str, stub: bool = False) -> int:
+    """A fixed harness played once on the config's seeds, in parallel, no
+    evolution (#15 baseline B: #14's best ls20 harness on a new game). Writes
+    the episodes and <root>/summary.json; a rerun keeps finished seeds."""
+    from evolve.checkpoint import write_json_atomic
+    from evolve.harness import load_harness
+
+    global EVENT_LOG
+    harness = load_harness(os.path.basename(os.path.normpath(harness_dir)), os.path.dirname(os.path.normpath(harness_dir)))
+    os.makedirs(root, exist_ok=True)
+    lock = RunLock(root)
+    try:
+        note = lock.acquire()
+    except LockError as error:
+        print(f"*** {error}", file=sys.stderr)
+        return 3
+    EVENT_LOG = os.path.join(root, "events.log")
+    try:
+        if note:
+            log(f"*** {note}")
+        notes: list[str] = []
+        if stub:
+            from evolve.stub import StubPlayer
+
+            factory = lambda seed: StubPlayer(seed=seed)  # noqa: E731
+            print("*** STUB MODE: stub player, no model calls. Not a result. ***")
+        else:
+            try:
+                notes = stage_preflight(cfg)
+            except AbortExperiment as error:
+                print(f"*** PREFLIGHT FAILED: {error}", file=sys.stderr)
+                return 2
+            factory = lambda seed: loop.make_client(cfg, "player", seed=seed)  # noqa: E731
+        paths = loop.Paths(root, title="baseline B")
+        harness.save(paths.harnesses)  # the exact harness played, next to its results
+        log(f"--- baseline: {harness.version} from {harness_dir} on {cfg['game']}, seeds {cfg['seeds']}, "
+            f"player {cfg['player']['model']}, job {os.environ.get('SLURM_JOB_ID')}")
+        try:
+            episodes = loop.evaluate(harness, 0, cfg, paths, factory, log)
+        except AbortExperiment as error:
+            print(f"\n*** BASELINE STOPPED: {redact(str(error))}", file=sys.stderr)
+            return 2
+        entry = loop.version_entry(harness, 0, episodes, paths, cfg)
+        entry |= {"baseline": "B", "harness_source": harness_dir.replace(os.sep, "/"), "game": cfg["game"],
+                  "notes": notes, "config_hash": config_hash(cfg)}
+        write_json_atomic(os.path.join(root, "summary.json"), entry)
+        log(f"--- baseline done: progress {entry['score_mean']} (worst {entry['score_worst']}), cost "
+            f"{entry['cost_mean']}, gate {entry['gate_mean']}, clears {entry['n_clears']}/{entry['n_episodes']}")
+        return 0
+    finally:
+        lock.release()
+
+
 def run_status(root: str, cfg: dict) -> dict:
     """Where a run is, read from its files, and whether run_state.json agrees
     with them. Reads only."""
@@ -202,9 +269,17 @@ def run_status(root: str, cfg: dict) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="evo-harness run (#9, #12, #14)")
-    parser.add_argument("--stage", choices=["preflight", "pilot", "figures", "rescore9", "status", "smoke"])
+    parser.add_argument("--stage", choices=["preflight", "pilot", "figures", "rescore9", "status", "smoke",
+                                            "baseline"])
     parser.add_argument("--rounds", type=int, default=None)
     parser.add_argument("--config", default="config_evolve.yaml")
+    parser.add_argument("--game", default=None,
+                        help="the game to run, e.g. ft09 (default: `game` in the config) (#15)")
+    parser.add_argument("--harness", default=None,
+                        help="--stage baseline: the harness version directory to play (#15)")
+    parser.add_argument("--elapsed-min", type=float, default=0.0,
+                        help="minutes of this job used before this process started (#15); "
+                             "taken off the time limit and the stop time")
     parser.add_argument("--run-dir", "--root", dest="root", default=None,
                         help="run directory (default: `root` in the config)")
     parser.add_argument("--resume", action="store_true",
@@ -217,7 +292,11 @@ def main() -> None:
                         help="offline self-test: stub player and stub Meta LLM, no model calls")
     args = parser.parse_args()
     cfg = load_config(args.config)
-    root_default = cfg.get("root", os.path.join("results", "evolve"))
+    if args.game:
+        apply_game(cfg, args.game)
+    if not cfg.get("game"):
+        parser.error("the config names no game; pass --game")
+    root_default = cfg.get("root") or os.path.join("results", "evolve")
     if args.stub:
         cfg["budget"]["max_actions"] = 40
         cfg["budget"]["max_turns"] = 30
@@ -258,6 +337,10 @@ def main() -> None:
         from evolve.smoke import main as smoke
 
         raise SystemExit(smoke(cfg, args.root or os.path.join("runs", "smoke"), log, redact))
+    if args.stage == "baseline":
+        if not args.harness or not args.root:
+            parser.error("--stage baseline needs --harness and --run-dir")
+        raise SystemExit(stage_baseline(cfg, args.root, args.harness, stub=args.stub))
 
     rounds = args.rounds if args.rounds is not None else int(cfg["rounds"])
     if args.stub:
@@ -336,6 +419,10 @@ def main() -> None:
         stop_by_min = None
         if limit_min is not None:
             stop_by_min = min(float(guard.get("stop_by_min", limit_min)), float(limit_min))
+            # Another step of the same job ran first (#15: baseline B before
+            # part 1): both limits move back by the time it used.
+            limit_min = float(limit_min) - args.elapsed_min
+            stop_by_min -= args.elapsed_min
         ckpt = Checkpoint(
             root, cfg,
             time_limit_s=None if limit_min is None else float(limit_min) * 60,

@@ -34,6 +34,7 @@ import paramiko
 
 REMOTE_REPO = "evo-harness"          # under the home directory on TC1
 ENV_FILE = ".evo_harness_env"
+GAMES = ("ls20", "ft09", "vc33")    # game files (gitignored) uploaded with the code
 # Not needed on the cluster and large: earlier runs' results and the PDFs.
 ARCHIVE_EXCLUDE = (":(exclude)results", ":(exclude)Documentation_Generated", ":(exclude)data")
 
@@ -98,7 +99,8 @@ def cmd_upload(client: paramiko.SSHClient) -> int:
                        check=True)
         extra_tar = os.path.join(tmp, "extra.tar.gz")
         with tarfile.open(extra_tar, "w:gz") as tar:
-            tar.add(os.path.join("environment_files", "ls20"), arcname="environment_files/ls20")
+            for game in GAMES:  # ls20 for the tests, ft09 and vc33 for #15
+                tar.add(os.path.join("environment_files", game), arcname=f"environment_files/{game}")
             data = (commit + "\n").encode()
             info = tarfile.TarInfo("COMMIT")
             info.size = len(data)
@@ -114,7 +116,7 @@ def cmd_upload(client: paramiko.SSHClient) -> int:
             print(f"uploaded {os.path.getsize(local) / 1e6:.2f} MB -> ~/{remote}")
         sftp.close()
     return run(client, f"cd ~/{REMOTE_REPO} && tar xzf _code.tar.gz && tar xzf _extra.tar.gz && "
-                       "rm _code.tar.gz _extra.tar.gz && cat COMMIT && file cluster/job_part.sh cluster/job_smoke.sh")
+                       "rm _code.tar.gz _extra.tar.gz && cat COMMIT && file cluster/*.sh")
 
 
 def cmd_put_env(client: paramiko.SSHClient) -> int:

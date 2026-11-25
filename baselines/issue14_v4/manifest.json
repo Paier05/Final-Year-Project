@@ -1,0 +1,25 @@
+{
+  "version": "v4",
+  "parent": "v0",
+  "round": 4,
+  "prompt_order": [
+    "system",
+    "knowledge",
+    "format"
+  ],
+  "skills": [
+    "bfs_to_target",
+    "grid_region",
+    "obstacle_map",
+    "player_detector"
+  ],
+  "n_steps": 6,
+  "edits": [
+    {
+      "id": "r4-e1",
+      "source": "meta",
+      "what": "edit prompt knowledge",
+      "rationale": "The current knowledge prompt incorrectly states that ACTION2 is a recolor action. The frame evidence and action effects show that ACTION2 moves the block down by 5 cells. Correcting this will help the player plan its moves more effectively. Also, the goal description is updated to reflect the weighted components of the score."
+    }
+  ]
+}

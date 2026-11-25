@@ -63,8 +63,14 @@ def main(cfg: dict[str, Any], root: str, log: Callable[[str], None], redact: Cal
         first = [list(map(int, row)) for row in frame.frame[-1]]
         moved = False
         for action in list(frame.available_actions or [])[:4]:
-            frame = env.step(GameAction.from_id(int(action)))
-            moved = moved or [list(map(int, row)) for row in frame.frame[-1]] != first
+            # A click needs a place to land (#15: ft09 and vc33 have only
+            # ACTION6): try a coarse grid of spots until one changes the frame.
+            spots = [{"x": x, "y": y} for y in range(4, 64, 8) for x in range(4, 64, 8)] if int(action) == 6 else [None]
+            for data in spots:
+                frame = env.step(GameAction.from_id(int(action)), data=data)
+                moved = moved or [list(map(int, row)) for row in frame.frame[-1]] != first
+                if moved:
+                    break
         check("game loads and steps", moved,
               f"{cfg['game']} from environment_files (OPERATION_MODE={os.environ.get('OPERATION_MODE', 'normal')}); "
               f"a frame changed after an action: {moved}")

@@ -1,0 +1,8 @@
+[
+  "OBSERVE: read the observation and the result of your last cell. What changed, and what did each action you took actually do?",
+  "CHECK: compare that with your notes and with what you expected. If anything contradicts your notes, say so and correct them.",
+  "HYPOTHESISE: state your current best guess of what each action does and what the goal of the level is.",
+  "PLAN: decide the next few actions (at most {cap}) that either test a hypothesis or make progress toward the goal.",
+  "CODE: write one Python cell that takes those actions and prints what you need to see next turn. Use the skills where they help.",
+  "NOTE: in the same cell, set `notes` to what you have established (dynamics, goal, where things are), not a narration of events."
+]
