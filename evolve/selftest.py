@@ -325,6 +325,9 @@ def main() -> None:
     from evolve import selftest14
 
     selftest14.main()
+    from scorer import tests as selftest15
+
+    selftest15.main()
     print("all self-tests passed")
 
 

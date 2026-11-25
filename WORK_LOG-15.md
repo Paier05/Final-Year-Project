@@ -66,8 +66,107 @@ What has to be built because the games are new:
   (`config_evolve.yaml`: seeds 1–5). The issue says 3 seeds (1, 2, 3) for
   this run, consistently, in five places. I follow the issue: **3 seeds**.
 
+### 2026-11-25 14:45 — The games inspected; v0 audit posted and answered
+
+- **ft09** (`scorer/ft09/GAME_NOTES.md`): only ACTION6 (click). Level 1 is
+  a ring of 8 tiles around a pattern; a click toggles one tile's colour; the
+  win check compares each tile with the pattern. 4 clicks solve it. A click
+  that hits no tile changes nothing and costs nothing. 32-click budget bar.
+- **vc33** (`scorer/vc33/GAME_NOTES.md`): only ACTION6. Two buttons move
+  width between two columns; an object standing on one column must line up
+  with a mark. 3 clicks on the right button solve it; every click costs one
+  of 50 steps.
+- Both confirmed by playing the solutions offline (clears on the last click).
+- **v0 audit** posted (comment 7154981120): the `knowledge` prompt is all
+  LS20; the rest is generic; skill-name check 0 on v0 and #14's v4. Also
+  flagged: the Meta prompt's SCORE paragraph and Analyze's goal parts
+  describe ls20's score.
+- **The user answered in chat** (recorded on the issue, comment 7155007628):
+  v0 for ft09/vc33 = v0 **without the `knowledge` prompt**; Meta prompt and
+  Analyze get a **neutral score paragraph, parts not disclosed**.
+
+### 2026-11-25 15:40 — Scorers, game-aware loop, click frame evidence, tests
+
+- What I did:
+  - `scorer/` package: `scorer/<game>/score.py` (read_state, score,
+    fact-check ground truth) and `GAME_NOTES.md` for ft09 and vc33; ls20 is
+    routed to #14's `evolve/goal_score.py`, unchanged.
+    - ft09: one part, `tiles` = 1 − win checks failing / failing at the
+      start (4 of 8 at the start). Weight 1.0.
+    - vc33: one part, `alignment` = 1 − distance to the mark / distance at
+      the start (6 grid cells). The win check's other two conditions never
+      change on Level 1: recorded per state, no weight. Weight 1.0.
+    - Both are the win checks' own comparisons, so nothing is guessed; and
+      neither game's frame data has a score or progress field.
+  - Wired by game, with ls20's output kept identical:
+    `evolve/score.py`, `evolve/loop.py` (probe), `evolve/analyze.py` (no goal
+    parts or failure line when the scorer does not disclose them),
+    `evolve/propose.py` (the SCORE paragraph split out:
+    `SCORE_DISCLOSED` for ls20, byte-identical rendered Meta input checked;
+    `SCORE_UNDISCLOSED` for ft09/vc33), `evolve/factcheck.py` (GroundTruth
+    gets per-game fields whose defaults are ls20's; other games' ground truth
+    comes from `scorer/<game>/`), `evolve/seed_v0.py` (`drop_prompts`, set by
+    `v0_drop_prompts` in the config).
+  - Frame evidence click mode (`evolve/frame_evidence.py`): when at least
+    half the actions are clicks, or no block is found, Part A lists actions
+    and click coordinates, Part B groups every changed cell, Part C links
+    each rare change to the click before it. The region code was moved into
+    a helper both modes use. **Checked on #14's real round-4 episodes:
+    ls20's evidence data, text and per-step table are identical** to before.
+  - Fact-check ground truth for the new games: no action moves a sprite
+    (ACTION6 claims unverifiable); absent roles false (lives, rotation
+    switch, collectible, hazard, trail, enemy); budgets as counts; goal
+    requirement colour (ft09) / position (vc33) true, rotation/collect/avoid
+    false; nothing rotates; no player sprite. Colours not explained by a
+    known object are "ui" (claims unverifiable), the background included.
+  - `evolve_run.py`: `--game`, `--stage baseline --harness DIR` (baseline
+    B), `--elapsed-min`. `config_evolve_15.yaml`: #14's settings except 3
+    seeds, per-game weights, `v0_drop_prompts: [knowledge]`.
+    `baselines/issue14_v4/` = #14's v4, copied unchanged from `runs/v3`.
+  - `evolve/smoke.py`: its "game steps" check clicked (0, 0), which changes
+    nothing in ft09; it now tries a coarse grid of spots for ACTION6.
+- **Bug found by the leak test**: Analyze still called ls20's
+  `describe_failure` on ft09 episodes (KeyError) before throwing the result
+  away. Fixed: nothing is computed when parts are not disclosed.
+- **Limit worth knowing (vc33)**: the step bar (row 0) touches the top
+  column, so frame evidence groups the bar and both columns into one
+  "regular" region; the button's effect does not stand out as rare. Added,
+  generically: per clicked cell, the median number of cells a click there
+  changed (a button click changes ~265 cells, a miss 1-2). No game code.
+- Tests (`scorer/tests.py`, also run by `python -m evolve.selftest`):
+  - scorers: a win scores 1.0; 40 random clicks (seed 7) score below; same
+    trajectory twice and a replay of its clicks score the same; 2 right
+    clicks score strictly between; the start scores 0; no state before the
+    clear reaches 1.0.
+  - frame evidence: runs on saved ft09/vc33 trajectories; same output twice;
+    a click game and a no-block keyboard episode both report actions instead
+    of a position; Part C links ft09's 8 tile regions to clicks inside them.
+  - fact-check labels per game; v0 without `knowledge` (rest identical,
+    skill-name check 0); the sandbox cannot import `scorer` or open files.
+  - **leak test**: patterns for each game's notes (internal names, win rule,
+    solution, budgets), each shown to fire on a sample; none in v0, the Meta
+    prompt and its neutral score text, the API text, the frame-evidence and
+    Analyze code, a full Meta LLM input built from round 0 of the #15 config,
+    or the stored Analyze report. The part names are not in the Meta input.
+- Result: **`python -m evolve.selftest`: 224 checks pass locally** (all of
+  #12's and #14's plus #15's). The SIGUSR1 test runs only on Linux (smoke).
+- Baseline stage tried with the stub player on vc33: summary, harness copy,
+  trajectories written; exit 0.
+
 ## Open questions / risks
 
 - Model availability (see 14:36).
+- **Script A, not B**: #14 called the model over an API (no GPU), so each
+  game is its own job (10 CPUs, 30 GB; 20 CPUs and 60 GB in all).
+- **Baseline B runs inside part 1's job**, before the run, because the QoS
+  allows 2 jobs at a time and both are needed for the two games. The run's
+  time guard is moved back by the minutes baseline B used (`--elapsed-min`).
+  If baseline B fails, the job stops before the run.
+- **Delete rule**: kept at 10 evaluated episodes (#14's value), which is
+  3–4 rounds at 3 episodes instead of 2 at 5.
+- **The fact-check vocabulary is ls20's** (player, goal, rotation switch,
+  ...). For click games most claims will come out unverifiable (kept,
+  flagged). That is conservative by design: false only where the game
+  clearly contradicts the claim.
 
 ## Summary (fill in at the end)
