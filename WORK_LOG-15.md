@@ -198,9 +198,41 @@ What has to be built because the games are new:
 - As the issue says: stopped and reported (comment 7155500811). Nothing
   queued. Baseline B and part 1 not submitted.
 
+### 2026-11-25 16:04 — Model back (27B only); smoke check resubmitted
+
+- The user said the model is up. Local preflight at 16:04: **flash still
+  HTTP 500; `Qwen/Qwen3.8-27B-FP8` answers.** Per the user's rule from #14
+  (in the config as `fallback_model`), both roles fall back to 27B. #14's
+  whole run was on 27B too, so the player and Meta model match #14's run.
+  The run pins the model its first part uses.
+- **Smoke check resubmitted: job 75181 (ft09), job 75182 (vc33)**, same
+  commit `b0a0955` on the cluster (only the work log changed since).
+
+### 2026-11-25 16:10 — Smoke check passed; part 1 submitted
+
+- **Jobs 75181 (ft09, TC1N03, 2 min 18 s) and 75182 (vc33, TC1N04,
+  2 min 13 s): COMPLETED 0:0.** Error logs empty.
+  - Test suite: 229 checks pass on both nodes (224 + 5 SIGUSR1).
+  - Game loads and steps: pass. Model endpoint: pass, both roles on
+    `Qwen/Qwen3.8-27B-FP8` (flash still 500).
+  - One short episode per game (ft09: 2 turns, 12 clicks, 10.3k tokens,
+    26 s; vc33: 3 turns, 2 clicks, 10.9k tokens, 24 s), the run stopped on
+    request, `run_state.json` paused with seeds done [1], the resume
+    replayed only the cut-off seed 2 and finished, lock gone.
+  - Both games at once: same 2 minutes, separate nodes, run dirs
+    (`runs/smoke_ft09_75181`, `runs/smoke_vc33_75182`) and logs.
+  - `seff`: 69 s CPU, ~230 MB memory each (of 10 CPUs / 30 GB asked).
+- **Part 1 submitted at 16:10: job 75186 (ft09), job 75187 (vc33)**
+  (`cluster/job_api.sh`, 6 h, 10 CPUs / 30 GB each, 20 CPUs / 60 GB in
+  all, no GPU). Each plays baseline B (#14's v4, seeds 1–3) first, then
+  starts the 5-round run with `--resume`.
+- One check at 16:14: both RUNNING (TC1N03, TC1N04), baseline B playing on
+  both games (12–16 turns per seed), error logs empty. Disconnected.
+  Job ids posted on the issue. Next: wait for the user's "continue".
+
 ## Open questions / risks
 
-- **Model availability: blocking.** Both models are down at the provider
+- **Model availability (was blocking 14:33–~16:00).** Both models are down at the provider
   since at least 14:33. Using a different model would break "same setup as
   #14"; that is the user's decision.
 - **Script A, not B**: #14 called the model over an API (no GPU), so each
