@@ -230,6 +230,44 @@ What has to be built because the games are new:
   both games (12–16 turns per seed), error logs empty. Disconnected.
   Job ids posted on the issue. Next: wait for the user's "continue".
 
+### 2026-11-25 19:32 — Progress check (the user asked); ft09 finished
+
+- 19:28: TC1 unreachable from here (port 22 timed out, ping lost, internet
+  fine): most likely the VPN. The user reconnected; 19:32 one connection,
+  then one fetch (ft09's run, both baseline-B dirs, logs; 151 files,
+  10.5 MB).
+- **ft09, job 75186: COMPLETED 0:0, 1 h 57 min** (baseline B ~21 min, run
+  95.5 min). State `finished`, round 5, parent **v0**, lock gone, error log
+  empty. **All 5 rounds in one part. No child accepted.**
+
+  | version | progress (seeds 1–3) | cost | gate | decision |
+  |---|---|---|---|---|
+  | baseline B (#14 v4) | 0.25 (0, 0.25, 0.5) | 0.491 | 0.005 | — |
+  | v0 | 0.583 (0.5, 0.75, 0.5) | 0.495 | 0.336 | baseline |
+  | v1 | 0.417 | 0.505 | 0.164 | rejected |
+  | v2 | 0.583 | 0.599 | 0.284 | rejected (tie, dearer) |
+  | v3 | 0.083 | 0.450 | −0.142 | rejected |
+  | v4 | 0.000 | 0.442 | −0.221 | rejected |
+  | v5 | 0.000 | 0.439 | −0.219 | rejected |
+
+  - Every round the Meta LLM proposed the same idea: a skill that clicks
+    every all-maroon/cyan 6x6 block, plus a system-prompt line telling the
+    player to use it. The skill scans from the top left, so it clicks the
+    **inert reference pictures** first (v4: (x,y) (6,4), (14,4), (22,4),
+    (40,4), ... 70–90 times each); 6 clicks per call use the whole turn, so
+    200 actions go nowhere: v3–v5 score 0. Rounds 3–5 repeat round 1's
+    rationale word for word: the parent stayed v0, so Analyze's input
+    barely changed, and the "do not re-propose a rejected edit" guidance
+    did not stop it. Nothing failed Validate: the claims were
+    unverifiable (kept) and the skill tests passed.
+  - Baseline B (#14's ls20 knowledge) scored below v0 (0.25 vs 0.58).
+  - Tokens 4.6 M (run) + 0.8 M (baseline B).
+- **vc33, job 75187: RUNNING, 3 h 22 min**, round 4, evaluating v4
+  (parent v1). Baseline B 0.0 (all seeds). v0 0.0; v1 accepted (0.111:
+  one seed at 0.333; worst-episode drop +0.0998, just inside δ 0.1); v2
+  rejected (players used 200 turns but only 48–97 actions, ~1.1 M tokens
+  each); v3 rejected. Run stop time ~21:50; round 5 may or may not fit.
+
 ## Open questions / risks
 
 - **Model availability (was blocking 14:33–~16:00).** Both models are down at the provider
