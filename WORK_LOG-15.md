@@ -180,9 +180,29 @@ What has to be built because the games are new:
   check's model test fails. Posted the preparation summary on the issue
   (comment 7155338451).
 
+### 2026-11-25 15:08 — Smoke check failed on the model endpoint; stopped
+
+- Waited with a local timer (checking only the model gateway once a minute,
+  not the cluster), then one connection.
+- **Jobs 75152 (ft09, TC1N02) and 75153 (vc33, TC1N04): FAILED 1:0**, both
+  14:57:19–14:58:48. Error logs empty.
+  - Test suite: **pass on both nodes, 229 checks** (224 + 5 SIGUSR1).
+  - Game loads and steps from the offline files: pass on both (the smoke
+    test's new click spots work for ft09).
+  - Both ran at the same time without clashing: separate run directories
+    and logs.
+  - **Model endpoint: FAIL** on both: HTTP 500, connection refused behind
+    the gateway, flash and the 27B fallback alike. So the short episode,
+    the checkpoint and the resume checks were not reached.
+- Local check: still down at 15:06.
+- As the issue says: stopped and reported (comment 7155500811). Nothing
+  queued. Baseline B and part 1 not submitted.
+
 ## Open questions / risks
 
-- Model availability (see 14:36).
+- **Model availability: blocking.** Both models are down at the provider
+  since at least 14:33. Using a different model would break "same setup as
+  #14"; that is the user's decision.
 - **Script A, not B**: #14 called the model over an API (no GPU), so each
   game is its own job (10 CPUs, 30 GB; 20 CPUs and 60 GB in all).
 - **Baseline B runs inside part 1's job**, before the run, because the QoS
