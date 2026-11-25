@@ -29,6 +29,15 @@ Rules this module keeps (the issue's):
 
 Limit: the block is found from moves that shift it by at least its own size
 (the old and the new patch do not overlap), which is how ls20 moves.
+
+Issue #15, games with no single moving block. When most actions are clicks
+(ACTION6 with coordinates), or no block is found, there is no player position
+to report. Part A then reports each action and where it landed (row = y,
+col = x of the click), Part B groups every changed cell (no block to set
+apart), and Part C links each rare change to the click right before it: per
+clicked cell, how often it was clicked and how often the change followed.
+Nothing game-specific is added: the switch is made on what the trajectory's
+actions are.
 """
 
 from __future__ import annotations
@@ -48,6 +57,8 @@ REGULAR_SHARE = 0.5    # a region changing on at least this share of changing st
 MAX_GRID_CELLS = 144   # larger regions are summarised, not printed cell by cell
 MAX_EVENTS_SHOWN = 12  # rare events printed in the report (all are in the data)
 MAX_PATH_POINTS = 40   # path waypoints printed per episode (all are in the per-step file)
+CLICK_SHARE = 0.5      # #15: at least this share of actions are clicks -> report clicks, not a block
+MAX_CLICK_CELLS = 30   # clicked cells printed across episodes (all are in the data)
 
 
 # ---------------------------------------------------------------------------
@@ -159,15 +170,17 @@ def load_transitions(records: list[dict[str, Any]], frames: Any) -> list[dict[st
         if record.get("type") != "tool_call":
             continue
         for item in record.get("actions") or []:
+            args = item.get("args") or {}
             out.append({
                 "step": int(item["action_index"]), "turn": int(item.get("turn", record.get("turn", 0))),
                 "action": item["action"],
+                "click": (int(args["y"]), int(args["x"])) if "x" in args and "y" in args else None,
                 "before": np.asarray(frames[item["frame_before"]]), "after": np.asarray(frames[item["frame_after"]]),
             })
             if item.get("auto_reset_frame") is not None:
                 out.append({
                     "step": int(item["action_index"]), "turn": int(item.get("turn", record.get("turn", 0))),
-                    "action": "LEVEL RESTART (by the harness, after game over)",
+                    "action": "LEVEL RESTART (by the harness, after game over)", "click": None,
                     "before": np.asarray(frames[item["frame_after"]]),
                     "after": np.asarray(frames[item["auto_reset_frame"]]),
                 })
@@ -294,8 +307,14 @@ def build(episodes: list[dict[str, Any]]) -> dict[str, Any]:
     n_steps = sum(len(e["transitions"]) for e in loaded)
     evidence: dict[str, Any] = {"n_episodes": len(loaded), "n_steps": n_steps, "block": None,
                                 "episodes": [], "per_step": []}
+    actions = [t for e in loaded for t in e["transitions"] if t["action"].startswith("ACTION")]
+    clicks = [t for t in actions if t["click"] is not None]
+    if actions and len(clicks) >= CLICK_SHARE * len(actions):
+        return _build_clicks(loaded, evidence, "the actions are clicks")
     block = find_block(loaded)
     if block is None:
+        if actions:
+            return _build_clicks(loaded, evidence, "no block was seen moving in the frames")
         evidence["note"] = "no moving block was found in the frames"
         return evidence
     evidence["block"] = {"height": block.height, "width": block.width,
@@ -317,46 +336,7 @@ def build(episodes: list[dict[str, Any]]) -> dict[str, Any]:
     evidence["block"]["typical_move_cells"] = step_length
 
     # ---- B: regions of change outside the block, pooled over the episodes ----
-    all_other: set[tuple[int, int]] = set()
-    changing_steps = 0
-    for rows in tracked.values():
-        for row in rows:
-            if row["n_changed"]:
-                changing_steps += 1
-            all_other.update((int(r), int(c)) for r, c in row["other"])
-    def hits_for(candidates: list[tuple[int, int, int, int]]) -> dict[int, list]:
-        found: dict[int, list[tuple[int, dict[str, Any], np.ndarray]]] = defaultdict(list)
-        for seed, rows in tracked.items():
-            for row in rows:
-                if len(row["other"]) == 0:
-                    continue
-                for index, box in enumerate(candidates):
-                    cells = _in_box(row["other"], box)
-                    if len(cells):
-                        found[index].append((seed, row, cells))
-        return found
-
-    # Clusters that change on exactly the same steps are one region: parts of
-    # one thing that is redrawn as a whole.
-    clusters = _regions(all_other)
-    together: dict[frozenset, list[tuple[int, int, int, int]]] = defaultdict(list)
-    for index, found in hits_for(clusters).items():
-        together[frozenset((seed, row["step"], row["action"]) for seed, row, _c in found)].append(clusters[index])
-    boxes = sorted(
-        (min(b[0] for b in group), min(b[1] for b in group), max(b[2] for b in group), max(b[3] for b in group))
-        for group in together.values()
-    )
-    hits = hits_for(boxes)
-    regions = []
-    for index, box in enumerate(boxes):
-        share = len(hits[index]) / changing_steps if changing_steps else 0.0
-        sizes = Counter(len(cells) for _s, _r, cells in hits[index])
-        regions.append({
-            "id": f"R{index + 1}", "rows": [box[0], box[2]], "cols": [box[1], box[3]],
-            "steps_changed": len(hits[index]), "share_of_changing_steps": round(share, 3),
-            "kind": "regular" if share >= REGULAR_SHARE else "rare",
-            "typical_cells_per_change": sizes.most_common(1)[0][0] if sizes else 0,
-        })
+    changing_steps, boxes, hits, regions = _change_regions(tracked)
     evidence["changing_steps"] = changing_steps
     evidence["regions"] = regions
 
@@ -482,6 +462,167 @@ def build(episodes: list[dict[str, Any]]) -> dict[str, Any]:
     return evidence
 
 
+def _change_regions(tracked: dict[int, list[dict[str, Any]]]) -> tuple[int, list, dict[int, list], list[dict]]:
+    """Regions of the cells in each step's row["other"], pooled over the
+    episodes: (steps that changed anything, boxes, per-box hits, regions)."""
+    all_other: set[tuple[int, int]] = set()
+    changing_steps = 0
+    for rows in tracked.values():
+        for row in rows:
+            if row["n_changed"]:
+                changing_steps += 1
+            all_other.update((int(r), int(c)) for r, c in row["other"])
+    def hits_for(candidates: list[tuple[int, int, int, int]]) -> dict[int, list]:
+        found: dict[int, list[tuple[int, dict[str, Any], np.ndarray]]] = defaultdict(list)
+        for seed, rows in tracked.items():
+            for row in rows:
+                if len(row["other"]) == 0:
+                    continue
+                for index, box in enumerate(candidates):
+                    cells = _in_box(row["other"], box)
+                    if len(cells):
+                        found[index].append((seed, row, cells))
+        return found
+
+    # Clusters that change on exactly the same steps are one region: parts of
+    # one thing that is redrawn as a whole.
+    clusters = _regions(all_other)
+    together: dict[frozenset, list[tuple[int, int, int, int]]] = defaultdict(list)
+    for index, found in hits_for(clusters).items():
+        together[frozenset((seed, row["step"], row["action"]) for seed, row, _c in found)].append(clusters[index])
+    boxes = sorted(
+        (min(b[0] for b in group), min(b[1] for b in group), max(b[2] for b in group), max(b[3] for b in group))
+        for group in together.values()
+    )
+    hits = hits_for(boxes)
+    regions = []
+    for index, box in enumerate(boxes):
+        share = len(hits[index]) / changing_steps if changing_steps else 0.0
+        sizes = Counter(len(cells) for _s, _r, cells in hits[index])
+        regions.append({
+            "id": f"R{index + 1}", "rows": [box[0], box[2]], "cols": [box[1], box[3]],
+            "steps_changed": len(hits[index]), "share_of_changing_steps": round(share, 3),
+            "kind": "regular" if share >= REGULAR_SHARE else "rare",
+            "typical_cells_per_change": sizes.most_common(1)[0][0] if sizes else 0,
+        })
+    return changing_steps, boxes, hits, regions
+
+
+def _build_clicks(loaded: list[dict[str, Any]], evidence: dict[str, Any], why: str) -> dict[str, Any]:
+    """Frame evidence with no block (#15): A = actions and where they landed,
+    B = regions of every changed cell, C = rare changes against the clicks."""
+    evidence["mode"] = "clicks"
+    evidence["why_no_block"] = why
+    tracked: dict[int, list[dict[str, Any]]] = {}
+    for episode in loaded:
+        rows = []
+        for step in episode["transitions"]:
+            before, after = step["before"], step["after"]
+            same_shape = before.shape == after.shape
+            changed = (before != after) if same_shape else np.zeros(before.shape, dtype=bool)
+            rows.append({
+                "step": step["step"], "turn": step["turn"], "action": step["action"], "click": step["click"],
+                "n_changed": int(changed.sum()) if same_shape else None,
+                "other": np.argwhere(changed), "frame_before": before, "frame_after": after,
+            })
+        tracked[episode["seed"]] = rows
+
+    changing_steps, boxes, hits, regions = _change_regions(tracked)
+    evidence["changing_steps"] = changing_steps
+    evidence["regions"] = regions
+
+    clicked: Counter = Counter()          # cell -> times clicked, all episodes
+    clicked_changed: Counter = Counter()  # cell -> clicks there that changed the screen
+    sizes: dict[tuple[int, int], list[int]] = defaultdict(list)  # cell -> cells changed per click
+    for rows in tracked.values():
+        for row in rows:
+            if row["click"] is not None:
+                clicked[row["click"]] += 1
+                sizes[row["click"]].append(int(row["n_changed"] or 0))
+                if row["n_changed"]:
+                    clicked_changed[row["click"]] += 1
+
+    events = []
+    for index, box in enumerate(boxes):
+        if regions[index]["kind"] != "rare":
+            continue
+        for seed, row, cells in hits[index]:
+            size = (box[2] - box[0] + 1) * (box[3] - box[1] + 1)
+            click = row["click"]
+            event = {
+                "region": regions[index]["id"], "rows": [box[0], box[2]], "cols": [box[1], box[3]],
+                "seed": seed, "step": row["step"], "action": row["action"], "click": _pos(click),
+                "click_inside_region": click is not None
+                and box[0] <= click[0] <= box[2] and box[1] <= click[1] <= box[3],
+                "cells_changed": int(len(cells)),
+            }
+            if size <= MAX_GRID_CELLS:
+                event["values_before"] = _hex_rows(row["frame_before"], box)
+                event["values_after"] = _hex_rows(row["frame_after"], box)
+            else:
+                pairs = Counter((int(row["frame_before"][r, c]), int(row["frame_after"][r, c])) for r, c in cells)
+                event["value_changes"] = [{"from": a, "to": b, "cells": n} for (a, b), n in pairs.most_common(6)]
+            events.append(event)
+    events.sort(key=lambda e: (e["seed"], e["step"], e["region"]))
+    evidence["rare_events"] = events
+
+    links = []
+    for region in regions:
+        if region["kind"] != "rare":
+            continue
+        mine = [e for e in events if e["region"] == region["id"]]
+        by_cell: Counter = Counter(tuple(e["click"]) for e in mine if e["click"] is not None)
+        links.append({
+            "region": region["id"], "rows": region["rows"], "cols": region["cols"], "events": len(mine),
+            "after_click_at_cell": [
+                {"cell": list(cell), "times_clicked": clicked[cell], "times_change_followed": n}
+                for cell, n in sorted(by_cell.items(), key=lambda kv: (-kv[1], kv[0]))
+            ],
+            "after_click_inside_region": sum(1 for e in mine if e["click_inside_region"]),
+            "events_without_a_click": sum(1 for e in mine if e["click"] is None),
+        })
+    evidence["links"] = links
+    rare_seeds = {e["seed"] for e in events}
+
+    for seed, rows in tracked.items():
+        counts: Counter = Counter()
+        cells: Counter = Counter()
+        others: Counter = Counter()
+        sequence: list[list[int]] = []
+        for row in rows:
+            if row["click"] is not None:
+                counts["changed" if row["n_changed"] else "no_change"] += 1
+                cells[row["click"]] += 1
+                sequence.append(_pos(row["click"]))
+            else:
+                others[row["action"]] += 1
+            evidence["per_step"].append({
+                "seed": seed, "step": row["step"], "turn": row["turn"], "action": row["action"],
+                "block_before": None, "block_after": None, "move": "click" if row["click"] is not None else "none",
+                "cells_changed": row["n_changed"], "cells_changed_outside_block": row["n_changed"],
+                "regions_changed": [regions[i]["id"] for i, box in enumerate(boxes) if len(_in_box(row["other"], box))]
+                if len(row["other"]) else [],
+                "click": _pos(row["click"]),
+            })
+        evidence["episodes"].append({
+            "seed": seed, "steps": len(rows), "clicks": sum(cells.values()),
+            "clicks_changed": counts["changed"], "clicks_no_change": counts["no_change"],
+            "cells_clicked": len(cells), "clicks_in_order": sequence,
+            "clicked_most": [{"cell": list(c), "times": n} for c, n in cells.most_common(6)],
+            "other_actions": dict(sorted(others.items())),
+            "rare_changes": sum(1 for e in events if e["seed"] == seed),
+        })
+    evidence["clicks"] = [
+        {"cell": list(cell), "times": n, "changed": clicked_changed[cell],
+         "cells_changed_median": int(np.median(sizes[cell]))}
+        for cell, n in sorted(clicked.items(), key=lambda kv: (-kv[1], kv[0]))
+    ]
+    evidence["clicked_without_rare_change"] = sorted(
+        e["seed"] for e in evidence["episodes"] if e["clicks_changed"] and e["seed"] not in rare_seeds
+    )
+    return evidence
+
+
 def _move_kind(row: dict[str, Any], step_length: int | None) -> str:
     if row["before"] is None or row["after"] is None:
         return "unknown"
@@ -512,6 +653,8 @@ def render(evidence: dict[str, Any], version: str = "") -> str:
     head = (f"FRAME EVIDENCE{' for ' + version if version else ''} ({evidence['n_episodes']} episodes, "
             f"{evidence['n_steps']} steps). Measured by plain code from the saved frames, by comparing each "
             "frame with the one before it. Positions are (row, col); row 0 is the top.")
+    if evidence.get("mode") == "clicks":
+        return _render_clicks(evidence, head)
     block = evidence.get("block")
     if not block:
         return head + "\n" + evidence.get("note", "no moving block was found in the frames")
@@ -598,8 +741,91 @@ def _event_text(event: dict[str, Any]) -> str:
     return text
 
 
+def _render_clicks(evidence: dict[str, Any], head: str) -> str:
+    """Parts A-C when there is no block (#15). Observations only."""
+    lines = [
+        head,
+        f"No single block moves when the player acts ({evidence['why_no_block']}). Part A reports each action "
+        "and, for a click, where it landed: (row, col) = (y, x) of the click.",
+        "",
+        "A. ACTIONS AND WHERE THEY LANDED",
+    ]
+    for episode in evidence["episodes"]:
+        others = ", ".join(f"{a} x{n}" for a, n in episode["other_actions"].items())
+        lines.append(
+            f"- seed {episode['seed']}: {episode['steps']} steps: {episode['clicks']} clicks "
+            f"({episode['clicks_changed']} changed the screen, {episode['clicks_no_change']} changed nothing) on "
+            f"{episode['cells_clicked']} distinct cells" + (f"; other steps: {others}" if others else "")
+        )
+        if episode["clicks_in_order"]:
+            lines.append(f"    clicks in order: {_path_text(episode['clicks_in_order'])}")
+        if episode["clicked_most"]:
+            lines.append("    clicked most: " + ", ".join(
+                f"{_cell(c['cell'])} x{c['times']}" for c in episode["clicked_most"]))
+    shown = evidence["clicks"][:MAX_CLICK_CELLS]
+    lines.append("- all episodes, times each cell was clicked (of which changed the screen; median cells "
+                 "changed per click): " + (", ".join(
+                     f"{_cell(c['cell'])} {c['times']} ({c['changed']}; {c['cells_changed_median']})"
+                     for c in shown) or "none"))
+    if len(evidence["clicks"]) > MAX_CLICK_CELLS:
+        lines.append(f"    ... {len(evidence['clicks']) - MAX_CLICK_CELLS} more cells")
+
+    lines += ["", "B. ON-SCREEN CHANGES (every changed cell; there is no block to set apart)"]
+    regular = [r for r in evidence["regions"] if r["kind"] == "regular"]
+    rare = [r for r in evidence["regions"] if r["kind"] == "rare"]
+    for region in regular:
+        lines.append(
+            f"- regular: rows {region['rows'][0]}-{region['rows'][1]}, cols {region['cols'][0]}-"
+            f"{region['cols'][1]} changed on {region['steps_changed']} of {evidence['changing_steps']} steps "
+            f"that changed anything ({region['share_of_changing_steps']:.0%}); usually "
+            f"{region['typical_cells_per_change']} cells at a time"
+        )
+    if not regular:
+        lines.append("- regular: none")
+    events = evidence["rare_events"]
+    if not events:
+        lines.append("- rare: none")
+    else:
+        lines.append(f"- rare: {len(events)} change(s) in {len(rare)} region(s):")
+        for region in rare:
+            lines.append(f"    {region['id']}: rows {region['rows'][0]}-{region['rows'][1]}, cols "
+                         f"{region['cols'][0]}-{region['cols'][1]}: changed on {region['steps_changed']} step(s)")
+        for event in events[:MAX_EVENTS_SHOWN]:
+            text = (f"    {event['region']} seed {event['seed']} step {event['step']}: after {event['action']}"
+                    + (f" at {_cell(event['click'])}" if event["click"] is not None else "")
+                    + f"; {event['cells_changed']} cells changed")
+            if "values_before" in event:
+                text += f"; values before {'/'.join(event['values_before'])} after {'/'.join(event['values_after'])}"
+            else:
+                text += "; " + ", ".join(f"{c['cells']} cells {c['from']:x}->{c['to']:x}"
+                                         for c in event["value_changes"])
+            lines.append(text)
+        if len(events) > MAX_EVENTS_SHOWN:
+            lines.append(f"    ... {len(events) - MAX_EVENTS_SHOWN} more rare changes, counted in part C")
+
+    lines += ["", "C. RARE CHANGES AND THE CLICKS BEFORE THEM"]
+    if not events:
+        lines.append("- no rare change in these episodes")
+    for link in evidence["links"]:
+        lines.append(f"- {link['region']} (rows {link['rows'][0]}-{link['rows'][1]}, cols {link['cols'][0]}-"
+                     f"{link['cols'][1]}), {link['events']} change(s); {link['after_click_inside_region']} of them "
+                     "right after a click inside the region:")
+        for item in link["after_click_at_cell"][:MAX_EVENTS_SHOWN]:
+            lines.append(f"    after a click at {_cell(item['cell'])}: {item['times_change_followed']} of the "
+                         f"{item['times_clicked']} click(s) there in all episodes")
+        if len(link["after_click_at_cell"]) > MAX_EVENTS_SHOWN:
+            lines.append(f"    ... {len(link['after_click_at_cell']) - MAX_EVENTS_SHOWN} more clicked cells")
+        if link["events_without_a_click"]:
+            lines.append(f"    {link['events_without_a_click']} change(s) came on steps that were not clicks "
+                         "(another action, or a restart)")
+    quiet = evidence["clicked_without_rare_change"]
+    lines.append("- episodes where clicks changed the screen and no rare change happened: "
+                 + (", ".join(f"seed {s}" for s in quiet) if quiet else "none"))
+    return "\n".join(lines)
+
+
 STEP_COLUMNS = ("seed", "step", "turn", "action", "block_before", "block_after", "move", "cells_changed",
-                "cells_changed_outside_block", "regions_changed")
+                "cells_changed_outside_block", "regions_changed", "click")
 
 
 def write_per_step(evidence: dict[str, Any], trajectory_paths: dict[int, str]) -> list[str]:
@@ -619,6 +845,7 @@ def write_per_step(evidence: dict[str, Any], trajectory_paths: dict[int, str]) -
                     "" if row["block_after"] is None else f"{row['block_after'][0]},{row['block_after'][1]}",
                     row["move"], row["cells_changed"], row["cells_changed_outside_block"],
                     " ".join(row["regions_changed"]),
+                    "" if row.get("click") is None else f"{row['click'][0]},{row['click'][1]}",
                 ])
         written.append(out.replace(os.sep, "/"))
     return written
