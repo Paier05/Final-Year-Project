@@ -268,6 +268,27 @@ What has to be built because the games are new:
   rejected (players used 200 turns but only 48–97 actions, ~1.1 M tokens
   each); v3 rejected. Run stop time ~21:50; round 5 may or may not fit.
 
+### 21:06 — vc33 part 1 ended (paused before round 5); results page
+
+- **vc33, job 75187: COMPLETED 0:0, 3 h 38 min**, ended 19:48. v4
+  **accepted** (0.222: seeds 0, 0.333, 0.333; gate +0.0768, drop +0.029),
+  now the parent. Round 5's v5 is written (1 prompt edit) but not played:
+  the time guard needed ~94 min (longest episode 62 min × 1.5) and had 85.
+  `run_state.json` = paused, round 5, stage evaluate, seeds done [];
+  `run.lock` gone. Copied back (`runs/vc33`, its logs). Needs a part 2
+  (v5's 3 episodes + gate) on "continue".
+- Clicks on a button (the only thing that moves the object): v0 3 %,
+  v1 15 %, v4 56 %. But v4 presses both buttons, the upper (wrong) one
+  more (e.g. seed 2: 94 upper, 41 lower), so the object goes back and
+  forth; the level resets every 50 steps (4 resets per episode).
+- Correction to the ft09 note above: the block-clicking skill was added
+  in every child (`click_maroon_blocks` in v1/v3, `find_and_toggle_blocks`
+  in v2/v4/v5). v3 repeats v1's two rationales word for word; v4/v5 reuse
+  v1's skill rationale and v2's prompt rationale. Clicks on a tile:
+  v0 5.7 %, v1 9.5 %, v2 12.7 %, v3 0.2 %, v4/v5 0 %.
+- Results page with charts and frame pictures (for the user):
+  https://claude.ai/artifact/HiKBDmqMY3yNvZ27qoX75h (private).
+
 ## Open questions / risks
 
 - **Model availability (was blocking 14:33–~16:00).** Both models are down at the provider
