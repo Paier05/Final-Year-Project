@@ -66,7 +66,7 @@ What has to be built because the games are new:
   (`config_evolve.yaml`: seeds 1–5). The issue says 3 seeds (1, 2, 3) for
   this run, consistently, in five places. I follow the issue: **3 seeds**.
 
-### 2026-11-25 14:45 — The games inspected; v0 audit posted and answered
+### 2026-11-25 14:40 — The games inspected; v0 audit posted and answered
 
 - **ft09** (`scorer/ft09/GAME_NOTES.md`): only ACTION6 (click). Level 1 is
   a ring of 8 tiles around a pattern; a click toggles one tile's colour; the
@@ -85,7 +85,7 @@ What has to be built because the games are new:
   v0 for ft09/vc33 = v0 **without the `knowledge` prompt**; Meta prompt and
   Analyze get a **neutral score paragraph, parts not disclosed**.
 
-### 2026-11-25 15:40 — Scorers, game-aware loop, click frame evidence, tests
+### 2026-11-25 14:52 — Scorers, game-aware loop, click frame evidence, tests
 
 - What I did:
   - `scorer/` package: `scorer/<game>/score.py` (read_state, score,
@@ -152,6 +152,33 @@ What has to be built because the games are new:
   #12's and #14's plus #15's). The SIGUSR1 test runs only on Linux (smoke).
 - Baseline stage tried with the stub player on vc33: summary, harness copy,
   trajectories written; exit 0.
+
+### 2026-11-25 14:57 — TC1: login, upload, smoke check submitted
+
+- Credentials: the user gave the cluster login and the model URL/key in chat.
+  They go to `cluster/tc1.py` as environment variables per call and are
+  stored nowhere on this machine or in the repo. The model URL and key are
+  the same as the local `.env`.
+- `MyTCinfo`: QoS `normal`, MaxTRESPU cpu=20, gpu=1, mem=64G, **MaxSubmit
+  2**, MaxWall 6 h, partition `UGGPU-TC1`. No jobs of mine queued. Home 4.5 GB
+  used.
+- MaxSubmit counts queued jobs too, so with one job per game nothing else
+  can be queued: **baseline B moved into each game's part-1 job** (before the
+  run), rather than a separate pair of jobs I would have to wait out.
+- `conda` needs `module load anaconda` in a login shell; the `evo-harness`
+  env from #14 is there (Python 3.12.16, numpy 2.5.4, arc-agi 0.9.9,
+  arcengine 0.9.3). Reused unchanged.
+- `~/.evo_harness_env` from #14 was still there (its deletion was owed when
+  the head node stopped answering on 2026-11-17). Rewritten over SFTP with
+  the same two variables, mode 600; to be deleted when #15 finishes.
+- Upload: commit `b0a0955` + `environment_files/{ls20,ft09,vc33}`;
+  `file cluster/*.sh`: plain shell scripts, Unix line endings; `cat` of
+  both #15 scripts checked on the cluster.
+- **Smoke check submitted, both games at once: job 75152 (ft09), job 75153
+  (vc33)**, `cluster/job_smoke15.sh`, 15 min, 10 CPUs / 30 GB each.
+- Model still down at 14:55 (both models HTTP 500). Expected: the smoke
+  check's model test fails. Posted the preparation summary on the issue
+  (comment 7155338451).
 
 ## Open questions / risks
 
