@@ -29,7 +29,7 @@ from __future__ import annotations
 import statistics
 from typing import Any
 
-from evolve.goal_score import score_episode
+from scorer import for_game
 
 
 def episode_cost(row: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
@@ -56,7 +56,8 @@ def episode_cost(row: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
 
 def episode_metrics(records: list[dict[str, Any]], row: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
     """Goal progress, cost and gate score of one finished episode."""
-    progress = score_episode(records, cfg["game"], cfg["score"]["weights"])
+    # The game's own scorer (#15): ls20 -> evolve/goal_score.py, others -> scorer/<game>/.
+    progress = for_game(cfg["game"]).score_episode(records, cfg["game"], cfg["score"]["weights"])
     cost = episode_cost(row, cfg)
     lam = float(cfg["gate"]["lambda"])
     return {

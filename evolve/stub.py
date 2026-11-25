@@ -92,7 +92,7 @@ class ScriptedPlayer:
     """Plays a fixed list of actions, up to `per_turn` per turn, then stops
     acting. For tests that need a trajectory with known positions (#14)."""
 
-    actions: list[int]
+    actions: list[int | tuple[int, int, int]]
     per_turn: int = 6
     model: str = "scripted-player"
     usage: Usage = field(default_factory=Usage)
@@ -101,7 +101,9 @@ class ScriptedPlayer:
         prompt = messages[-1]["content"]
         turn = int(TURN_RE.search(prompt).group(1)) if TURN_RE.search(prompt) else 0
         chunk = self.actions[turn * self.per_turn:(turn + 1) * self.per_turn]
-        lines = [f"action({a})" for a in chunk] or ["pass"]
+        # An item is an action id, or (6, x, y) for a click (#15).
+        lines = [f"action({a})" if isinstance(a, int) else f"action({a[0]}, x={a[1]}, y={a[2]})"
+                 for a in chunk] or ["pass"]
         text = "OBSERVE: scripted.\n```python\n" + "\n".join(lines) + "\n```"
         self.usage.add(10, 10)
         return ModelResponse(text=text, tokens_in=10, tokens_out=10, latency_ms=1)

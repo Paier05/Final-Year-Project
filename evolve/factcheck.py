@@ -61,6 +61,16 @@ class GroundTruth:
     switch_colours: set[str]
     counts: dict[str, int]
     evidence: dict[str, str] = field(default_factory=dict)
+    # Issue #15: what differs between games. The defaults are ls20's, so
+    # #14's labels are unchanged; ft09 and vc33 set them in scorer/<game>/.
+    absent_roles: tuple[str, ...] = ABSENT_ROLES
+    click_actions: frozenset[int] = frozenset()   # actions whose effect depends on where they land
+    requirements_true: frozenset[str] = frozenset(GOAL_CONDITIONS)
+    requirements_false: frozenset[str] = frozenset({"collect", "avoid"})
+    requirement_text: str = ("the level clears when the player stands on the goal with matching rotation, "
+                             "shape and colour")
+    rotates: bool = True        # something on Level 1 has a rotation that can change
+    has_player: bool = True     # one sprite the actions move directly
 
     def role_text(self, colour: str) -> str:
         roles = sorted(self.roles.get(colour, set()))
@@ -113,8 +123,14 @@ _TRUTH: dict[str, GroundTruth] = {}
 
 
 def ground_truth(game_id: str) -> GroundTruth:
-    """Probe ls20 Level 1 once per process."""
+    """Probe ls20 Level 1 once per process. Other games' ground truth is
+    built by their scorer package (scorer/<game>/, issue #15)."""
     if game_id in _TRUTH:
+        return _TRUTH[game_id]
+    from scorer import for_game, short_name
+
+    if short_name(game_id) != "ls20":
+        _TRUTH[game_id] = for_game(game_id).ground_truth(game_id)
         return _TRUTH[game_id]
     from evolve.action_loop import EpisodeAPI
     from evolve.goal_score import GOALS, LIVES, PLAYER, WALL_TAG, read_state, level1_maze
@@ -256,7 +272,7 @@ def observed_moves(episodes: list[dict[str, Any]]) -> dict[str, Counter]:
         records = episode["records"]
         header = next((r for r in records if r.get("type") == "episode_start"), {})
         prev = header.get("start_state")
-        if prev is None:
+        if prev is None or "x" not in prev:  # no player position in this game's states (#15)
             continue
         for record in records:
             for item in record.get("actions") or [] if record.get("type") == "tool_call" else []:
@@ -467,8 +483,12 @@ def check_claim(
         cells = claim.get("cells") if claim.get("unit", "cells") == "cells" else None
         if direction is None and cells is None:
             return "unverifiable", "no direction or size stated"
+        if not actions:
+            return "unverifiable", "no action of this game moves a sprite by itself"
         notes = []
         for action in actions:
+            if action in truth.click_actions:
+                return "unverifiable", f"what ACTION{action} does depends on where it lands"
             if action not in truth.moves:
                 return "unverifiable", f"ACTION{action} is not available in this game"
             real = truth.moves[action]
@@ -493,7 +513,7 @@ def check_claim(
         role = str(claim.get("role", "other")).lower()
         if colour not in COLOUR_NAMES.values():
             return "unverifiable", f"unknown colour {colour!r}"
-        if role in ABSENT_ROLES:
+        if role in truth.absent_roles:
             return "false", f"Level 1 has no {role}; {truth.role_text(colour)}"
         if role not in ROLES or role == "other":
             return "unverifiable", f"role {role!r} is not checkable"
@@ -507,7 +527,7 @@ def check_claim(
         return "false", truth.role_text(colour)
     if kind == "location":
         name = str(claim.get("object", ""))
-        if name in ABSENT_ROLES:
+        if name in truth.absent_roles:
             return "false", f"Level 1 has no {name}"
         boxes = truth.objects.get(name)
         if not boxes:
@@ -524,6 +544,8 @@ def check_claim(
         return ("true" if any(_overlaps(rows, cols, box) for box in boxes) else "false"), evidence
     if kind == "rotation_cause":
         cause = str(claim.get("cause", ""))
+        if not truth.rotates:
+            return "false", "nothing on Level 1 changes its rotation"
         switches = truth.objects.get("rotation_switch", [])
         if cause == "action":
             return "false", "no action rotates the player directly; " + truth.evidence["rotation_switch"]
@@ -540,12 +562,12 @@ def check_claim(
         return "unverifiable", f"cause {cause!r} is not checkable"
     if kind == "goal_requirement":
         requires = [str(r).lower() for r in claim.get("requires") or []]
-        real = "the level clears when the player stands on the goal with matching rotation, shape and colour"
+        real = truth.requirement_text
         if not requires:
             return "unverifiable", "no requirement stated"
-        if any(r in ("collect", "avoid") for r in requires):
+        if any(r in truth.requirements_false for r in requires):
             return "false", real
-        if any(r not in GOAL_CONDITIONS for r in requires):
+        if any(r not in truth.requirements_true for r in requires):
             return "unverifiable", real
         return "true", real
     if kind == "count":
@@ -607,6 +629,10 @@ def make_skill_runner(harness: Any, test_states: list[tuple[str, list]], cfg: di
             return "unverifiable", f"no skill named {skill!r}"
         if returns not in targets:
             return "unverifiable", f"return kind {returns!r} is not checkable"
+        truth = ground_truth(cfg["game"])
+        if (returns == "player_position" and not truth.has_player) or (
+                returns != "player_position" and not truth.objects.get(targets[returns])):
+            return "unverifiable", f"this game has no {targets[returns].replace('_', ' ')} to compare with"
         results = []
         for label, prefix in test_states:
             api = api_at_state(prefix, cfg)
@@ -614,11 +640,11 @@ def make_skill_runner(harness: Any, test_states: list[tuple[str, list]], cfg: di
             if failed:
                 return "unverifiable", f"skills fail to load: {failed}"
             cell = sandbox.run(f"fc_result = {skill}()", filename="<fact-check>")
-            state = read_state(api.env)
             if returns == "player_position":
+                state = read_state(api.env)
                 box = (state["y"], state["x"], state["y"] + 4, state["x"] + 4)
             else:
-                box = ground_truth(cfg["game"]).objects[targets[returns]][0]
+                box = truth.objects[targets[returns]][0]
             point = None if cell.error else _as_point(sandbox.namespace.get("fc_result"))
             if point is None:
                 results.append((label, None, box))

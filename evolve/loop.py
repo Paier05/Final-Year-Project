@@ -38,7 +38,7 @@ from evolve import analyze as analyze_mod
 from evolve.action_loop import EpisodeOutcome, frames_path, read_records, run_episode, trajectory_path
 from evolve.checkpoint import Checkpoint, StopRun, move_partial, read_json, write_json_atomic
 from evolve.factcheck import FactChecker
-from evolve.goal_score import read_state
+from scorer import for_game
 from evolve.harness import Harness, load_harness
 from evolve.propose import meta_edits, rule_edits
 from evolve.replay import make_env
@@ -264,7 +264,7 @@ def evaluate(
             outcome: EpisodeOutcome = run_episode(
                 env=env, client=client, harness=harness, round_index=round_index,
                 episode=seed, seed=seed, cfg=cfg, stop_event=stop, traj_root=paths.trajectories,
-                frame_root=paths.frames, log=log, probe=read_state,
+                frame_root=paths.frames, log=log, probe=for_game(cfg["game"]).read_state,
             )
             if outcome.end_reason == "aborted" or outcome.error:
                 raise AbortExperiment(f"seed {seed} ended with {outcome.end_reason}: {outcome.error}")
@@ -408,7 +408,7 @@ def run(
         if os.path.exists(os.path.join(paths.harnesses, "v0", "manifest.json")):
             v0 = load_harness("v0", paths.harnesses)
         else:
-            v0 = build_v0()
+            v0 = build_v0(cfg.get("v0_drop_prompts") or ())
             v0.save(paths.harnesses)
         append_changelog(paths, changelog_section(v0, [], []), key="## v0 ")
         log("round 0: evaluating v0")
@@ -464,7 +464,8 @@ def run(
         report = _read_json(report_path)
         if report is None:
             def do_analyze() -> dict[str, Any]:
-                built = analyze_mod.analyze(parent, parent_entry, archive["versions"], rejected_since)
+                built = analyze_mod.analyze(parent, parent_entry, archive["versions"], rejected_since,
+                                            game=cfg["game"])
                 _write_json(report_path, built)
                 return built
 

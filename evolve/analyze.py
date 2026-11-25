@@ -27,6 +27,10 @@ Issue #14: the report gains a Frame evidence section (evolve/frame_evidence.py):
 where the player's block went and what else changed on screen, measured from
 the saved frames only. It is observations, with no game facts added and no
 advice; the full per-step table is written next to each trajectory.
+
+Issue #15: on a game whose scorer does not disclose its parts (ft09, vc33;
+scorer/__init__.py), episodes carry their score only: no goal parts, no
+failure line, no parts summary. The parts would describe the game.
 """
 
 from __future__ import annotations
@@ -44,6 +48,7 @@ from evolve.goal_score import PARTS, describe_failure
 from evolve.harness import Harness
 from evolve.replay import tool_calls
 from learning.mine import _translation
+from scorer import discloses_parts
 
 
 def source_hash(source: str) -> str:
@@ -195,19 +200,20 @@ def _run_length(actions: list[str]) -> str:
     return " ".join(out)
 
 
-def episode_digest(episode: dict[str, Any]) -> dict[str, Any]:
+def episode_digest(episode: dict[str, Any], disclose_parts: bool = True) -> dict[str, Any]:
     records = tool_calls(episode["records"])
     actions = [a["action"] for r in records for a in (r.get("actions") or [])]
     zero_action_turns = sum(1 for r in records if not r.get("actions"))
     counts = Counter(actions)
     goal = episode.get("goal") or {}
     cost = episode.get("cost") or {}
+    parts = ({"goal_parts": goal.get("parts"), "goal_failure": describe_failure(goal) if goal else None}
+             if disclose_parts else {})
     return {
         "episode": episode["episode"],
         "seed": episode.get("seed"),
         "score": episode["score"],
-        "goal_parts": goal.get("parts"),
-        "goal_failure": describe_failure(goal) if goal else None,
+        **parts,
         "cost": cost.get("cost"),
         "gate_score": episode.get("gate_score"),
         "tokens": cost.get("tokens"),
@@ -291,10 +297,12 @@ def frame_evidence_section(version: str, episodes: list[dict[str, Any]]) -> dict
 
 def analyze(
     parent: Harness, parent_entry: dict[str, Any], archive: list[dict[str, Any]],
-    extra_entries: list[dict[str, Any]] | None = None,
+    extra_entries: list[dict[str, Any]] | None = None, game: str | None = None,
 ) -> dict[str, Any]:
     """Build the round's report. `extra_entries` = recent rejected children,
-    whose episodes are summarised (not mined) so Propose sees what failed."""
+    whose episodes are summarised (not mined) so Propose sees what failed.
+    `game` picks whether goal parts may be shown (#15; None = ls20's rule)."""
+    disclose = discloses_parts(game)
     episodes = load_episodes(parent_entry)
     ranked = sorted(episodes, key=lambda e: e["score"])
     history = [
@@ -327,7 +335,7 @@ def analyze(
                 "version": entry["version"],
                 "score_mean": entry.get("score_mean"),
                 "gate": entry.get("gate"),
-                "episodes": [episode_digest(e) for e in load_episodes(entry)],
+                "episodes": [episode_digest(e, disclose) for e in load_episodes(entry)],
             }
         )
     return {
@@ -335,8 +343,8 @@ def analyze(
         "summary": {k: parent_entry.get(k) for k in
                     ("score_mean", "score_worst", "score_std", "cost_mean", "gate_mean", "gate_worst",
                      "clear_rate", "avg_steps", "avg_steps_to_clear", "tokens_mean", "llm_calls_mean")},
-        "goal_parts": goal_parts_summary(episodes),
-        "episodes": [episode_digest(e) for e in episodes],
+        "goal_parts": goal_parts_summary(episodes) if disclose else {},
+        "episodes": [episode_digest(e, disclose) for e in episodes],
         "skill_stats": skill_stats(parent, episodes, archive),
         "inline_helpers": inline_helpers(parent, episodes),
         "action_effects": action_effects(episodes),

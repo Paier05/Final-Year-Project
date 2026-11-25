@@ -220,8 +220,18 @@ Action-effect rules (what an action tends to do):
       how to use: Use ACTION4 when you need to move right by 5 cells."""
 
 
-def build_v0() -> Harness:
+def build_v0(drop_prompts: tuple[str, ...] | list[str] = ()) -> Harness:
+    """v0. `drop_prompts` names non-core prompts to leave out: for ft09 and
+    vc33 the user chose v0 without the ls20 `knowledge` prompt (#15,
+    2026-11-25; config `v0_drop_prompts`)."""
     prompts = {"system": SYSTEM_V0, "knowledge": KNOWLEDGE_V0, "format": FORMAT_V0}
+    edits = [{"op": "seed", "source": "issue #8 harness", "note": __doc__.strip().splitlines()[0]}]
+    for key in drop_prompts:
+        if key not in prompts or key in ("system", "format"):
+            raise ValueError(f"v0 has no droppable prompt {key!r}")
+        del prompts[key]
+        edits.append({"op": "delete", "target": "prompt", "name": key, "source": "user (issue #15 v0 audit)",
+                      "note": "ls20-specific; left out of v0 for this game"})
     return Harness(
         version="v0",
         parent=None,
@@ -229,5 +239,5 @@ def build_v0() -> Harness:
         prompts=prompts,
         steps=list(STEPS_V0),
         skills=dict(SKILLS_V0),
-        edits=[{"op": "seed", "source": "issue #8 harness", "note": __doc__.strip().splitlines()[0]}],
+        edits=edits,
     )

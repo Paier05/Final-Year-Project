@@ -25,6 +25,7 @@ from typing import Any
 from evolve.edits import RESERVED_NAMES
 from evolve.harness import API_DOC, CORE_PROMPTS, Harness
 from evolve.sandbox import ALLOWED_IMPORTS, function_key
+from scorer import discloses_parts
 
 
 # ---------------------------------------------------------------------------
@@ -159,16 +160,7 @@ SANDBOX RULES (a skill that breaks them is rejected)
   docstring. At most {max_skill_lines} lines.
 
 SCORE (what you are optimising)
-Goal progress, per episode, in [0, 1]. A Level-1 clear scores 1.0. Otherwise
-the evaluator reads the game state after every action and scores the episode's
-best state as the weighted sum of the goal's conditions:
-  position {w_position} (progress along walkable paths from the start to the goal
-           square), rotation {w_rotation} (the player's orientation matches the
-           goal's), shape {w_shape}, colour {w_colour} (each 1 if it matches).
-The analysis shows each episode's parts at its best state and which failed.
-After the analysis JSON comes a FRAME EVIDENCE section: where the player's
-block went and which other screen cells changed, measured by plain code from
-the saved frames of the same episodes. It reports observations only.
+{score}
 COST per episode, in [0, 1]: the mean of tokens / {cap_tokens}, model calls /
 {cap_calls} and actions / {max_actions}. GATE SCORE = progress - {lam} * cost.
 A version plays {n_episodes} episodes. It is accepted if its mean gate score
@@ -227,6 +219,37 @@ GUIDANCE
   where things are) are fair to write down; guesses presented as facts are not.
 """
 
+# The SCORE paragraph. ls20's (#12/#14) names the goal's conditions and their
+# weights; the text the Meta LLM reads for ls20 is unchanged by #15.
+SCORE_DISCLOSED = """Goal progress, per episode, in [0, 1]. A Level-1 clear scores 1.0. Otherwise
+the evaluator reads the game state after every action and scores the episode's
+best state as the weighted sum of the goal's conditions:
+  position {w_position} (progress along walkable paths from the start to the goal
+           square), rotation {w_rotation} (the player's orientation matches the
+           goal's), shape {w_shape}, colour {w_colour} (each 1 if it matches).
+The analysis shows each episode's parts at its best state and which failed.
+After the analysis JSON comes a FRAME EVIDENCE section: where the player's
+block went and which other screen cells changed, measured by plain code from
+the saved frames of the same episodes. It reports observations only."""
+
+# #15: for a game whose scorer does not disclose its parts (ft09, vc33), the
+# Meta LLM learns nothing about the goal from the score's description (the
+# user's choice, 2026-11-25).
+SCORE_UNDISCLOSED = """Goal progress, per episode, in [0, 1]. A Level-1 clear scores 1.0. Otherwise
+the evaluator reads the game state after every action and scores the episode's
+best state by how close it is to meeting the level's goal. How it measures
+that is not disclosed: the analysis shows each episode's score only.
+After the analysis JSON comes a FRAME EVIDENCE section: what each action did
+on screen (where a moving block went or, in a game played by clicks, where
+each click landed) and which other screen cells changed, measured by plain
+code from the saved frames of the same episodes. It reports observations only."""
+
+
+def score_text(cfg: dict[str, Any]) -> str:
+    if discloses_parts(cfg.get("game")):
+        return SCORE_DISCLOSED.format(**{f"w_{part}": weight for part, weight in cfg["score"]["weights"].items()})
+    return SCORE_UNDISCLOSED
+
 
 def _compact_report(report: dict[str, Any]) -> dict[str, Any]:
     compact = dict(report)
@@ -261,7 +284,7 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         n_episodes=len(cfg["seeds"]),
         cap_tokens=budget["max_tokens_per_episode"],
         cap_calls=budget["max_turns"],
-        **{f"w_{part}": weight for part, weight in cfg["score"]["weights"].items()},
+        score=score_text(cfg),
         max_prompt_chars=limits["max_prompt_chars"],
         max_system_chars=limits["max_system_chars"],
         max_step_chars=limits["max_step_chars"],
