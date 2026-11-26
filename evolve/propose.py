@@ -23,7 +23,8 @@ import re
 from typing import Any
 
 from evolve.edits import RESERVED_NAMES
-from evolve.harness import API_DOC, CORE_PROMPTS, Harness
+from evolve.action_loop import action_record_cfg
+from evolve.harness import CORE_PROMPTS, Harness, api_doc
 from evolve.sandbox import ALLOWED_IMPORTS, function_key
 from scorer import discloses_parts
 
@@ -134,7 +135,7 @@ player's last episodes and propose edits to its harness.
 
 HOW THE PLAYER WORKS
 Each turn the player gets a system prompt rendered from its harness, plus the
-current observation, the result of its last code cell, recent actions and its
+current observation, the result of its last code cell, recent actions{player_extra} and its
 notes. It replies with a short line of reasoning per step of the turn
 procedure, then one Python code block, which runs in a sandbox and acts on the
 game through action(). At most {cap} actions per turn; {max_actions} actions
@@ -188,7 +189,7 @@ VALIDATION (edits that fail are dropped)
   harness nor part of the sandbox API is dropped: for example a prompt that
   tells the player to call a skill you did not add (or whose add was
   dropped), or a delete that leaves the old name in a prompt or step.
-- prompts must stay under {max_prompt_chars} characters each and the whole
+{checks16}- prompts must stay under {max_prompt_chars} characters each and the whole
   system prompt under {max_system_chars}; steps under {max_step_chars} each.
 
 EDIT FORMAT
@@ -245,6 +246,38 @@ each click landed) and which other screen cells changed, measured by plain
 code from the saved frames of the same episodes. It reports observations only."""
 
 
+# #16: what the Meta LLM is told about the player's action record and the two
+# new Validate checks, when the config turns them on. Empty otherwise, so the
+# Meta prompt of #14/#15 configs is unchanged.
+PLAYER_RECORD_TEXT = (", an ACTION RECORD (what each of its recent actions changed on\n"
+                      "screen, measured from the frames; fixed, not part of the harness)")
+STATE_CHANGE_TEXT = """\
+- STATE CHANGE: a skill you add, edit or merge that takes actions (calls
+  action(), itself or through another skill) is run once from up to 5 real
+  states of the recorded episodes. If its actions change nothing, on screen
+  or in the game state, apart from what changes after every action, from any
+  of those states, it is dropped.
+"""
+REPEAT_TEXT = """\
+- REPEATS: an edit that repeats one rejected earlier in this run (dropped at
+  validation, or part of a version rejected at the gate) is dropped before
+  any other check: the same skill code (names ignored), prompt or step text
+  at least {similarity:.0%} similar, or the same skills deleted or merged. The
+  REJECTED SINCE CURRENT PARENT section lists what failed on top of the
+  current harness.
+"""
+
+
+def issue16_texts(cfg: dict[str, Any]) -> dict[str, str]:
+    validate_cfg = cfg.get("validate") or {}
+    checks = ""
+    if validate_cfg.get("state_change"):
+        checks += STATE_CHANGE_TEXT
+    if validate_cfg.get("repeat_check"):
+        checks += REPEAT_TEXT.format(similarity=float((cfg.get("rules") or {}).get("reject_similarity", 0.9)))
+    return {"player_extra": PLAYER_RECORD_TEXT if action_record_cfg(cfg) is not None else "", "checks16": checks}
+
+
 def score_text(cfg: dict[str, Any]) -> str:
     if discloses_parts(cfg.get("game")):
         return SCORE_DISCLOSED.format(**{f"w_{part}": weight for part, weight in cfg["score"]["weights"].items()})
@@ -253,8 +286,10 @@ def score_text(cfg: dict[str, Any]) -> str:
 
 def _compact_report(report: dict[str, Any]) -> dict[str, Any]:
     compact = dict(report)
-    # The Frame evidence section goes in as text, after the JSON.
+    # The Frame evidence section goes in as text, after the JSON; so does
+    # "Rejected since current parent" (#16).
     compact.pop("frame_evidence", None)
+    compact.pop("rejected_since_parent", None)
     helpers = []
     for helper in report["inline_helpers"][:6]:
         item = {k: v for k, v in helper.items() if k != "key"}
@@ -275,7 +310,7 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         max_actions=budget["max_actions"],
         min_steps=limits["min_steps"],
         max_steps=limits["max_steps"],
-        api=API_DOC.format(cap=budget["actions_per_turn"]),
+        api=api_doc(budget["actions_per_turn"], action_record_cfg(cfg) is not None),
         imports=", ".join(sorted(ALLOWED_IMPORTS)),
         max_skill_lines=limits["max_skill_lines"],
         delta=cfg["gate"]["delta"],
@@ -289,6 +324,7 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         max_system_chars=limits["max_system_chars"],
         max_step_chars=limits["max_step_chars"],
         max_edits=meta["max_edits"],
+        **issue16_texts(cfg),
     )
     steps = "\n".join(f"{i}. {s}" for i, s in enumerate(parent.steps, start=1))
     prompts = "\n\n".join(
@@ -304,7 +340,8 @@ def meta_messages(report: dict[str, Any], parent: Harness, cfg: dict[str, Any]) 
         f"ANALYSIS OF {parent.version}'s EPISODES (JSON)\n"
         f"{json.dumps(_compact_report(report), indent=1, ensure_ascii=False)}\n\n"
         f"{(report.get('frame_evidence') or {}).get('text') or 'FRAME EVIDENCE: not available.'}\n\n"
-        "Propose your edits now. JSON only."
+        + (f"{report['rejected_since_parent']['text']}\n\n" if report.get("rejected_since_parent") else "")
+        + "Propose your edits now. JSON only."
     )
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 

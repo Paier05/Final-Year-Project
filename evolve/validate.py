@@ -37,6 +37,13 @@ passed. An edit is kept only if every check that applies to it passes:
    that fails only this check is retried once the other edits of the set have
    been tried, so text may name a skill that a later edit of the same set
    adds, and a delete may precede the edit that removes the name.
+8. **repeat check** (#16) -- before anything else: an edit that repeats one
+   rejected earlier in this game's run (rejected_edits.jsonl, evolve/
+   rejected.py) is dropped, with the id of the edit it repeats.
+9. **state-change check** (#16) -- last: an action-taking skill whose
+   actions change nothing from any restored state of the parent's episodes
+   is dropped; if no state could be checked it is kept and flagged
+   (evolve/state_change.py).
 """
 
 from __future__ import annotations
@@ -44,13 +51,15 @@ from __future__ import annotations
 import ast
 from typing import Any, Callable
 
-from evolve.action_loop import build_sandbox
+from evolve.action_loop import action_record_cfg, build_sandbox
 from evolve.edits import EditError, Workspace, apply_edit, describe, normalise
 from evolve.factcheck import FactChecker, meta_facing_reason
 from evolve.harness import Harness
+from evolve.rejected import DEFAULT_SIMILARITY, RejectedStore
 from evolve.replay import ReplayResult, api_at_state, replay, states_along
 from evolve import skill_names
 from evolve.sandbox import SandboxViolation, check_source, strip_function_defs
+from evolve.state_change import StateChangeChecker, applies_to
 
 
 class _Rename(ast.NodeTransformer):
@@ -125,7 +134,7 @@ def static_tests(harness: Harness, edit: dict[str, Any], cfg: dict[str, Any]) ->
                 return False, f"step {index} is empty"
             if len(step) > int(limits["max_step_chars"]):
                 return False, f"step {index} is {len(step)} chars (> {limits['max_step_chars']})"
-    rendered = harness.render_system(int(cfg["budget"]["actions_per_turn"]))
+    rendered = harness.render_system(int(cfg["budget"]["actions_per_turn"]), action_record_cfg(cfg) is not None)
     if len(rendered) > int(limits["max_system_chars"]):
         return False, f"system prompt would be {len(rendered)} chars (> {limits['max_system_chars']})"
     return True, f"static ok (system prompt {len(rendered)} chars)"
@@ -243,8 +252,12 @@ def validate(
     round_index: int,
     log: Callable[[str], None] = print,
     factchecker: FactChecker | None = None,
+    rejected: RejectedStore | None = None,
+    state_checker: StateChangeChecker | None = None,
 ) -> tuple[Harness, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     ws = Workspace.from_parent(parent, version, round_index)
+    threshold = float((cfg.get("rules") or {}).get("reject_similarity", DEFAULT_SIMILARITY))
+    repeats: list[dict[str, Any]] = []
     baselines = {e["episode"]: replay(e["records"], parent, cfg) for e in episodes}
     fidelity = {
         e: {"turns": b.turns, "reproduced": b.n_reproduced, "first_divergence": b.first_divergence}
@@ -266,6 +279,20 @@ def validate(
             dropped.append({"id": edit_id, "source": source, "what": str(raw)[:120],
                             "stage": "applies", "reason": f"malformed: {error}", "edit": raw})
             edit = None
+        if edit is not None and rejected is not None:
+            # Repeats go first: a rejected edit is not re-tested (#16).
+            found = rejected.match(edit, parent, threshold)
+            if found is not None:
+                earlier, score = found
+                reason = (f"repeats rejected edit {earlier['id']} (round {earlier['round']}, "
+                          f"{earlier['rejected_by'].split(':')[0]}); similarity {score:.2f}")
+                log(f"    drop {edit_id} [{source}] {describe(edit)}: {reason}")
+                dropped.append({"id": edit_id, "source": source, "what": describe(edit), "stage": "repeat",
+                                "reason": reason, "edit": edit, "repeat_of": earlier["id"],
+                                "similarity": round(score, 4), "checks": [{"check": "repeat", "result": reason}]})
+                repeats.append({"id": edit_id, "repeat_of": earlier["id"], "similarity": round(score, 4),
+                                "earlier_rejected_by": earlier["rejected_by"]})
+                edit = None
         normalised.append((edit_id, source, raw, edit))
     if factchecker is not None:
         # One extraction call for every edit of this attempt.
@@ -330,6 +357,12 @@ def validate(
             checks.append({"check": "fact-check", "result": facts["summary"]})
             if facts["verdict"] == "false":
                 return fail("fact-check", meta_facing_reason(facts))
+        if state_checker is not None and applies_to(edit, trial.harness):
+            outcome = state_checker.check(edit, trial.harness)
+            out["state_change"] = outcome
+            checks.append({"check": "state-change", "result": outcome["summary"]})
+            if outcome["verdict"] == "no change":
+                return fail("state-change", outcome["summary"])
         return out | {"ok": True, "trial": trial}
 
     def settle(edit_id: str, source: str, edit: dict[str, Any], result: dict[str, Any]) -> None:
@@ -341,13 +374,16 @@ def validate(
             log(f"    pass {edit_id} [{source}] {what}" + (f" ({facts['summary']})" if facts else ""))
             passed.append({"id": edit_id, "source": source, "what": what, "edit": edit,
                            "rationale": edit.get("rationale", ""), "checks": result["checks"],
-                           "replay_detail": result["detail"], "factcheck": facts})
+                           "replay_detail": result["detail"], "factcheck": facts,
+                           **({"state_change": result["state_change"]} if result.get("state_change") else {})})
             return
         log(f"    drop {edit_id} [{source}] {what}: {result['reason']}")
         item = {"id": edit_id, "source": source, "what": what, "stage": result["stage"],
                 "reason": result["reason"], "edit": edit, "checks": result["checks"]}
         if result["stage"] == "fact-check":
             item["factcheck"] = result["facts"]
+        if result.get("state_change"):
+            item["state_change"] = result["state_change"]
         if result["stage"] == "skill-name check":
             item["missing_names"] = result["missing"]
             names_rejected.append({"id": edit_id, "source": source, "what": what,
@@ -404,4 +440,9 @@ def validate(
             }}
     if factchecker is not None:
         info["factcheck_extraction"] = {k: v for k, v in factchecker.extraction.items()}
+    if rejected is not None:
+        info["repeat"] = {"store_entries": len(rejected.entries), "threshold": threshold,
+                          "edits_dropped": len(repeats), "repeats": repeats}
+    if state_checker is not None:
+        info["state_change"] = state_checker.info()
     return child, passed, dropped, info

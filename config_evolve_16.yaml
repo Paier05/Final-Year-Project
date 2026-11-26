@@ -1,0 +1,144 @@
+# Issue #16 — evo-harness v4 on ft09 and vc33, Level 1, run separately and in
+# parallel on TC1. Everything is #15's config_evolve_15.yaml (model, budgets,
+# gate, promotion and delete rules, v0, scorers, checkpoint) except what is
+# marked "#16": 5 seeds, the player's action record, the state-change and
+# repeat checks in Validate, and "Rejected since current parent" in the Meta
+# LLM's input.
+#
+#     python evolve_run.py --config config_evolve_16.yaml --game ft09 --run-dir runs/ft09-v4 --resume
+#
+# Credentials are NOT here. The endpoint URL and key are read from the
+# QWEN_BASE_URL and QWEN_API_KEY environment variables (or the gitignored
+# .env), and are never written to logs, archive.json or reports.
+
+experiment: "issue #16: evo-harness v4 on {game} level 1"
+# #15: the game and the run directory come from --game and --run-dir, so the
+# two games' runs share this file and nothing else.
+game: null
+root: null
+
+rounds: 5
+episodes_per_round: 5          # #16: 5 (#15: 3)
+# One episode per fixed seed, the same seeds for every version and round.
+seeds: [1, 2, 3, 4, 5]         # #16: 1-5 (#15: 1-3)
+parallel_episodes: 5           # #16: 5, all at once (#15: 3)
+
+# #16 change 5: after every action the player is told what it changed on
+# screen (evolve/frame_diff.py): the last `last_n` actions one line each, a
+# per-location click summary, and the full record as `action_log` in the
+# sandbox. Fixed infrastructure: the evolve loop cannot edit it.
+action_record:
+  enabled: true
+  last_n: 20
+  max_click_locations: 40
+
+# #15: the user's answer to the v0 audit (2026-11-25): v0 for ft09 and vc33 is
+# #14's v0 without its ls20 `knowledge` prompt. Nothing else in v0 changes.
+v0_drop_prompts: [knowledge]
+
+score:
+  # #15: each game has its own goal-progress scorer (scorer/<game>/score.py,
+  # documented in scorer/<game>/GAME_NOTES.md). Same contract as ls20's: a
+  # state scores sum(weight * part); an episode scores its best state; a
+  # clear = 1.0. --game picks the weights. The parts are not shown to the
+  # player or the Meta LLM.
+  by_game:
+    ft09:
+      weights:
+        tiles: 1.0        # 1 - win checks failing / failing at the start
+    vc33:
+      weights:
+        alignment: 1.0    # 1 - distance to the target / distance at the start
+
+gate:
+  # g = progress - lambda * cost per episode (evolve/score.py). As #14.
+  delta: 0.1
+  lambda: 0.5
+  epsilon: 0.05
+
+player:
+  model: "qwen38-flash-next-autoround"
+  # If the flash model is down when a part starts, use the normal one (the
+  # user's rule from #14). The model each episode used is recorded, and a run
+  # keeps the model its first part used.
+  fallback_model: "Qwen/Qwen3.8-27B-FP8"
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 1500
+  thinking: "off"
+  request_timeout_s: 180
+  max_transient_retries: 2
+
+meta:
+  enabled: true
+  model: "qwen38-flash-next-autoround"
+  fallback_model: "Qwen/Qwen3.8-27B-FP8"
+  temperature: 0.3
+  top_p: 0.9
+  max_tokens: 8000
+  thinking: "off"
+  request_timeout_s: 600
+  max_transient_retries: 2
+  max_edits: 4
+  # #16 change 4: the Meta LLM's input lists every version rejected at the
+  # Gate whose parent is the current parent, and every edit dropped at
+  # Validate since that parent was accepted.
+  rejected_section: true
+
+factcheck:
+  # #15: each game's ground truth is built in scorer/<game>/ (the #14 ls20
+  # facts are not used for these games).
+  enabled: true
+  max_tokens: 6000
+
+budget:
+  # Same as #14 (the issue: "step budget per episode: same as #14").
+  max_actions: 200
+  actions_per_turn: 6
+  max_turns: 200
+  wall_clock_s: 14400
+  max_tokens_per_episode: 1200000
+  max_resets: 10
+  cell_time_limit_s: 10
+
+observation:
+  max_objects: 40
+  history_n: 10
+
+rules:
+  promote_min_episodes: 1
+  promote_min_calls: 2
+  max_promotions: 3
+  # Delete a skill never called in 10 evaluated episodes: the rule counts
+  # episodes, so with 5 seeds this is 2 rounds again (#16 change 1; #14's value).
+  delete_min_episodes: 10
+  # #16 change 3: a text edit repeats a rejected one at this similarity or above.
+  reject_similarity: 0.9
+
+validate:
+  max_system_chars: 14000
+  max_prompt_chars: 3000
+  min_steps: 3
+  max_steps: 10
+  max_step_chars: 400
+  max_skill_lines: 80
+  test_state_fractions: [0.0, 0.5, 0.9]
+  # #16 change 2: drop an action-taking skill whose actions change nothing
+  # from any of up to 5 restored states of the parent's episodes.
+  state_change: true
+  # #16 change 3: drop an edit that repeats one rejected earlier in the run
+  # (<run dir>/rejected_edits.jsonl), before the other checks.
+  repeat_check: true
+
+checkpoint:
+  job_time_limit_min: 360   # TC1 QoS normal: 6 h per job
+  stop_by_min: 340          # stop, save and exit cleanly by 5 h 40 min
+  factor: 1.5
+  stop_grace_s: 120
+  signal_grace_s: 10
+
+limits:
+  # Whole-run ceiling per game, checked before every round. Worst case
+  # 6 versions x 5 episodes x 1.2M = 36M, plus Meta and fact-check calls.
+  global_token_cap: 60000000   # #16: 60M (#15: 40M for 3 episodes)
+  abort_after_consecutive_rate_limits: 3

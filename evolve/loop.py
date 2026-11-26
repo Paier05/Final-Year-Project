@@ -21,6 +21,13 @@ SIGUSR1) ends the run cleanly with StopRun. On resume a cut-off episode's
 files go to partial/ and its seed is replayed; a cut-off stage left no output
 and runs again. Propose and Validate are saved separately (attempts.json), so
 a cut during Validate does not repeat the Meta LLM call.
+
+Issue #16 (each switched on by its config): Validate's repeat check reads
+<root>/rejected_edits.jsonl, which is brought up to date from the round
+reports and the archive before every Validate and after every Gate (so a cut
+anywhere cannot lose a rejection); Validate's state-change check; and the
+"Rejected since current parent" section of the Meta LLM's input, built at
+Analyze and stored in analysis.json with the rest of the report.
 """
 
 from __future__ import annotations
@@ -41,9 +48,12 @@ from evolve.factcheck import FactChecker
 from scorer import for_game
 from evolve.harness import Harness, load_harness
 from evolve.propose import meta_edits, rule_edits
+from evolve.rejected import STORE_FILE, RejectedStore, rejected_since_parent, render_section
+from evolve.rejected import sync as sync_rejected
 from evolve.replay import make_env
 from evolve.score import episode_metrics, gate, summarise
 from evolve.seed_v0 import build_v0
+from evolve.state_change import StateChangeChecker
 from evolve.validate import validate
 
 
@@ -125,7 +135,9 @@ def load_archive(paths: Paths, cfg: dict[str, Any]) -> dict[str, Any]:
             "config": {k: cfg[k] for k in ("game", "episodes_per_round", "seeds", "parallel_episodes",
                                            "budget", "score", "gate", "rules", "validate", "factcheck")}
             | {"player_model": cfg["player"]["model"], "meta_model": cfg["meta"]["model"],
-               "meta_enabled": cfg["meta"]["enabled"]},
+               "meta_enabled": cfg["meta"]["enabled"]}
+            | ({"action_record": cfg["action_record"], "rejected_section": cfg["meta"].get("rejected_section")}
+               if "action_record" in cfg else {}),
             "versions": [],
             "rounds": [],
         }
@@ -180,6 +192,20 @@ def _missing_name_lines(item: dict[str, Any]) -> list[str]:
     ]
 
 
+def _state_change_lines(item: dict[str, Any]) -> list[str]:
+    outcome = item.get("state_change") or {}
+    if not outcome:
+        return []
+    lines = [f"  - state-change check: {outcome['summary']} (called with {outcome['call']}; "
+             f"{outcome['env_steps']} env steps)"]
+    for state in outcome.get("states") or []:
+        lines.append(f"    - seed {state['seed']} turn {state['turn']}: {state['verdict']}"
+                     + (f" ({state['why']})" if state.get("why") else
+                        f" ({state.get('actions')} actions, {state.get('cells_changed')} cells changed, "
+                        f"game state changed: {state.get('game_state_changed')})"))
+    return lines
+
+
 def changelog_section(harness: Harness, passed: list[dict[str, Any]], dropped: list[dict[str, Any]]) -> str:
     lines = [f"## {harness.version} (parent {harness.parent or '-'}, round {harness.round_index}) — {_now()}"]
     if harness.parent is None:
@@ -187,8 +213,11 @@ def changelog_section(harness: Harness, passed: list[dict[str, Any]], dropped: l
     lines.append(f"Accepted edits ({len(passed)}):")
     for p in passed:
         flag = " **UNVERIFIABLE**" if (p.get("factcheck") or {}).get("verdict") == "unverifiable" else ""
+        if (p.get("state_change") or {}).get("verdict") == "unverifiable":
+            flag += " **STATE-CHANGE UNVERIFIABLE**"
         lines.append(f"- `{p['id']}` [{p['source']}]{flag} {p['what']} — {p['rationale']}".rstrip(" —"))
         lines.extend(_factcheck_lines(p))
+        lines.extend(_state_change_lines(p))
     if not passed:
         lines.append("- (none)")
     lines.append(f"Dropped at Validate ({len(dropped)}):")
@@ -196,6 +225,7 @@ def changelog_section(harness: Harness, passed: list[dict[str, Any]], dropped: l
         lines.append(f"- `{d['id']}` [{d['source']}] {d['what']} — {d['stage']}: {d['reason']}")
         lines.extend(_factcheck_lines(d))
         lines.extend(_missing_name_lines(d))
+        lines.extend(_state_change_lines(d))
     if not dropped:
         lines.append("- (none)")
     return "\n".join(lines)
@@ -361,6 +391,28 @@ def _skill_name_record(attempts: list[dict[str, Any]]) -> dict[str, Any]:
             "missing_in_child": last.get("missing_in_child") or []}
 
 
+def _issue16_record(attempts: list[dict[str, Any]]) -> dict[str, Any]:
+    """The round's state-change and repeat checks (#16), over its attempts."""
+    state = {"skills_checked": 0, "dropped": 0, "unverifiable": 0, "env_steps": 0, "results": []}
+    repeat = {"edits_dropped": 0, "repeats": []}
+    for attempt in attempts:
+        info = attempt.get("info") or {}
+        for key in ("skills_checked", "dropped", "unverifiable", "env_steps"):
+            state[key] += int((info.get("state_change") or {}).get(key) or 0)
+        state["results"] += [{"attempt": attempt["attempt"], **{k: v for k, v in r.items() if k != "states"},
+                              "states": [{k: s.get(k) for k in ("seed", "turn", "verdict", "why", "actions",
+                                                                 "cells_changed", "game_state_changed")}
+                                         for s in r.get("states") or []]}
+                             for r in (info.get("state_change") or {}).get("results") or []]
+        repeat["edits_dropped"] += int((info.get("repeat") or {}).get("edits_dropped") or 0)
+        repeat["repeats"] += [{"attempt": attempt["attempt"], **r} for r in (info.get("repeat") or {}).get("repeats") or []]
+    if attempts:
+        last = (attempts[-1].get("info") or {}).get("state_change") or {}
+        state["every_step_regions"] = last.get("every_step_regions")
+        state["every_step_fields"] = last.get("every_step_fields")
+    return {"state_change": state, "repeat": repeat}
+
+
 # ---------------------------------------------------------------------------
 # The loop
 # ---------------------------------------------------------------------------
@@ -386,6 +438,16 @@ def run(
         ckpt = Checkpoint(paths.root, cfg, log=log)
     archive = load_archive(paths, cfg)
     use_factcheck = bool((cfg.get("factcheck") or {}).get("enabled"))
+    validate_cfg = cfg.get("validate") or {}
+    use_state_change = bool(validate_cfg.get("state_change"))
+    use_section = bool((cfg.get("meta") or {}).get("rejected_section"))
+    store = RejectedStore(os.path.join(paths.root, STORE_FILE)) if validate_cfg.get("repeat_check") else None
+
+    def sync_store() -> None:
+        if store is not None:
+            added = sync_rejected(store, paths.root, archive, lambda name: load_harness(name, paths.harnesses))
+            if added:
+                log(f"  rejected-edit store: {added} new, {len(store.entries)} in all")
 
     def stage(round_index: int, name: str, parent: str | None, work: Callable[[], Any]) -> Any:
         """Run one stage as a checkpointed unit: not started if it will not
@@ -466,6 +528,9 @@ def run(
             def do_analyze() -> dict[str, Any]:
                 built = analyze_mod.analyze(parent, parent_entry, archive["versions"], rejected_since,
                                             game=cfg["game"])
+                if use_section:
+                    data = rejected_since_parent(archive, paths.root, parent, parent_entry)
+                    built["rejected_since_parent"] = {"data": data, "text": render_section(data)}
                 _write_json(report_path, built)
                 return built
 
@@ -476,6 +541,10 @@ def run(
         log(f"  1 analyze: {len(report['inline_helpers'])} inline-helper groups, "
             f"skills called {sum(s['calls'] for s in report['skill_stats'].values())} times; frame evidence: "
             f"{len(evidence.get('rare_events') or [])} rare on-screen changes")
+        if report.get("rejected_since_parent"):
+            data = report["rejected_since_parent"]["data"]
+            log(f"    rejected since {parent_name}: {len(data['versions'])} version(s), "
+                f"{len(data['dropped'])} dropped edit(s)")
 
         # ---- 2 · Propose + 3 · Validate (one retry if nothing survives) ------
         # attempts.json grows one step at a time: an attempt's proposals, then
@@ -518,8 +587,13 @@ def run(
                     checker = None
                     if use_factcheck:
                         checker = FactChecker(cfg, fact_factory() if fact_factory else None, episodes)
+                    sync_store()  # everything rejected up to here, this round's earlier attempt included
+                    states = None
+                    if use_state_change:
+                        states = StateChangeChecker(cfg, episodes, for_game(cfg["game"]).read_state)
                     _child, passed, dropped, info = validate(parent, raw, episodes, cfg, version, round_index,
-                                                             log, factchecker=checker)
+                                                             log, factchecker=checker, rejected=store,
+                                                             state_checker=states)
                     over_cap = (meta or {}).get("over_cap") or []
                     for i, extra in enumerate(over_cap, start=1):
                         where = extra.get("name") or extra.get("index") or extra.get("indices")
@@ -533,9 +607,16 @@ def run(
 
                 checked = stage(round_index, f"validate.{len(attempts)}", parent_name, do_validate)
                 names = checked["info"]["skill_names"]
+                extra = ""
+                if "state_change" in checked["info"]:
+                    sc = checked["info"]["state_change"]
+                    extra += (f"; state-change check: {sc['skills_checked']} skills checked, {sc['dropped']} "
+                              f"dropped, {sc['unverifiable']} unverifiable, {sc['env_steps']} env steps")
+                if "repeat" in checked["info"]:
+                    extra += f"; repeat check: {checked['info']['repeat']['edits_dropped']} dropped"
                 log(f"  3 validate: {len(checked['passed'])} passed, {len(checked['dropped'])} dropped "
                     f"(skill-name check: {names['edits_checked']} edits checked, "
-                    f"{names['edits_rejected']} rejected)")
+                    f"{names['edits_rejected']} rejected{extra})")
             validation = {"attempts": attempts, "final_attempt": len(attempts)}
             _write_json(os.path.join(rdir, "proposals.json"),
                         [{"attempt": a["attempt"], "rules": a["rules"], "meta": a["meta"]} for a in attempts])
@@ -545,6 +626,8 @@ def run(
         all_dropped = [d for a in validation["attempts"] for d in a["dropped"]]
         facts = _factcheck_record(validation["attempts"])
         names = _skill_name_record(validation["attempts"])
+        checks16 = _issue16_record(validation["attempts"]) if (use_state_change or store is not None) else {}
+        sync_store()
 
         if not passed:
             log(f"  no edit survived validation; round {round_index} ends without a child")
@@ -553,7 +636,7 @@ def run(
                 archive["rounds"].append({"round": round_index, "parent_before": parent_name, "child": None,
                                           "decision": "no valid edits", "parent_after": parent_name,
                                           "edits_dropped": _slim(all_dropped), "factcheck": facts,
-                                          "skill_names": names})
+                                          "skill_names": names, **checks16})
                 save_archive(paths, archive)
                 append_changelog(paths, f"## round {round_index}: no child (parent {parent_name})\n"
                                  f"Every proposed edit was dropped at Validate ({len(all_dropped)}).\n"
@@ -562,6 +645,7 @@ def run(
                                  key=f"## round {round_index}: no child")
 
             stage(round_index, "gate", parent_name, no_child)
+            sync_store()
             continue
 
         # ---- 4 · Write vN+1 ----------------------------------------------------
@@ -591,7 +675,7 @@ def run(
             decision["compared_to"] = parent_name
             entry |= {"edits_accepted": _slim(passed), "edits_dropped": _slim(all_dropped),
                       "gate": decision, "accepted": decision["decision"] == "accepted",
-                      "factcheck": facts, "skill_names": names,
+                      "factcheck": facts, "skill_names": names, **checks16,
                       "meta_analysis": [((a.get("meta") or {}).get("analysis")) for a in validation["attempts"]],
                       "meta_tokens": sum(int((a.get("meta") or {}).get("tokens_in") or 0)
                                          + int((a.get("meta") or {}).get("tokens_out") or 0)
@@ -611,7 +695,9 @@ def run(
 
         decision, parent_after = stage(round_index, "gate", parent_name, do_gate)
         log(f"  5 gate: {decision['decision']} ({decision['reason']}); parent is now {parent_after}")
+        sync_store()  # a rejected version's edits
 
+    sync_store()
     last_round = archive["rounds"][-1]
     ckpt.position(last_round["round"], "gate", "done", last_round["parent_after"], seeds_done=[])
     return archive
@@ -635,7 +721,7 @@ def _slim(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """What the archive keeps per edit. Analyze shows the Meta LLM `what` and
     `reason` from here, so a fact-check `reason` must not state true values
     (see evolve/factcheck.meta_facing_reason); the evidence is kept apart."""
-    keep = ("id", "source", "what", "rationale", "stage", "reason", "checks")
+    keep = ("id", "source", "what", "rationale", "stage", "reason", "checks", "repeat_of", "similarity")
     out = []
     for item in items:
         slim = {k: item[k] for k in keep if k in item}
