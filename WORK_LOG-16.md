@@ -297,8 +297,9 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
   - Fetched `runs/ft09-v4`, `runs/vc33-v4`, `logs` (345 files, 33 MB).
 - **ft09**: v0 0.30 → v1 0.75 (accepted, 2/5 clears) → v2, v3 rejected →
   v4 0.80 (accepted, 1/5 clears) → v5 rejected. Final parent v4, gate 0.558.
-  - Repeat check: 10 drops (round 3: all 4 edits; rounds 4 and 5: the same
+  - Repeat check: 8 drops (round 3: all 4 edits; rounds 4 and 5: the same
     two rule deletes of `bfs_to_target` and `obstacle_map` each time).
+    (First written as 10; corrected 2026-11-26 while building the report.)
   - State-change check: 4 skill checks, 1 drop (round 4, `solve_level`: no
     change from any of 5 states), 0 unverifiable.
   - Rejected-edit store: 16 entries.
@@ -309,6 +310,34 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
     skill takes actions). Rejected-edit store: 9 entries.
 - #15's secrets file stays: #15's vc33 round 5 is still owed.
 - Next: final report with pictures (on the user's go).
+
+### 2026-11-26 — Final report built (step 8)
+
+- `analysis/issue16_report.py` writes `results/issue16/final.json` and 17
+  figures in `results/issue16/figures/` (commit `4287117`); report text in
+  `results/issue16/final_report.md`, images linked at that commit. Results
+  page (private): https://claude.ai/artifact/2weLHAvZkPgapQgchuwEo6
+- Both action-record examples rebuilt from the saved frames match the
+  `action_record_chars` their turn logged (ft09 2282, vc33 672).
+- **Finding: the state-change drop of `solve_level` (ft09 round 4) looks
+  false.** The parent never called it, so `test_states` took one state per
+  seed in spread order, which with 5 seeds is turn 0 of every seed. At turn 0
+  all 8 outer blocks are maroon and the skill clicks only cyan ones: 0
+  actions. Mid-episode it would try 1–8 clicks (counted with `action()`
+  stubbed). Fix for a next issue: spread the turns across seeds, and call a
+  never-called skill "unverifiable" when all states are start states.
+- **Finding: 6 of the 8 repeat drops are the same two rule-based deletes**
+  of never-called skills, blocked because they were bundled into v2 (lost at
+  the Gate on cost). The store blocks them for the whole run, across parents.
+- ft09 round 3: the Meta LLM's first call re-proposed both edits the
+  "Rejected since current parent" section listed, word for word.
+- Action record alone (v0 vs #15's v0, seeds 1–3): no-effect clicks barely
+  changed (ft09 195 vs 189 per episode, vc33 178 vs 194). Later versions in
+  both games fell to 0–36 per episode, from the harness edits.
+- Record cost ≈ 127k chars (≈ 32k tokens) per episode, 7–9 % of input.
+- vc33 oddity: the row-0 "trap" hint was "false" at the fact-check in round
+  3 and "unverifiable" in round 4 (same sentence; LLM claim extraction).
+- Not posted yet: waiting for the user's OK to post the report on the issue.
 
 ## Open questions / risks
 
