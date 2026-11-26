@@ -33,6 +33,8 @@ from harness.perception import (
     grid_from_frame,
 )
 from harness.trajectory import frame_hash
+from evolve.frame_diff import ActionLog, ActionRecorder
+from evolve.frame_diff import render as render_action_record
 from evolve.harness import EVOLVE_DIR, Harness
 from evolve.sandbox import (
     Sandbox,
@@ -58,6 +60,13 @@ def frames_path(round_index: int, seed: int, root: str = FRAME_ROOT) -> str:
     return os.path.join(root, f"round_{round_index}", f"seed_{seed}.npz")
 
 
+def action_record_cfg(cfg: dict[str, Any]) -> dict[str, Any] | None:
+    """The action-record settings (#16 change 5), or None when it is off.
+    Configs before #16 have no `action_record`: the player sees what it saw."""
+    settings = cfg.get("action_record") or {}
+    return settings if settings.get("enabled") else None
+
+
 # ---------------------------------------------------------------------------
 # The API the player's code sees
 # ---------------------------------------------------------------------------
@@ -75,6 +84,11 @@ class EpisodeAPI:
     into the action's trajectory record (`game_state`). That is what the
     goal-progress score reads. Nothing in `preload()` exposes it, so the
     player's code cannot see it.
+
+    `action_record` (#16): every action also gets a record of what it changed
+    on screen (evolve/frame_diff.py), stored in its trajectory record
+    (`record`) and readable in the sandbox as `action_log`. Built from this
+    episode's frames only.
     """
 
     def __init__(
@@ -85,6 +99,8 @@ class EpisodeAPI:
         max_resets: int,
         target_level: int = 1,
         probe: Callable[[Any], dict[str, Any]] | None = None,
+        action_record: bool = False,
+        known_every_step: list | tuple = (),
     ) -> None:
         from arcengine.enums import GameAction
 
@@ -112,6 +128,8 @@ class EpisodeAPI:
         self.solved = False
         self.steps_to_clear: int | None = None
         self.start_state = probe(env) if probe else None
+        self.recorder = ActionRecorder(known_every_step) if action_record else None
+        self.action_log = ActionLog(self.recorder.records) if self.recorder else None
 
     # -- turn bookkeeping (harness side) -------------------------------------
 
@@ -174,6 +192,7 @@ class EpisodeAPI:
         }
         if self.probe is not None:
             record["game_state"] = self.probe(self.env)
+        after = self.grid
         game_over = False
         if self.state == "GAME_OVER" and self.levels_completed < self.target_level:
             game_over = True
@@ -190,6 +209,11 @@ class EpisodeAPI:
                 record["auto_reset_frame"] = len(self.frames) - 1
                 if self.probe is not None:
                     record["auto_reset_state"] = self.probe(self.env)
+        if self.recorder is not None:
+            record["record"] = self.recorder.add(
+                self.actions_used, name, data, before, after,
+                game_over=game_over, level_restarted="auto_reset_frame" in record,
+            )
         self.turn_actions.append(record)
         self.history.append(
             {"turn": self.turn, "action": name, "args": data or {}, "effect": record["effect"]}
@@ -247,7 +271,7 @@ class EpisodeAPI:
         return [dict(h) for h in self.history[-int(n):]] if n else []
 
     def preload(self) -> dict[str, Any]:
-        return {
+        names = {
             "action": self.action,
             "grid": self.grid_fn,
             "objects": self.objects_fn,
@@ -256,6 +280,15 @@ class EpisodeAPI:
             "history": self.history_fn,
             "COLOURS": dict(COLOUR_NAMES),
         }
+        if self.action_log is not None:
+            names["action_log"] = self.action_log
+        return names
+
+    def restore(self, namespace: dict[str, Any]) -> None:
+        """Put `action_log` back before a cell runs: it is read-only, so a
+        cell that rebinds the name changes nothing for the next one."""
+        if self.action_log is not None:
+            namespace["action_log"] = self.action_log
 
 
 def _parse_action_id(a: Any) -> int:
@@ -439,6 +472,7 @@ def user_message(
     max_objects: int,
     history_n: int,
     retry_note: str | None = None,
+    record_text: str | None = None,
 ) -> str:
     observation, _ = describe_grid(api.grid, max_objects=max_objects)
     blocks = [
@@ -451,6 +485,10 @@ def user_message(
         "",
         format_history(api, history_n),
         "",
+    ]
+    if record_text is not None:
+        blocks += [record_text, ""]
+    blocks += [
         "NOTES (the `notes` variable)",
         notes.strip() or "(empty)",
     ]
@@ -518,6 +556,7 @@ def run_episode(
     max_tokens_episode = int(budget["max_tokens_per_episode"])
 
     seed = episode if seed is None else seed
+    record_cfg = action_record_cfg(cfg)
     started = time.monotonic()
     api = EpisodeAPI(
         env,
@@ -525,11 +564,12 @@ def run_episode(
         max_actions=int(budget["max_actions"]),
         max_resets=int(budget["max_resets"]),
         probe=probe,
+        action_record=record_cfg is not None,
     )
     sandbox, counter, failed_skills = build_sandbox(
         api, harness, float(budget["cell_time_limit_s"])
     )
-    system_text = harness.render_system(per_turn)
+    system_text = harness.render_system(per_turn, action_log=api.action_log is not None)
 
     tpath = trajectory_path(round_index, episode, traj_root)
     fpath = frames_path(round_index, episode, frame_root)
@@ -582,10 +622,14 @@ def run_episode(
                 retry_note: str | None = None
                 tokens_in = tokens_out = latency_ms = llm_calls = 0
                 parse_failed = False
+                record_text = None
+                if record_cfg is not None:
+                    record_text = render_action_record(api.recorder, int(record_cfg.get("last_n", 20)),
+                                                       int(record_cfg.get("max_click_locations", 40)))
                 for attempt in range(2):
                     user_text = user_message(
                         api, turn, max_turns, last_record, notes,
-                        int(obs_cfg["max_objects"]), int(obs_cfg["history_n"]), retry_note,
+                        int(obs_cfg["max_objects"]), int(obs_cfg["history_n"]), retry_note, record_text,
                     )
                     messages = [
                         {"role": "system", "content": system_text},
@@ -617,6 +661,7 @@ def run_episode(
                 calls_before, errors_before = counter.snapshot()
                 cell = None
                 if code is not None and code.strip():
+                    api.restore(sandbox.namespace)
                     cell = sandbox.run(code, filename=f"<turn {turn}>")
                 else:
                     outcome.fallback_turns += 1
@@ -683,6 +728,9 @@ def run_episode(
                     "env_steps": len(api.turn_actions),
                     "wall_time_s": round(time.monotonic() - turn_started, 2),
                 }
+                if record_text is not None:
+                    # #16: what the action record added to this turn's input
+                    record["action_record_chars"] = len(record_text)
                 handle.write(json.dumps(record, default=_json_default) + "\n")
                 handle.flush()
                 last_record = record

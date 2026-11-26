@@ -25,7 +25,7 @@ import threading
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
-from evolve.action_loop import EpisodeAPI, build_sandbox
+from evolve.action_loop import EpisodeAPI, action_record_cfg, build_sandbox
 from evolve.harness import Harness
 from evolve.sandbox import TurnOver
 
@@ -78,6 +78,8 @@ def replay(
         actions_per_turn=int(budget["actions_per_turn"]),
         max_actions=int(budget["max_actions"]),
         max_resets=int(budget["max_resets"]),
+        # #16: replayed cells see the same action_log the player's cells saw
+        action_record=action_record_cfg(cfg) is not None,
     )
     sandbox, counter, failed = build_sandbox(api, harness, float(budget["cell_time_limit_s"]))
     result = ReplayResult(skills_failed_to_load=failed)
@@ -91,6 +93,7 @@ def replay(
             continue
         if transform is not None:
             code = transform(code)
+        api.restore(sandbox.namespace)
         cell = sandbox.run(code, filename=f"<turn {record['turn']}>")
         now = [(a["action"], a.get("args") or {}) for a in api.turn_actions]
         then = [(a["action"], a.get("args") or {}) for a in record.get("actions") or []]
@@ -131,16 +134,25 @@ def states_along(
 
 
 def api_at_state(
-    prefix: list[tuple[str, dict]], cfg: dict[str, Any]
+    prefix: list[tuple[str, dict]], cfg: dict[str, Any], seed: int = 0,
+    probe: Callable[[Any], dict[str, Any]] | None = None, action_record: bool | None = None,
+    known_every_step: list | tuple = (),
 ) -> EpisodeAPI:
-    """A fresh EpisodeAPI advanced through `prefix`, with a fresh turn budget."""
+    """A fresh EpisodeAPI advanced through `prefix`, with a fresh turn budget.
+
+    #16: `seed` makes the env the episode's own; `action_record` (default: as
+    the config says) builds the record along the prefix, so `action_log` in
+    the restored state holds what it held at that point of the episode."""
     budget = cfg["budget"]
-    env = make_env(cfg["game"])
+    env = make_env(cfg["game"], seed=seed)
     api = EpisodeAPI(
         env,
         actions_per_turn=10**9,
         max_actions=10**9,
         max_resets=10**9,
+        probe=probe,
+        action_record=action_record_cfg(cfg) is not None if action_record is None else action_record,
+        known_every_step=known_every_step,
     )
     for action, args in prefix:
         api.begin_turn(0)

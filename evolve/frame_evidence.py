@@ -49,10 +49,13 @@ from typing import Any
 
 import numpy as np
 
-SEARCH = 12            # largest shift (cells, per axis) tried when finding the block
-MIN_BLOCK_CELLS = 4    # a moving patch smaller than this is not taken for the block
+# #16: the change regions and the moved-patch test are shared with the action
+# record and the state-change check (one frame-diff code for all three).
+from evolve.frame_diff import MIN_BLOCK_CELLS, REGION_GAP, SEARCH  # noqa: F401 - re-exported
+from evolve.frame_diff import moved_patch as _moved_patch
+from evolve.frame_diff import regions as _regions
+
 TEMPLATE_VOTES = 3     # detections that must agree on the block's pattern
-REGION_GAP = 2         # changed cells this close (Chebyshev) are one region
 REGULAR_SHARE = 0.5    # a region changing on at least this share of changing steps is regular
 MAX_GRID_CELLS = 144   # larger regions are summarised, not printed cell by cell
 MAX_EVENTS_SHOWN = 12  # rare events printed in the report (all are in the data)
@@ -64,46 +67,6 @@ MAX_CLICK_CELLS = 30   # clicked cells printed across episodes (all are in the d
 # ---------------------------------------------------------------------------
 # Finding the block
 # ---------------------------------------------------------------------------
-
-
-def _moved_patch(before: np.ndarray, after: np.ndarray) -> tuple[np.ndarray, tuple[int, int]] | None:
-    """(cells of the patch in `before`, shift) if a patch moved rigidly.
-
-    A cell p belongs to a patch moved by s if p and p+s both changed and what
-    was at p is now at p+s. The same test also fits the reverse reading ("the
-    background moved by -s"), so of the two the patch whose colours are rarer
-    on screen is taken: a moving object is small, the floor it crosses is not.
-    """
-    changed = before != after
-    if int(changed.sum()) < 2 * MIN_BLOCK_CELLS:
-        return None
-    height, width = before.shape
-    rows, cols = np.nonzero(changed)
-    frequency = np.bincount(before.ravel(), minlength=256)
-    best: tuple[float, int, np.ndarray, tuple[int, int]] | None = None
-    for dr in range(-SEARCH, SEARCH + 1):
-        for dc in range(-SEARCH, SEARCH + 1):
-            if dr == 0 and dc == 0:
-                continue
-            r2, c2 = rows + dr, cols + dc
-            inside = (r2 >= 0) & (r2 < height) & (c2 >= 0) & (c2 < width)
-            if int(inside.sum()) < MIN_BLOCK_CELLS:
-                continue
-            r1, c1, r2, c2 = rows[inside], cols[inside], r2[inside], c2[inside]
-            keep = changed[r2, c2] & (before[r1, c1] == after[r2, c2])
-            n = int(keep.sum())
-            if n < MIN_BLOCK_CELLS:
-                continue
-            cells = np.stack([r1[keep], c1[keep]], axis=1)
-            rarity = float(frequency[before[cells[:, 0], cells[:, 1]]].mean())
-            # Most cells explained first; between a patch and its mirror
-            # reading (same count), the rarer colours win.
-            key = (-n, rarity)
-            if best is None or key < (best[0], best[1]):
-                best = (-n, rarity, cells, (dr, dc))
-    if best is None:
-        return None
-    return best[2], best[3]
 
 
 class Block:
@@ -250,28 +213,6 @@ def track(block: Block, transitions: list[dict[str, Any]]) -> list[dict[str, Any
 # ---------------------------------------------------------------------------
 # Regions of other changes
 # ---------------------------------------------------------------------------
-
-
-def _regions(cells: set[tuple[int, int]]) -> list[tuple[int, int, int, int]]:
-    """Bounding boxes of the clusters of `cells` (cells within REGION_GAP of
-    each other are one cluster), top-left first."""
-    remaining = set(cells)
-    boxes = []
-    while remaining:
-        seed = remaining.pop()
-        stack, cluster = [seed], [seed]
-        while stack:
-            r, c = stack.pop()
-            for dr in range(-REGION_GAP, REGION_GAP + 1):
-                for dc in range(-REGION_GAP, REGION_GAP + 1):
-                    nxt = (r + dr, c + dc)
-                    if nxt in remaining:
-                        remaining.remove(nxt)
-                        stack.append(nxt)
-                        cluster.append(nxt)
-        rs, cs = [p[0] for p in cluster], [p[1] for p in cluster]
-        boxes.append((min(rs), min(cs), max(rs), max(cs)))
-    return sorted(boxes)
 
 
 def _in_box(cells: np.ndarray, box: tuple[int, int, int, int]) -> np.ndarray:

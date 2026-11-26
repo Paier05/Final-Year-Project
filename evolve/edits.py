@@ -30,7 +30,9 @@ TARGETS = ("skill", "prompt", "step")
 # Names a skill may not take: the sandbox API, the preloaded modules, builtins.
 RESERVED_NAMES = frozenset(
     {"action", "grid", "objects", "diff", "status", "history", "notes", "COLOURS",
-     "np", "math", "collections", "itertools", "functools", "heapq", "print"}
+     "np", "math", "collections", "itertools", "functools", "heapq", "print",
+     # #16: the action record in the sandbox. A skill may read it, not take its name.
+     "action_log"}
 ) | frozenset(dir(builtins))
 
 

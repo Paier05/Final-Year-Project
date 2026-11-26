@@ -56,6 +56,27 @@ SANDBOX API (preloaded; your code runs in a persistent Python namespace)
   file, network or randomness access, and no attribute starting with "_".
 Variables and functions you define persist across turns."""
 
+# #16: with the action record on, the sandbox also holds `action_log`. Part of
+# the fixed API (the evolve loop cannot edit it), inserted before `notes`.
+API_DOC_ACTION_LOG = """- action_log: read-only list of this episode's action records, one dict per
+  action, oldest first: "step", "action", for a click "x", "y" and
+  "value_at_click" (the cell's value before the click), "changed",
+  "n_changed", "regions" (each {{"rows": [r0, r1], "cols": [c0, c1], "cells",
+  "values": [[before, after, cells], ...]}}), "every_step_cells" (cells
+  changed in regions that change after every action, left out of
+  "regions"), and "block_before"/"block_after" when a block moved. The
+  ACTION RECORD in each turn's message shows the same records.
+"""
+
+
+def api_doc(cap: int, action_log: bool = False) -> str:
+    """The fixed sandbox API text, with `action_log` when the record is on."""
+    text = API_DOC.format(cap=cap)
+    if action_log:
+        marker = "- notes:"
+        text = text.replace(marker, API_DOC_ACTION_LOG.format() + marker, 1)
+    return text
+
 
 @dataclass
 class Harness:
@@ -69,14 +90,14 @@ class Harness:
 
     # -- rendering ----------------------------------------------------------
 
-    def render_system(self, actions_per_turn: int) -> str:
+    def render_system(self, actions_per_turn: int, action_log: bool = False) -> str:
         parts: list[str] = [self.prompts["system"].strip()]
         for key, text in self.prompts.items():
             if key in CORE_PROMPTS or not text.strip():
                 continue
             parts.append(text.strip())
         parts.append(self.render_steps(actions_per_turn))
-        parts.append(API_DOC.format(cap=actions_per_turn))
+        parts.append(api_doc(actions_per_turn, action_log))
         skills_doc = self.render_skills()
         if skills_doc:
             parts.append(skills_doc)
