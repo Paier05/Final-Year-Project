@@ -12,6 +12,8 @@ inside Validate.
 
 #14 adds evolve/selftest14.py, run from here: the skill-name check, the frame
 evidence, the rotation score, checkpoint and resume, and the leak test.
+#15 adds scorer/tests.py and #16 scorer/tests16.py (the action record, the
+state-change and repeat checks, "Rejected since current parent", leaks).
 """
 
 from __future__ import annotations
@@ -328,6 +330,9 @@ def main() -> None:
     from scorer import tests as selftest15
 
     selftest15.main()
+    from scorer import tests16 as selftest16
+
+    selftest16.main()
     print("all self-tests passed")
 
 
