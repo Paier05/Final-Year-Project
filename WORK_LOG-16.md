@@ -255,6 +255,37 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
   purpose; **without the fix it fails exactly as on the cluster
   (`[1, 2, 3, 5]`), with it it passes**.
 - As the issue says, stopped and reported; part 1 not submitted.
+- The user chose: rerun both smoke checks on the fix, then part 1. Full
+  suite on the fix: **286 checks pass**. Commit `c6bf84e` uploaded.
+  **Smoke check resubmitted 13:55: job 75433 (ft09), job 75434 (vc33).**
+- ~14:02: TC1 unreachable again (port 22 timed out, internet fine, no VPN
+  adapter). Both drops came within ~8 min of the last connection, which
+  looks like the VPN client's idle timeout. Asked the user to reconnect.
+
+### 2026-11-26 14:05 — Smoke check passed on both games; part 1 submitted
+
+- **Job 75433 (ft09, TC1N04, 3 min 47 s) and job 75434 (vc33, TC1N05,
+  3 min 36 s): COMPLETED 0:0**, commit `c6bf84e`. Error logs empty.
+  - Test suite: all self-tests passed on both nodes (incl. the SIGUSR1 checks
+    and the new episode-gap test).
+  - Game steps; model: both roles on `Qwen/Qwen3.8-27B-FP8` (flash HTTP 500).
+  - 5 seeds started at once; seed 1 finished (ft09 57 s, vc33 47 s to the
+    stop), seeds 2–5 cut, moved to partial/ and replayed on resume; each seed
+    once in the archive; lock gone.
+  - Action record in every player turn message (ft09 18/18, vc33 19/19) and
+    on every logged action (55/55, 28/28); `action_log` works in the sandbox.
+  - State-change check on 5 saved states, seeds 1–5 (vc33: every-step row 0
+    and `steps_left`; ft09: none); repeat check matched a re-cased line.
+  - Both games at the same time on separate nodes and run directories; #15's
+    `runs/ft09` and `runs/vc33`: 0 files changed.
+  - `seff 75433`: 1 min 49 s CPU, 229 MB memory (of 10 CPUs / 30 GB).
+- **Part 1 submitted at 14:05: job 75435 (ft09), job 75436 (vc33)**
+  (`cluster/job_api16.sh`, 6 h, 10 CPUs / 30 GB each, 20 CPUs / 60 GB in
+  all, no GPU), run dirs `runs/ft09-v4`, `runs/vc33-v4`, `--resume`.
+- One check at 14:07: **both RUNNING** (75435 on TC1N02, 75436 on TC1N04),
+  preflight passed (both roles on 27B), round 0 playing v0 on seeds 1–5 in
+  parallel, error logs empty. Disconnected. Job ids posted on the issue.
+  Next: wait for the user's "continue".
 
 ## Open questions / risks
 
