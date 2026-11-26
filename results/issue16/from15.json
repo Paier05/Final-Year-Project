@@ -1,0 +1,637 @@
+{
+ "ft09": {
+  "repeat_check": {
+   "proposed": 12,
+   "would_be_repeats": 5,
+   "repeat_rate": 0.4167,
+   "proposed_by_type": {
+    "edit": 10,
+    "delete": 2
+   },
+   "repeats_by_type": {
+    "edit": 4,
+    "delete": 1
+   },
+   "rejected_in_store_at_end": 12,
+   "repeats": [
+    {
+     "round": 2,
+     "attempt": 1,
+     "edit": "r2-e2",
+     "source": "meta",
+     "type": "edit",
+     "op": "edit",
+     "target": "prompt",
+     "name": "system",
+     "repeats": "r1-gate-e2",
+     "earlier_rejected_by": "gate: no gate-score gain (-0.1715; progress -0.1666, cost +0.0098)",
+     "similarity": 0.9337
+    },
+    {
+     "round": 3,
+     "attempt": 1,
+     "edit": "r3-e2",
+     "source": "meta",
+     "type": "edit",
+     "op": "edit",
+     "target": "prompt",
+     "name": "system",
+     "repeats": "r2-gate-e2",
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1039)",
+     "similarity": 0.9619
+    },
+    {
+     "round": 4,
+     "attempt": 1,
+     "edit": "r4-e3",
+     "source": "meta",
+     "type": "edit",
+     "op": "edit",
+     "target": "prompt",
+     "name": "system",
+     "repeats": "r1-gate-e2",
+     "earlier_rejected_by": "gate: no gate-score gain (-0.1715; progress -0.1666, cost +0.0098)",
+     "similarity": 0.9409
+    },
+    {
+     "round": 5,
+     "attempt": 1,
+     "edit": "r5-e1",
+     "source": "rule",
+     "type": "delete",
+     "op": "delete",
+     "target": "skill",
+     "name": "bfs_to_target",
+     "repeats": "r4-gate-e1",
+     "earlier_rejected_by": "gate: no gate-score gain (-0.5571; progress -0.5833, cost -0.0524)",
+     "similarity": 1.0
+    },
+    {
+     "round": 5,
+     "attempt": 1,
+     "edit": "r5-e3",
+     "source": "meta",
+     "type": "edit",
+     "op": "edit",
+     "target": "prompt",
+     "name": "system",
+     "repeats": "r3-gate-e2",
+     "earlier_rejected_by": "gate: no gate-score gain (-0.4776; progress -0.5000, cost -0.0448)",
+     "similarity": 0.9652
+    }
+   ]
+  },
+  "clicks": [
+   {
+    "round": 0,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 189,
+    "repeated_no_effect": 138,
+    "no_effect_share": 0.945,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 181,
+    "repeated_no_effect": 124,
+    "no_effect_share": 0.905,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 196,
+    "repeated_no_effect": 142,
+    "no_effect_share": 0.98,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 186,
+    "repeated_no_effect": 140,
+    "no_effect_share": 0.93,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "clicks": 199,
+    "no_effect": 156,
+    "repeated_no_effect": 101,
+    "no_effect_share": 0.7839,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 162,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 160,
+    "repeated_no_effect": 116,
+    "no_effect_share": 0.8,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 186,
+    "repeated_no_effect": 128,
+    "no_effect_share": 0.93,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 178,
+    "repeated_no_effect": 126,
+    "no_effect_share": 0.89,
+    "every_step_regions": []
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 167,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 174,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 199,
+    "repeated_no_effect": 165,
+    "no_effect_share": 0.995,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 177,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 171,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 178,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 5,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 178,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 5,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 189,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 5,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 190,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   }
+  ],
+  "clicks_by_round": {
+   "0": {
+    "clicks": 600,
+    "no_effect": 566,
+    "repeated_no_effect": 404
+   },
+   "1": {
+    "clicks": 599,
+    "no_effect": 542,
+    "repeated_no_effect": 403
+   },
+   "2": {
+    "clicks": 600,
+    "no_effect": 524,
+    "repeated_no_effect": 370
+   },
+   "3": {
+    "clicks": 600,
+    "no_effect": 599,
+    "repeated_no_effect": 506
+   },
+   "4": {
+    "clicks": 600,
+    "no_effect": 600,
+    "repeated_no_effect": 526
+   },
+   "5": {
+    "clicks": 600,
+    "no_effect": 600,
+    "repeated_no_effect": 557
+   }
+  },
+  "v0_audit": {
+   "harness": "runs/ft09/harnesses/v0",
+   "skills": {
+    "bfs_to_target": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "grid_region": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "obstacle_map": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "player_detector": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    }
+   },
+   "action_taking": [],
+   "every_step_regions": [],
+   "every_step_fields": []
+  }
+ },
+ "vc33": {
+  "repeat_check": {
+   "proposed": 9,
+   "would_be_repeats": 1,
+   "repeat_rate": 0.1111,
+   "proposed_by_type": {
+    "edit": 7,
+    "delete": 2
+   },
+   "repeats_by_type": {
+    "edit": 1
+   },
+   "rejected_in_store_at_end": 5,
+   "repeats": [
+    {
+     "round": 3,
+     "attempt": 1,
+     "edit": "r3-e2",
+     "source": "meta",
+     "type": "edit",
+     "op": "add",
+     "target": "skill",
+     "name": "count_orange",
+     "repeats": "r2-gate-e2",
+     "earlier_rejected_by": "gate: no gate-score gain (-0.1575; progress -0.1111, cost +0.0929)",
+     "similarity": 1.0
+    }
+   ]
+  },
+  "clicks": [
+   {
+    "round": 0,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 197,
+    "repeated_no_effect": 150,
+    "no_effect_share": 0.985,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 192,
+    "repeated_no_effect": 178,
+    "no_effect_share": 0.96,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "clicks": 199,
+    "no_effect": 192,
+    "repeated_no_effect": 155,
+    "no_effect_share": 0.9648,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 166,
+    "repeated_no_effect": 111,
+    "no_effect_share": 0.83,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 167,
+    "repeated_no_effect": 147,
+    "no_effect_share": 0.835,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 183,
+    "repeated_no_effect": 139,
+    "no_effect_share": 0.915,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "clicks": 48,
+    "no_effect": 41,
+    "repeated_no_effect": 19,
+    "no_effect_share": 0.8542,
+    "every_step_regions": [
+     [
+      0,
+      3,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "clicks": 97,
+    "no_effect": 73,
+    "repeated_no_effect": 53,
+    "no_effect_share": 0.7526,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "clicks": 72,
+    "no_effect": 60,
+    "repeated_no_effect": 39,
+    "no_effect_share": 0.8333,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 125,
+    "repeated_no_effect": 83,
+    "no_effect_share": 0.625,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 147,
+    "repeated_no_effect": 113,
+    "no_effect_share": 0.735,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 144,
+    "repeated_no_effect": 82,
+    "no_effect_share": 0.72,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 90,
+    "repeated_no_effect": 60,
+    "no_effect_share": 0.45,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 113,
+    "repeated_no_effect": 81,
+    "no_effect_share": 0.565,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 112,
+    "repeated_no_effect": 66,
+    "no_effect_share": 0.56,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   }
+  ],
+  "clicks_by_round": {
+   "0": {
+    "clicks": 599,
+    "no_effect": 581,
+    "repeated_no_effect": 483
+   },
+   "1": {
+    "clicks": 600,
+    "no_effect": 516,
+    "repeated_no_effect": 397
+   },
+   "2": {
+    "clicks": 217,
+    "no_effect": 174,
+    "repeated_no_effect": 111
+   },
+   "3": {
+    "clicks": 600,
+    "no_effect": 416,
+    "repeated_no_effect": 278
+   },
+   "4": {
+    "clicks": 600,
+    "no_effect": 315,
+    "repeated_no_effect": 207
+   }
+  },
+  "v0_audit": {
+   "harness": "runs/vc33/harnesses/v0",
+   "skills": {
+    "bfs_to_target": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "grid_region": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "obstacle_map": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    },
+    "player_detector": {
+     "takes_actions": false,
+     "verdict": "not checked (read-only helper)"
+    }
+   },
+   "action_taking": [],
+   "every_step_regions": [
+    [
+     0,
+     0,
+     0,
+     63
+    ]
+   ],
+   "every_step_fields": [
+    "steps_left"
+   ]
+  }
+ }
+}
