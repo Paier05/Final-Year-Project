@@ -287,6 +287,29 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
   parallel, error logs empty. Disconnected. Job ids posted on the issue.
   Next: wait for the user's "continue".
 
+### 2026-11-26 20:56 — Both games finished all 5 rounds in part 1
+
+- **Job 75435 (ft09): COMPLETED 0:0 in 3 h 03 min; job 75436 (vc33):
+  COMPLETED 0:0 in 3 h 28 min.** Error logs empty, locks gone, both
+  `run_state.json` status `finished` at round 5. Nothing left in the queue.
+  - `seff`: ft09 1 min 40 s CPU, 155 MB; vc33 2 min 03 s CPU, 156 MB (of
+    10 CPUs / 30 GB each: the run waits on the model, not the CPU).
+  - Fetched `runs/ft09-v4`, `runs/vc33-v4`, `logs` (345 files, 33 MB).
+- **ft09**: v0 0.30 → v1 0.75 (accepted, 2/5 clears) → v2, v3 rejected →
+  v4 0.80 (accepted, 1/5 clears) → v5 rejected. Final parent v4, gate 0.558.
+  - Repeat check: 10 drops (round 3: all 4 edits; rounds 4 and 5: the same
+    two rule deletes of `bfs_to_target` and `obstacle_map` each time).
+  - State-change check: 4 skill checks, 1 drop (round 4, `solve_level`: no
+    change from any of 5 states), 0 unverifiable.
+  - Rejected-edit store: 16 entries.
+- **vc33**: v0 0.00 → v1 0.33 → v2 0.80 (3/5) → v3 0.87 (4/5) → v4 1.00
+  (5/5 clears in 3–5 actions, cost 0.014), all accepted; v5 also 5/5 but
+  dearer, rejected. Final parent v4, gate 0.993.
+  - Repeat check: 0 drops. State-change check: 0 skills checked (no new
+    skill takes actions). Rejected-edit store: 9 entries.
+- #15's secrets file stays: #15's vc33 round 5 is still owed.
+- Next: final report with pictures (on the user's go).
+
 ## Open questions / risks
 
 - **Interpretation, repeat check target for skills**: "same target" plus
@@ -310,5 +333,8 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
   remote directory, separate run directories, new behaviour off in its config.
   The smoke job also checks that #15's run directories get no new file.
 - The flash model is still down; the run uses the 27B fallback, as #15 did.
+- **Skill-name check false positive** (#15's check, not new): vc33 round 4
+  dropped two `count_colors_region` edits for naming `Counter` and
+  `defaultdict`, which are imports, not skills.
 
 ## Summary (fill in at the end)
