@@ -199,6 +199,63 @@ Run directories `runs/ft09-v4`, `runs/vc33-v4`; #15's are not touched.
   state-change check ran on 5 saved states (seeds 1–5) and the repeat check
   matched a re-cased line.
 
+### 2026-11-26 13:27 — v0 audit answered; TC1 set up; smoke check submitted
+
+- Posted steps 1–3 on the issue (comment 7182557377). **The user answered
+  in chat: keep v0 as it is**, go on to the cluster (recorded on the issue).
+- Credentials: the user gave the cluster login and the model URL/key in
+  chat. They go to `cluster/tc1.py` as environment variables per call and
+  are stored nowhere on this machine or in the repo.
+- `MyTCinfo`: QoS `normal`, MaxTRESPU cpu=20, gpu=1, mem=64G, **MaxSubmit
+  2**, MaxWall 6 h, partition `UGGPU-TC1`. No jobs of mine queued.
+- Upload: commit `4a74ae3` + `environment_files/{ls20,ft09,vc33}` to
+  **`~/evo-harness-16`** (`TC1_REMOTE_DIR`); `~/evo-harness` (#15, 79 MB)
+  untouched. `file cluster/*.sh`: plain shell, Unix line endings; `cat` of
+  both #16 scripts checked on the cluster. `evo-harness` conda env reused.
+- `~/.evo_harness_env` (left by #15) rewritten over SFTP with the given model
+  URL and key, mode 600; to be deleted when #16 finishes (and #15 no longer
+  needs it: #15's vc33 round 5 is still owed).
+- **Smoke check submitted, both games at once: job 75429 (ft09), job 75430
+  (vc33)**, `cluster/job_smoke16.sh`, 15 min, 10 CPUs / 30 GB each.
+- ~13:36, after a local 8-minute timer: **TC1 unreachable** (port 22 timed
+  out, internet fine, no VPN adapter up; only Wi-Fi). Most likely the NTU
+  VPN dropped, as in #15 (2026-11-25 19:28). Asked the user to reconnect.
+  The jobs run on the cluster regardless; part 1 waits for the smoke result.
+
+### 2026-11-26 — Smoke check: vc33 passed, ft09 failed in #14's kill test; fixed
+
+- The user reconnected the VPN. One connection: `sacct` and both logs.
+- **Job 75430 (vc33, TC1N03): COMPLETED 0:0, 3 min 15 s. Every check
+  passed**: test suite (all self-tests passed on Python 3.12.16); game
+  steps; model (both roles on 27B, flash HTTP 500); 5 seeds started at
+  once; seed 1 finished, 2–5 cut and replayed on resume, lock gone;
+  the action record in all 19 turn messages, 22/22 actions with a logged
+  record; `action_log` in the sandbox; the state-change check on 5 saved
+  states (seeds 1–5; every-step: the bar in row 0, `steps_left`); the repeat
+  check on the saved store; **#15's `runs/ft09` and `runs/vc33`: 0 files
+  changed**. Error log empty.
+- **Job 75429 (ft09, TC1N02): FAILED 1:0 after 38 s, in the test suite**,
+  before any #16 smoke check ran: #14's "checkpoint: a run killed in the
+  middle of an episode resumes" failed its last check, "round 0: five
+  episodes counted, over two parts". Its other checks passed (every seed once
+  in the archive, nothing recorded twice, cut seeds [1, 2, 3, 5] replayed,
+  seed 4 not).
+- **Cause**: a race in #14's checkpoint, not #16 code. `evaluate()` writes
+  `episodes.json`, then `run_state.json`. The test kills the run the moment
+  `episodes.json` shows a finished seed; on TC1N02 the kill landed between
+  the two writes. Seed 4 was finished (in `episodes.json`, so not replayed)
+  but never recorded in the state file, so 4 episodes were counted. In a real
+  run this loses no result, only one entry in the state file's bookkeeping
+  (used by the time guard and the progress report). Stages already have
+  `recovered()` for the same gap; episodes did not.
+- **Fix**: on resume, `evaluate()` records once each seed that is in
+  `episodes.json` but not in the state file (`Checkpoint.episode_was_completed`),
+  with that episode's own wall time. New deterministic test
+  (`checkpoint_episode_gap` in `evolve/selftest14.py`): the gap made on
+  purpose; **without the fix it fails exactly as on the cluster
+  (`[1, 2, 3, 5]`), with it it passes**.
+- As the issue says, stopped and reported; part 1 not submitted.
+
 ## Open questions / risks
 
 - **Interpretation, repeat check target for skills**: "same target" plus
