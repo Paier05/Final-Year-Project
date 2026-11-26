@@ -1,0 +1,4298 @@
+{
+ "ft09": {
+  "paths": {
+   "archive": "runs\\ft09-v4/archive.json",
+   "rejected_edits": "runs\\ft09-v4/rejected_edits.jsonl",
+   "trajectories": "runs\\ft09-v4/trajectories/",
+   "frames": "runs\\ft09-v4/frames/",
+   "final_harness": "runs\\ft09-v4/harnesses/v4/",
+   "changelog": "runs\\ft09-v4/CHANGELOG.md"
+  },
+  "rounds": [
+   {
+    "round": 0,
+    "version": "v0",
+    "parent": null,
+    "score_mean": 0.3,
+    "score_std": 0.2915,
+    "score_mean_seeds_1_3": 0.25,
+    "clears": 0,
+    "n": 5,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.5077,
+    "gate_mean": 0.0462,
+    "decision": "baseline",
+    "reason": "v0 is the starting parent",
+    "scores": {
+     "1": 0.25,
+     "2": 0.5,
+     "3": 0.0,
+     "4": 0.75,
+     "5": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 0.2,
+    "tokens": 1644751,
+    "meta_tokens": 0,
+    "factcheck_tokens": 0
+   },
+   {
+    "round": 1,
+    "version": "v1",
+    "parent": "v0",
+    "score_mean": 0.75,
+    "score_std": 0.2236,
+    "score_mean_seeds_1_3": 0.75,
+    "clears": 2,
+    "n": 5,
+    "clear_rate": 0.4,
+    "clears_seeds_1_3": 1,
+    "avg_steps": 148.4,
+    "cost_mean": 0.4793,
+    "gate_mean": 0.5104,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.4642 > 0 and drop -0.3727 <= 0.1",
+    "scores": {
+     "1": 1.0,
+     "2": 0.75,
+     "3": 0.5,
+     "4": 0.5,
+     "5": 1.0
+    },
+    "end_reasons": {
+     "level1_solved": 2,
+     "budget_actions": 3
+    },
+    "resets_mean": 3.0,
+    "tokens": 2291386,
+    "meta_tokens": 18043,
+    "factcheck_tokens": 2132
+   },
+   {
+    "round": 2,
+    "version": "v2",
+    "parent": "v1",
+    "score_mean": 0.75,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.75,
+    "clears": 0,
+    "n": 5,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.6474,
+    "gate_mean": 0.4263,
+    "decision": "rejected",
+    "reason": "tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+    "scores": {
+     "1": 0.75,
+     "2": 0.75,
+     "3": 0.75,
+     "4": 0.75,
+     "5": 0.75
+    },
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.8,
+    "tokens": 3109335,
+    "meta_tokens": 21258,
+    "factcheck_tokens": 2237
+   },
+   {
+    "round": 3,
+    "version": "v3",
+    "parent": "v1",
+    "score_mean": 0.55,
+    "score_std": 0.2915,
+    "score_mean_seeds_1_3": 0.3333,
+    "clears": 1,
+    "n": 5,
+    "clear_rate": 0.2,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 196.4,
+    "cost_mean": 0.4707,
+    "gate_mean": 0.3146,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.1958; progress -0.2000, cost -0.0086)",
+    "scores": {
+     "1": 0.25,
+     "2": 0.5,
+     "3": 0.25,
+     "4": 1.0,
+     "5": 0.75
+    },
+    "end_reasons": {
+     "budget_actions": 4,
+     "level1_solved": 1
+    },
+    "resets_mean": 5.8,
+    "tokens": 1373976,
+    "meta_tokens": 47961,
+    "factcheck_tokens": 1778
+   },
+   {
+    "round": 4,
+    "version": "v4",
+    "parent": "v1",
+    "score_mean": 0.8,
+    "score_std": 0.1,
+    "score_mean_seeds_1_3": 0.75,
+    "clears": 1,
+    "n": 5,
+    "clear_rate": 0.2,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 167.4,
+    "cost_mean": 0.4832,
+    "gate_mean": 0.5584,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.0480 > 0 and drop -0.3065 <= 0.1",
+    "scores": {
+     "1": 0.75,
+     "2": 0.75,
+     "3": 0.75,
+     "4": 0.75,
+     "5": 1.0
+    },
+    "end_reasons": {
+     "budget_actions": 4,
+     "level1_solved": 1
+    },
+    "resets_mean": 4.2,
+    "tokens": 2031463,
+    "meta_tokens": 52197,
+    "factcheck_tokens": 3540
+   },
+   {
+    "round": 5,
+    "version": "v5",
+    "parent": "v4",
+    "score_mean": 0.5,
+    "score_std": 0.2236,
+    "score_mean_seeds_1_3": 0.5833,
+    "clears": 0,
+    "n": 5,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.4876,
+    "gate_mean": 0.2562,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.3022; progress -0.3000, cost +0.0044)",
+    "scores": {
+     "1": 0.75,
+     "2": 0.75,
+     "3": 0.25,
+     "4": 0.5,
+     "5": 0.25
+    },
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 6.0,
+    "tokens": 1535212,
+    "meta_tokens": 22520,
+    "factcheck_tokens": 2775
+   }
+  ],
+  "rounds_15": [
+   {
+    "round": 0,
+    "version": "v0",
+    "parent": null,
+    "score_mean": 0.5833,
+    "score_std": 0.1179,
+    "score_mean_seeds_1_3": 0.5833,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.4948,
+    "gate_mean": 0.3359,
+    "decision": "baseline",
+    "reason": "v0 is the starting parent",
+    "scores": {
+     "1": 0.5,
+     "2": 0.75,
+     "3": 0.5
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.0,
+    "tokens": 819854,
+    "meta_tokens": 0,
+    "factcheck_tokens": 0
+   },
+   {
+    "round": 1,
+    "version": "v1",
+    "parent": "v0",
+    "score_mean": 0.4167,
+    "score_std": 0.3118,
+    "score_mean_seeds_1_3": 0.4167,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.5046,
+    "gate_mean": 0.1644,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.1715; progress -0.1666, cost +0.0098)",
+    "scores": {
+     "1": 0.5,
+     "2": 0.75,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.6667,
+    "tokens": 871203,
+    "meta_tokens": 16271,
+    "factcheck_tokens": 2255
+   },
+   {
+    "round": 2,
+    "version": "v2",
+    "parent": "v0",
+    "score_mean": 0.5833,
+    "score_std": 0.1179,
+    "score_mean_seeds_1_3": 0.5833,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.5987,
+    "gate_mean": 0.284,
+    "decision": "rejected",
+    "reason": "tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1039)",
+    "scores": {
+     "1": 0.5,
+     "2": 0.75,
+     "3": 0.5
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.3333,
+    "tokens": 1359601,
+    "meta_tokens": 17371,
+    "factcheck_tokens": 2087
+   },
+   {
+    "round": 3,
+    "version": "v3",
+    "parent": "v0",
+    "score_mean": 0.0833,
+    "score_std": 0.1179,
+    "score_mean_seeds_1_3": 0.0833,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.45,
+    "gate_mean": -0.1417,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.4776; progress -0.5000, cost -0.0448)",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.25
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.0,
+    "tokens": 576048,
+    "meta_tokens": 17597,
+    "factcheck_tokens": 2129
+   },
+   {
+    "round": 4,
+    "version": "v4",
+    "parent": "v0",
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.4424,
+    "gate_mean": -0.2212,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.5571; progress -0.5833, cost -0.0524)",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.0,
+    "tokens": 523659,
+    "meta_tokens": 18223,
+    "factcheck_tokens": 2168
+   },
+   {
+    "round": 5,
+    "version": "v5",
+    "parent": "v0",
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.4387,
+    "gate_mean": -0.2193,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.5552; progress -0.5833, cost -0.0561)",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 0.0,
+    "tokens": 496173,
+    "meta_tokens": 18805,
+    "factcheck_tokens": 2407
+   }
+  ],
+  "edits": [
+   {
+    "round": 1,
+    "attempts": 1,
+    "child": "v1",
+    "decision": "accepted",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "add skill find_interactive_blocks (meta)",
+     "add prompt game_hints (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 2,
+    "attempts": 1,
+    "child": "v2",
+    "decision": "rejected",
+    "proposed": 4,
+    "by_type": {
+     "delete": 2,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 2,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "fact-check": 1
+    },
+    "written": 3,
+    "written_edits": [
+     "delete skill bfs_to_target (rule)",
+     "delete skill obstacle_map (rule)",
+     "add skill click_progress (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 3,
+    "attempts": 2,
+    "child": "v3",
+    "decision": "rejected",
+    "proposed": 5,
+    "by_type": {
+     "delete": 2,
+     "edit": 3
+    },
+    "meta_by_type": {
+     "edit": 3
+    },
+    "by_source": {
+     "rule": 2,
+     "meta": 3
+    },
+    "dropped_by_check": {
+     "repeat": 4
+    },
+    "written": 1,
+    "written_edits": [
+     "edit prompt game_hints (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 4,
+    "attempts": 2,
+    "child": "v4",
+    "decision": "accepted",
+    "proposed": 4,
+    "by_type": {
+     "delete": 2,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 2,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "repeat": 2,
+     "state-change": 1
+    },
+    "written": 1,
+    "written_edits": [
+     "add skill auto_solve (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 5,
+    "attempts": 1,
+    "child": "v5",
+    "decision": "rejected",
+    "proposed": 4,
+    "by_type": {
+     "delete": 2,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 2,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "repeat": 2
+    },
+    "written": 2,
+    "written_edits": [
+     "edit skill auto_solve (meta)",
+     "edit prompt game_hints (meta)"
+    ],
+    "promotes": []
+   }
+  ],
+  "edits_15": [
+   {
+    "round": 1,
+    "attempts": 1,
+    "child": "v1",
+    "decision": "rejected",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "add skill click_maroon_blocks (meta)",
+     "edit prompt system (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 2,
+    "attempts": 1,
+    "child": "v2",
+    "decision": "rejected",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "add skill find_and_toggle_blocks (meta)",
+     "edit prompt system (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 3,
+    "attempts": 1,
+    "child": "v3",
+    "decision": "rejected",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "add skill click_maroon_blocks (meta)",
+     "edit prompt system (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 4,
+    "attempts": 1,
+    "child": "v4",
+    "decision": "rejected",
+    "proposed": 3,
+    "by_type": {
+     "delete": 1,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 1,
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 3,
+    "written_edits": [
+     "delete skill bfs_to_target (rule)",
+     "add skill find_and_toggle_blocks (meta)",
+     "edit prompt system (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 5,
+    "attempts": 1,
+    "child": "v5",
+    "decision": "rejected",
+    "proposed": 3,
+    "by_type": {
+     "delete": 1,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 1,
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 3,
+    "written_edits": [
+     "delete skill bfs_to_target (rule)",
+     "add skill find_and_toggle_blocks (meta)",
+     "edit prompt system (meta)"
+    ],
+    "promotes": []
+   }
+  ],
+  "checks": {
+   "state_change": [
+    {
+     "round": 2,
+     "version": "v2",
+     "attempt": 1,
+     "id": "r2-e3",
+     "name": "click_progress",
+     "verdict": "changed",
+     "summary": "its actions changed the game from 5 of 5 test states",
+     "call": "no arguments",
+     "env_steps": 5,
+     "states": [
+      {
+       "seed": 1,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 1,
+       "cells_changed": 36,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 2,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 1,
+       "cells_changed": 36,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 3,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 1,
+       "cells_changed": 36,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 4,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 1,
+       "cells_changed": 36,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 5,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 1,
+       "cells_changed": 36,
+       "game_state_changed": false,
+       "why": null
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "version": "v4",
+     "attempt": 1,
+     "id": "r4-e3",
+     "name": "solve_level",
+     "verdict": "no change",
+     "summary": "its actions changed nothing on screen or in the game state (outside what changes after every action) from any of the 5 test states it could run from (seed 1 turn 0, seed 2 turn 0, seed 3 turn 0, seed 4 turn 0, seed 5 turn 0)",
+     "call": "no arguments",
+     "env_steps": 0,
+     "states": [
+      {
+       "seed": 1,
+       "turn": 0,
+       "verdict": "no change",
+       "actions": 0,
+       "cells_changed": 0,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 2,
+       "turn": 0,
+       "verdict": "no change",
+       "actions": 0,
+       "cells_changed": 0,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 3,
+       "turn": 0,
+       "verdict": "no change",
+       "actions": 0,
+       "cells_changed": 0,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 4,
+       "turn": 0,
+       "verdict": "no change",
+       "actions": 0,
+       "cells_changed": 0,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 5,
+       "turn": 0,
+       "verdict": "no change",
+       "actions": 0,
+       "cells_changed": 0,
+       "game_state_changed": false,
+       "why": null
+      }
+     ]
+    },
+    {
+     "round": 4,
+     "version": "v4",
+     "attempt": 2,
+     "id": "r4-e1",
+     "name": "auto_solve",
+     "verdict": "changed",
+     "summary": "its actions changed the game from 5 of 5 test states",
+     "call": "no arguments",
+     "env_steps": 30,
+     "states": [
+      {
+       "seed": 1,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 2,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 3,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 4,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 5,
+       "turn": 0,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      }
+     ]
+    },
+    {
+     "round": 5,
+     "version": "v5",
+     "attempt": 1,
+     "id": "r5-e3",
+     "name": "auto_solve",
+     "verdict": "changed",
+     "summary": "its actions changed the game from 5 of 5 test states",
+     "call": "no arguments",
+     "env_steps": 192,
+     "states": [
+      {
+       "seed": 1,
+       "turn": 20,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 2,
+       "turn": 18,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 3,
+       "turn": 4,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 4,
+       "turn": 7,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 216,
+       "game_state_changed": false,
+       "why": null
+      },
+      {
+       "seed": 5,
+       "turn": 10,
+       "verdict": "changed",
+       "actions": 6,
+       "cells_changed": 144,
+       "game_state_changed": false,
+       "why": null
+      }
+     ]
+    }
+   ],
+   "repeats": [
+    {
+     "round": 3,
+     "attempt": 1,
+     "id": "r3-e1",
+     "repeat_of": "r2-gate-e1",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill bfs_to_target",
+     "source": "rule"
+    },
+    {
+     "round": 3,
+     "attempt": 1,
+     "id": "r3-e2",
+     "repeat_of": "r2-gate-e2",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill obstacle_map",
+     "source": "rule"
+    },
+    {
+     "round": 3,
+     "attempt": 1,
+     "id": "r3-e3",
+     "repeat_of": "r2-gate-e3",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "add skill click_progress",
+     "source": "meta"
+    },
+    {
+     "round": 3,
+     "attempt": 1,
+     "id": "r3-e4",
+     "repeat_of": "r2-a1-e4",
+     "similarity": 1.0,
+     "earlier_rejected_by": "validate: fact-check",
+     "what": "edit prompt game_hints",
+     "source": "meta"
+    },
+    {
+     "round": 4,
+     "attempt": 1,
+     "id": "r4-e1",
+     "repeat_of": "r2-gate-e1",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill bfs_to_target",
+     "source": "rule"
+    },
+    {
+     "round": 4,
+     "attempt": 1,
+     "id": "r4-e2",
+     "repeat_of": "r2-gate-e2",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill obstacle_map",
+     "source": "rule"
+    },
+    {
+     "round": 5,
+     "attempt": 1,
+     "id": "r5-e1",
+     "repeat_of": "r2-gate-e1",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill bfs_to_target",
+     "source": "rule"
+    },
+    {
+     "round": 5,
+     "attempt": 1,
+     "id": "r5-e2",
+     "repeat_of": "r2-gate-e2",
+     "similarity": 1.0,
+     "earlier_rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)",
+     "what": "delete skill obstacle_map",
+     "source": "rule"
+    }
+   ]
+  },
+  "rejected_store": [
+   {
+    "id": "r2-a1-e4",
+    "round": 2,
+    "version": "v2",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "validate: fact-check"
+   },
+   {
+    "id": "r2-gate-e1",
+    "round": 2,
+    "version": "v2",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill bfs_to_target",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)"
+   },
+   {
+    "id": "r2-gate-e2",
+    "round": 2,
+    "version": "v2",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill obstacle_map",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)"
+   },
+   {
+    "id": "r2-gate-e3",
+    "round": 2,
+    "version": "v2",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill click_progress",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.1681)"
+   },
+   {
+    "id": "r3-a1-e1",
+    "round": 3,
+    "version": "v3",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill bfs_to_target",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r3-a1-e2",
+    "round": 3,
+    "version": "v3",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill obstacle_map",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r3-a1-e3",
+    "round": 3,
+    "version": "v3",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill click_progress",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r3-a1-e4",
+    "round": 3,
+    "version": "v3",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r3-gate-e1",
+    "round": 3,
+    "version": "v3",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "gate: no gate-score gain (-0.1958; progress -0.2000, cost -0.0086)"
+   },
+   {
+    "id": "r4-a1-e1",
+    "round": 4,
+    "version": "v4",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill bfs_to_target",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r4-a1-e2",
+    "round": 4,
+    "version": "v4",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill obstacle_map",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r4-a1-e3",
+    "round": 4,
+    "version": "v4",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill solve_level",
+    "rejected_by": "validate: state-change"
+   },
+   {
+    "id": "r5-a1-e1",
+    "round": 5,
+    "version": "v5",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill bfs_to_target",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r5-a1-e2",
+    "round": 5,
+    "version": "v5",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill obstacle_map",
+    "rejected_by": "validate: repeat"
+   },
+   {
+    "id": "r5-gate-e3",
+    "round": 5,
+    "version": "v5",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "edit skill auto_solve",
+    "rejected_by": "gate: no gate-score gain (-0.3022; progress -0.3000, cost +0.0044)"
+   },
+   {
+    "id": "r5-gate-e4",
+    "round": 5,
+    "version": "v5",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "gate: no gate-score gain (-0.3022; progress -0.3000, cost +0.0044)"
+   }
+  ],
+  "section": [
+   {
+    "round": 1,
+    "parent": "v0",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "add skill find_interactive_blocks",
+       "add prompt game_hints"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 2,
+    "parent": "v1",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "add skill click_progress",
+       "edit prompt game_hints"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 3,
+    "parent": "v1",
+    "versions_shown": [
+     "v2"
+    ],
+    "dropped_edits_shown": 1,
+    "section_chars": 5734,
+    "meta_edits": 3,
+    "meta_repeats": 2,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 2,
+      "proposed": [
+       "add skill click_progress",
+       "edit prompt game_hints"
+      ]
+     },
+     {
+      "attempt": 2,
+      "meta_edits": 1,
+      "repeats": 0,
+      "proposed": [
+       "edit prompt game_hints"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 4,
+    "parent": "v1",
+    "versions_shown": [
+     "v2",
+     "v3"
+    ],
+    "dropped_edits_shown": 5,
+    "section_chars": 8693,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 1,
+      "repeats": 0,
+      "proposed": [
+       "add skill solve_level"
+      ]
+     },
+     {
+      "attempt": 2,
+      "meta_edits": 1,
+      "repeats": 0,
+      "proposed": [
+       "add skill auto_solve"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 5,
+    "parent": "v4",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "edit skill auto_solve",
+       "edit prompt game_hints"
+      ]
+     }
+    ]
+   }
+  ],
+  "helpers": {
+   "inline_by_round": {
+    "1": [],
+    "2": [],
+    "3": [],
+    "4": [],
+    "5": []
+   },
+   "promotes_proposed": 0,
+   "promotes_passed": 0,
+   "promoted_written": [],
+   "skills_using_action_log": []
+  },
+  "failures": [
+   {
+    "version": "v0",
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 0.2,
+    "cell_errors_mean": 1.2,
+    "common_errors": [
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 2
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: unterminated string literal (detected at line 18)",
+      "count": 1
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: unterminated triple-quoted string literal (detected at line 36)",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "version": "v1",
+    "end_reasons": {
+     "level1_solved": 2,
+     "budget_actions": 3
+    },
+    "resets_mean": 3.0,
+    "cell_errors_mean": 6.8,
+    "common_errors": [
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 10
+     },
+     {
+      "error": "TypeError: 'str' object is not callable",
+      "count": 9
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers",
+      "count": 3
+     }
+    ]
+   },
+   {
+    "version": "v2",
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.8,
+    "cell_errors_mean": 10.8,
+    "common_errors": []
+   },
+   {
+    "version": "v3",
+    "end_reasons": {
+     "budget_actions": 4,
+     "level1_solved": 1
+    },
+    "resets_mean": 5.8,
+    "cell_errors_mean": 0.0,
+    "common_errors": []
+   },
+   {
+    "version": "v4",
+    "end_reasons": {
+     "budget_actions": 4,
+     "level1_solved": 1
+    },
+    "resets_mean": 4.2,
+    "cell_errors_mean": 2.6,
+    "common_errors": [
+     {
+      "error": "KeyError: 'game_over'",
+      "count": 5
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 4
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: expected an indented block after 'for' statement on line 30",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "version": "v5",
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 6.0,
+    "cell_errors_mean": 1.6,
+    "common_errors": []
+   }
+  ],
+  "repeat_rate": {
+   "16": {
+    "proposed": 19,
+    "dropped_as_repeats": 8,
+    "rate": 0.4211
+   },
+   "15": {
+    "proposed": 12,
+    "would_be_repeats": 5,
+    "repeat_rate": 0.4167
+   }
+  },
+  "clicks": [
+   {
+    "round": 0,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 194,
+    "repeated_no_effect": 137,
+    "no_effect_share": 0.97,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 192,
+    "repeated_no_effect": 118,
+    "no_effect_share": 0.96,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 136,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 166,
+    "repeated_no_effect": 93,
+    "no_effect_share": 0.83,
+    "every_step_regions": []
+   },
+   {
+    "round": 0,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 200,
+    "repeated_no_effect": 142,
+    "no_effect_share": 1.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "clicks": 64,
+    "no_effect": 6,
+    "repeated_no_effect": 4,
+    "no_effect_share": 0.0938,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 47,
+    "repeated_no_effect": 23,
+    "no_effect_share": 0.235,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 101,
+    "repeated_no_effect": 65,
+    "no_effect_share": 0.505,
+    "every_step_regions": []
+   },
+   {
+    "round": 1,
+    "seed": 4,
+    "clicks": 199,
+    "no_effect": 10,
+    "repeated_no_effect": 7,
+    "no_effect_share": 0.0503,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 5,
+    "clicks": 78,
+    "no_effect": 16,
+    "repeated_no_effect": 5,
+    "no_effect_share": 0.2051,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 44,
+    "repeated_no_effect": 32,
+    "no_effect_share": 0.22,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 13,
+    "repeated_no_effect": 7,
+    "no_effect_share": 0.065,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 24,
+    "repeated_no_effect": 9,
+    "no_effect_share": 0.12,
+    "every_step_regions": []
+   },
+   {
+    "round": 2,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 9,
+    "repeated_no_effect": 6,
+    "no_effect_share": 0.045,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 22,
+    "repeated_no_effect": 14,
+    "no_effect_share": 0.11,
+    "every_step_regions": []
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 3,
+    "seed": 4,
+    "clicks": 182,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 36,
+    "repeated_no_effect": 20,
+    "no_effect_share": 0.18,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 28,
+    "repeated_no_effect": 12,
+    "no_effect_share": 0.14,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 46,
+    "repeated_no_effect": 22,
+    "no_effect_share": 0.23,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 4,
+    "repeated_no_effect": 3,
+    "no_effect_share": 0.02,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 5,
+    "clicks": 37,
+    "no_effect": 1,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.027,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      63,
+      0,
+      63,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   }
+  ],
+  "clicks_by_round": {
+   "16": {
+    "0": {
+     "episodes": 5,
+     "clicks": 1000,
+     "no_effect": 952,
+     "repeated_no_effect": 626,
+     "no_effect_per_episode": 190.4,
+     "repeated_per_episode": 125.2,
+     "no_effect_share": 0.952
+    },
+    "1": {
+     "episodes": 5,
+     "clicks": 741,
+     "no_effect": 180,
+     "repeated_no_effect": 104,
+     "no_effect_per_episode": 36.0,
+     "repeated_per_episode": 20.8,
+     "no_effect_share": 0.2429
+    },
+    "2": {
+     "episodes": 5,
+     "clicks": 1000,
+     "no_effect": 112,
+     "repeated_no_effect": 68,
+     "no_effect_per_episode": 22.4,
+     "repeated_per_episode": 13.6,
+     "no_effect_share": 0.112
+    },
+    "3": {
+     "episodes": 5,
+     "clicks": 982,
+     "no_effect": 0,
+     "repeated_no_effect": 0,
+     "no_effect_per_episode": 0.0,
+     "repeated_per_episode": 0.0,
+     "no_effect_share": 0.0
+    },
+    "4": {
+     "episodes": 5,
+     "clicks": 837,
+     "no_effect": 115,
+     "repeated_no_effect": 57,
+     "no_effect_per_episode": 23.0,
+     "repeated_per_episode": 11.4,
+     "no_effect_share": 0.1374
+    },
+    "5": {
+     "episodes": 5,
+     "clicks": 1000,
+     "no_effect": 0,
+     "repeated_no_effect": 0,
+     "no_effect_per_episode": 0.0,
+     "repeated_per_episode": 0.0,
+     "no_effect_share": 0.0
+    }
+   },
+   "15": {
+    "0": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 566,
+     "repeated_no_effect": 404,
+     "no_effect_per_episode": 188.7,
+     "repeated_per_episode": 134.7,
+     "no_effect_share": 0.9433
+    },
+    "1": {
+     "episodes": 3,
+     "clicks": 599,
+     "no_effect": 542,
+     "repeated_no_effect": 403,
+     "no_effect_per_episode": 180.7,
+     "repeated_per_episode": 134.3,
+     "no_effect_share": 0.9048
+    },
+    "2": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 524,
+     "repeated_no_effect": 370,
+     "no_effect_per_episode": 174.7,
+     "repeated_per_episode": 123.3,
+     "no_effect_share": 0.8733
+    },
+    "3": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 599,
+     "repeated_no_effect": 506,
+     "no_effect_per_episode": 199.7,
+     "repeated_per_episode": 168.7,
+     "no_effect_share": 0.9983
+    },
+    "4": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 600,
+     "repeated_no_effect": 526,
+     "no_effect_per_episode": 200.0,
+     "repeated_per_episode": 175.3,
+     "no_effect_share": 1.0
+    },
+    "5": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 600,
+     "repeated_no_effect": 557,
+     "no_effect_per_episode": 200.0,
+     "repeated_per_episode": 185.7,
+     "no_effect_share": 1.0
+    }
+   }
+  },
+  "v0_seeds_1_3": {
+   "15": {
+    "score": 0.5833,
+    "no_effect_per_episode": 188.7,
+    "repeated_per_episode": 134.7,
+    "clicks_per_episode": 200.0
+   },
+   "16": {
+    "score": 0.25,
+    "no_effect_per_episode": 195.3,
+    "repeated_per_episode": 130.3,
+    "clicks_per_episode": 200.0
+   }
+  },
+  "record_cost": [
+   {
+    "round": 0,
+    "seed": 1,
+    "turns": 45,
+    "record_chars": 84991,
+    "record_tokens_est": 21248,
+    "tokens_in": 268147,
+    "share_of_input_est": 0.0792,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "turns": 51,
+    "record_chars": 103582,
+    "record_tokens_est": 25896,
+    "tokens_in": 296734,
+    "share_of_input_est": 0.0873,
+    "turns_using_action_log": 3
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "turns": 38,
+    "record_chars": 72615,
+    "record_tokens_est": 18154,
+    "tokens_in": 207253,
+    "share_of_input_est": 0.0876,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 0,
+    "seed": 4,
+    "turns": 75,
+    "record_chars": 168378,
+    "record_tokens_est": 42094,
+    "tokens_in": 458847,
+    "share_of_input_est": 0.0917,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 0,
+    "seed": 5,
+    "turns": 38,
+    "record_chars": 71479,
+    "record_tokens_est": 17870,
+    "tokens_in": 209154,
+    "share_of_input_est": 0.0854,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "turns": 29,
+    "record_chars": 63015,
+    "record_tokens_est": 15754,
+    "tokens_in": 185199,
+    "share_of_input_est": 0.0851,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "turns": 66,
+    "record_chars": 145565,
+    "record_tokens_est": 36391,
+    "tokens_in": 421454,
+    "share_of_input_est": 0.0863,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "turns": 86,
+    "record_chars": 207582,
+    "record_tokens_est": 51896,
+    "tokens_in": 545063,
+    "share_of_input_est": 0.0952,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 4,
+    "turns": 103,
+    "record_chars": 224787,
+    "record_tokens_est": 56197,
+    "tokens_in": 654043,
+    "share_of_input_est": 0.0859,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 5,
+    "turns": 30,
+    "record_chars": 56712,
+    "record_tokens_est": 14178,
+    "tokens_in": 180472,
+    "share_of_input_est": 0.0786,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "turns": 122,
+    "record_chars": 327903,
+    "record_tokens_est": 81976,
+    "tokens_in": 793749,
+    "share_of_input_est": 0.1033,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "turns": 65,
+    "record_chars": 142826,
+    "record_tokens_est": 35706,
+    "tokens_in": 404747,
+    "share_of_input_est": 0.0882,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "turns": 49,
+    "record_chars": 110146,
+    "record_tokens_est": 27536,
+    "tokens_in": 311128,
+    "share_of_input_est": 0.0885,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 4,
+    "turns": 103,
+    "record_chars": 245996,
+    "record_tokens_est": 61499,
+    "tokens_in": 647337,
+    "share_of_input_est": 0.095,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 5,
+    "turns": 85,
+    "record_chars": 215082,
+    "record_tokens_est": 53770,
+    "tokens_in": 544669,
+    "share_of_input_est": 0.0987,
+    "turns_using_action_log": 1
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "turns": 42,
+    "record_chars": 89583,
+    "record_tokens_est": 22396,
+    "tokens_in": 264112,
+    "share_of_input_est": 0.0848,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "turns": 41,
+    "record_chars": 88616,
+    "record_tokens_est": 22154,
+    "tokens_in": 256251,
+    "share_of_input_est": 0.0865,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "turns": 43,
+    "record_chars": 103238,
+    "record_tokens_est": 25810,
+    "tokens_in": 276113,
+    "share_of_input_est": 0.0935,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 4,
+    "turns": 36,
+    "record_chars": 77235,
+    "record_tokens_est": 19309,
+    "tokens_in": 225760,
+    "share_of_input_est": 0.0855,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 5,
+    "turns": 39,
+    "record_chars": 86342,
+    "record_tokens_est": 21586,
+    "tokens_in": 249432,
+    "share_of_input_est": 0.0865,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "turns": 68,
+    "record_chars": 192136,
+    "record_tokens_est": 48034,
+    "tokens_in": 458706,
+    "share_of_input_est": 0.1047,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "turns": 73,
+    "record_chars": 155805,
+    "record_tokens_est": 38951,
+    "tokens_in": 469187,
+    "share_of_input_est": 0.083,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "turns": 68,
+    "record_chars": 181328,
+    "record_tokens_est": 45332,
+    "tokens_in": 456927,
+    "share_of_input_est": 0.0992,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 4,
+    "turns": 53,
+    "record_chars": 108443,
+    "record_tokens_est": 27111,
+    "tokens_in": 337791,
+    "share_of_input_est": 0.0803,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 5,
+    "turns": 11,
+    "record_chars": 15069,
+    "record_tokens_est": 3767,
+    "tokens_in": 68175,
+    "share_of_input_est": 0.0553,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 1,
+    "turns": 39,
+    "record_chars": 82681,
+    "record_tokens_est": 20670,
+    "tokens_in": 254372,
+    "share_of_input_est": 0.0813,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 2,
+    "turns": 44,
+    "record_chars": 94060,
+    "record_tokens_est": 23515,
+    "tokens_in": 284297,
+    "share_of_input_est": 0.0827,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 3,
+    "turns": 40,
+    "record_chars": 96358,
+    "record_tokens_est": 24090,
+    "tokens_in": 265335,
+    "share_of_input_est": 0.0908,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 4,
+    "turns": 42,
+    "record_chars": 95581,
+    "record_tokens_est": 23895,
+    "tokens_in": 275348,
+    "share_of_input_est": 0.0868,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 5,
+    "turns": 41,
+    "record_chars": 99735,
+    "record_tokens_est": 24934,
+    "tokens_in": 275935,
+    "share_of_input_est": 0.0904,
+    "turns_using_action_log": 0
+   }
+  ],
+  "record_cost_summary": {
+   "episodes": 30,
+   "record_chars_mean": 126895.6333,
+   "record_tokens_est_mean": 31723.9667,
+   "share_of_input_est_mean": 0.0876,
+   "turns_using_action_log": 4,
+   "episodes_using_action_log": 2
+  },
+  "click_map": {
+   "v0": {
+    "clicks": 1000,
+    "no_effect": 952,
+    "locations": 191,
+    "no_effect_locations": 175
+   },
+   "v4": {
+    "clicks": 837,
+    "no_effect": 115,
+    "locations": 64,
+    "no_effect_locations": 34
+   }
+  },
+  "state_change_figure": {
+   "skill": "solve_level",
+   "mid_episode": [
+    {
+     "seed": 1,
+     "turn": 14,
+     "would_try": 1
+    },
+    {
+     "seed": 2,
+     "turn": 33,
+     "would_try": 8
+    },
+    {
+     "seed": 3,
+     "turn": 43,
+     "would_try": 8
+    },
+    {
+     "seed": 4,
+     "turn": 51,
+     "would_try": 4
+    },
+    {
+     "seed": 5,
+     "turn": 15,
+     "would_try": 7
+    }
+   ]
+  },
+  "replay": {
+   "version": "v4",
+   "seed": 5,
+   "solved": true,
+   "actions": 37,
+   "score": 1.0
+  },
+  "action_record_example": {
+   "version": "v4",
+   "seed": 5,
+   "turn": 8,
+   "text": "ACTION RECORD (what each action changed on screen, measured by comparing the frame before and after it; clicks as (x, y), the order action() takes them, \"on N\" = the cell's value before the click)\nChanges every step (left out below): row 63, cols 18\u201363\nLast 20 of 24 actions:\nstep 5 \u00b7 click (54, 46) on 9 \u00b7 36 cells changed \u00b7 rows 44\u201349, cols 52\u201357 \u00b7 9\u21928\nstep 6 \u00b7 click (38, 54) on 9 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 36\u201341 \u00b7 9\u21928\nstep 7 \u00b7 click (46, 54) on 9 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 44\u201349 \u00b7 9\u21928\nstep 8 \u00b7 click (54, 54) on 9 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 52\u201357 \u00b7 9\u21928\nstep 9 \u00b7 click (38, 38) on 8 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 36\u201341 \u00b7 8\u21929\nstep 10 \u00b7 click (46, 38) on 8 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 44\u201349 \u00b7 8\u21929\nstep 11 \u00b7 click (54, 38) on 8 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 52\u201357 \u00b7 8\u21929\nstep 12 \u00b7 click (38, 46) on 8 \u00b7 36 cells changed \u00b7 rows 44\u201349, cols 36\u201341 \u00b7 8\u21929\nstep 13 \u00b7 click (54, 46) on 8 \u00b7 36 cells changed \u00b7 rows 44\u201349, cols 52\u201357 \u00b7 8\u21929\nstep 14 \u00b7 click (38, 54) on 8 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 36\u201341 \u00b7 8\u21929\nstep 15 \u00b7 click (46, 46) on 8 \u00b7 no change\nstep 16 \u00b7 click (46, 54) on 8 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 44\u201349 \u00b7 8\u21929\nstep 17 \u00b7 click (38, 38) on 9 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 36\u201341 \u00b7 9\u21928\nstep 18 \u00b7 click (46, 38) on 9 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 44\u201349 \u00b7 9\u21928\nstep 19 \u00b7 click (36, 36) on 8 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 36\u201341 \u00b7 8\u21929\nstep 20 \u00b7 click (44, 36) on 8 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 44\u201349 \u00b7 8\u21929\nstep 21 \u00b7 click (52, 36) on 9 \u00b7 36 cells changed \u00b7 rows 36\u201341, cols 52\u201357 \u00b7 9\u21928\nstep 22 \u00b7 click (36, 44) on 9 \u00b7 36 cells changed \u00b7 rows 44\u201349, cols 36\u201341 \u00b7 9\u21928\nstep 23 \u00b7 click (52, 44) on 9 \u00b7 36 cells changed \u00b7 rows 44\u201349, cols 52\u201357 \u00b7 9\u21928\nstep 24 \u00b7 click (36, 52) on 9 \u00b7 36 cells changed \u00b7 rows 52\u201357, cols 36\u201341 \u00b7 9\u21928\nClicks this episode: 24 on 15 locations, 23 changed something. By location: (38, 38) \u00d73 (3 changed), (46, 38) \u00d73 (3 changed), (38, 46) \u00d72 (2 changed), (38, 54) \u00d72 (2 changed), (46, 54) \u00d72 (2 changed), (54, 38) \u00d72 (2 changed), (54, 46) \u00d72 (2 changed), (36, 36) \u00d71 (1 changed), (36, 44) \u00d71 (1 changed), (36, 52) \u00d71 (1 changed), (44, 36) \u00d71 (1 changed), (46, 46) \u00d71 (0 changed), (52, 36) \u00d71 (1 changed), (52, 44) \u00d71 (1 changed), (54, 54) \u00d71 (1 changed)",
+   "chars": 2282,
+   "logged_chars": 2282,
+   "matches_log": true
+  },
+  "comparison": {
+   "16": {
+    "rounds_done": 5,
+    "final_parent": "v4",
+    "v0_score": 0.3,
+    "v0_score_seeds_1_3": 0.25,
+    "best_score": 0.8,
+    "best_score_seeds_1_3": 0.75,
+    "improvement": 0.5,
+    "improvement_seeds_1_3": 0.5,
+    "best_clears": "1/5",
+    "best_clears_seeds_1_3": "0/3",
+    "v0_clears": "0/5",
+    "accepted": [
+     "v1",
+     "v4"
+    ],
+    "edits_by_type": {
+     "edit": 11,
+     "delete": 8
+    },
+    "proposed": 19,
+    "dropped_by_check": {
+     "fact-check": 1,
+     "repeat": 8,
+     "state-change": 1
+    },
+    "skills_promoted": 0,
+    "tokens_player": 11986123,
+    "tokens_meta": 174441,
+    "tokens_total": 12160564
+   },
+   "15": {
+    "rounds_done": 5,
+    "final_parent": "v0",
+    "v0_score": 0.5833,
+    "v0_score_seeds_1_3": 0.5833,
+    "best_score": 0.5833,
+    "best_score_seeds_1_3": 0.5833,
+    "improvement": 0.0,
+    "improvement_seeds_1_3": 0.0,
+    "best_clears": "0/3",
+    "best_clears_seeds_1_3": "0/3",
+    "v0_clears": "0/3",
+    "accepted": [],
+    "edits_by_type": {
+     "edit": 10,
+     "delete": 2
+    },
+    "proposed": 12,
+    "dropped_by_check": {},
+    "skills_promoted": 0,
+    "tokens_player": 4646538,
+    "tokens_meta": 99313,
+    "tokens_total": 4745851
+   }
+  },
+  "figures": [
+   "results/issue16/figures/ft09_score_per_round.png",
+   "results/issue16/figures/ft09_seed_scores.png",
+   "results/issue16/figures/ft09_cost.png",
+   "results/issue16/figures/ft09_lineage.png",
+   "results/issue16/figures/ft09_frame_evidence.png",
+   "results/issue16/figures/ft09_click_map.png",
+   "results/issue16/figures/ft09_state_change.png",
+   "results/issue16/figures/ft09_replay.png"
+  ]
+ },
+ "vc33": {
+  "paths": {
+   "archive": "runs\\vc33-v4/archive.json",
+   "rejected_edits": "runs\\vc33-v4/rejected_edits.jsonl",
+   "trajectories": "runs\\vc33-v4/trajectories/",
+   "frames": "runs\\vc33-v4/frames/",
+   "final_harness": "runs\\vc33-v4/harnesses/v4/",
+   "changelog": "runs\\vc33-v4/CHANGELOG.md"
+  },
+  "rounds": [
+   {
+    "round": 0,
+    "version": "v0",
+    "parent": null,
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 5,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.5765,
+    "gate_mean": -0.2883,
+    "decision": "baseline",
+    "reason": "v0 is the starting parent",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.0,
+    "tokens": 2121294,
+    "meta_tokens": 0,
+    "factcheck_tokens": 0
+   },
+   {
+    "round": 1,
+    "version": "v1",
+    "parent": "v0",
+    "score_mean": 0.3333,
+    "score_std": 0.2108,
+    "score_mean_seeds_1_3": 0.4444,
+    "clears": 0,
+    "n": 5,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.6586,
+    "gate_mean": 0.004,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.2923 > 0 and drop -0.0404 <= 0.1",
+    "scores": {
+     "1": 0.3333,
+     "2": 0.3333,
+     "3": 0.6667,
+     "4": 0.0,
+     "5": 0.3333
+    },
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.0,
+    "tokens": 3059648,
+    "meta_tokens": 18373,
+    "factcheck_tokens": 2248
+   },
+   {
+    "round": 2,
+    "version": "v2",
+    "parent": "v1",
+    "score_mean": 0.8,
+    "score_std": 0.2667,
+    "score_mean_seeds_1_3": 0.6667,
+    "clears": 3,
+    "n": 5,
+    "clear_rate": 0.6,
+    "clears_seeds_1_3": 1,
+    "avg_steps": 73.4,
+    "cost_mean": 0.4893,
+    "gate_mean": 0.5554,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.5514 > 0 and drop -0.2260 <= 0.1",
+    "scores": {
+     "1": 1.0,
+     "2": 0.6667,
+     "3": 0.3333,
+     "4": 1.0,
+     "5": 1.0
+    },
+    "end_reasons": {
+     "level1_solved": 3,
+     "budget_tokens": 2
+    },
+    "resets_mean": 1.2,
+    "tokens": 3713252,
+    "meta_tokens": 18867,
+    "factcheck_tokens": 1743
+   },
+   {
+    "round": 3,
+    "version": "v3",
+    "parent": "v2",
+    "score_mean": 0.8667,
+    "score_std": 0.2667,
+    "score_mean_seeds_1_3": 1.0,
+    "clears": 4,
+    "n": 5,
+    "clear_rate": 0.8,
+    "clears_seeds_1_3": 3,
+    "avg_steps": 52.6,
+    "cost_mean": 0.4074,
+    "gate_mean": 0.6629,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.1075 > 0 and drop +0.0026 <= 0.1",
+    "scores": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 0.3333
+    },
+    "end_reasons": {
+     "level1_solved": 4,
+     "budget_tokens": 1
+    },
+    "resets_mean": 0.6,
+    "tokens": 3177006,
+    "meta_tokens": 19449,
+    "factcheck_tokens": 2701
+   },
+   {
+    "round": 4,
+    "version": "v4",
+    "parent": "v3",
+    "score_mean": 1.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 1.0,
+    "clears": 5,
+    "n": 5,
+    "clear_rate": 1.0,
+    "clears_seeds_1_3": 3,
+    "avg_steps": 3.0,
+    "cost_mean": 0.0142,
+    "gate_mean": 0.9929,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.3300 > 0 and drop -1.0601 <= 0.1",
+    "scores": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0
+    },
+    "end_reasons": {
+     "level1_solved": 5
+    },
+    "resets_mean": 0.0,
+    "tokens": 69282,
+    "meta_tokens": 19950,
+    "factcheck_tokens": 2357
+   },
+   {
+    "round": 5,
+    "version": "v5",
+    "parent": "v4",
+    "score_mean": 1.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 1.0,
+    "clears": 5,
+    "n": 5,
+    "clear_rate": 1.0,
+    "clears_seeds_1_3": 3,
+    "avg_steps": 7.4,
+    "cost_mean": 0.0339,
+    "gate_mean": 0.9831,
+    "decision": "rejected",
+    "reason": "tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.0197)",
+    "scores": {
+     "1": 1.0,
+     "2": 1.0,
+     "3": 1.0,
+     "4": 1.0,
+     "5": 1.0
+    },
+    "end_reasons": {
+     "level1_solved": 5
+    },
+    "resets_mean": 0.0,
+    "tokens": 160127,
+    "meta_tokens": 15978,
+    "factcheck_tokens": 1925
+   }
+  ],
+  "rounds_15": [
+   {
+    "round": 0,
+    "version": "v0",
+    "parent": null,
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.5164,
+    "gate_mean": -0.2582,
+    "decision": "baseline",
+    "reason": "v0 is the starting parent",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 4.0,
+    "tokens": 818908,
+    "meta_tokens": 0,
+    "factcheck_tokens": 0
+   },
+   {
+    "round": 1,
+    "version": "v1",
+    "parent": "v0",
+    "score_mean": 0.1111,
+    "score_std": 0.1571,
+    "score_mean_seeds_1_3": 0.1111,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.6691,
+    "gate_mean": -0.2235,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.0347 > 0 and drop +0.0998 <= 0.1",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.3333
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 4.0,
+    "tokens": 1580288,
+    "meta_tokens": 27621,
+    "factcheck_tokens": 3073
+   },
+   {
+    "round": 2,
+    "version": "v2",
+    "parent": "v1",
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 72.3333,
+    "cost_mean": 0.762,
+    "gate_mean": -0.381,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.1575; progress -0.1111, cost +0.0929)",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_turns": 3
+    },
+    "resets_mean": 0.6667,
+    "tokens": 3327173,
+    "meta_tokens": 14731,
+    "factcheck_tokens": 1459
+   },
+   {
+    "round": 3,
+    "version": "v3",
+    "parent": "v1",
+    "score_mean": 0.0,
+    "score_std": 0.0,
+    "score_mean_seeds_1_3": 0.0,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.7528,
+    "gate_mean": -0.3764,
+    "decision": "rejected",
+    "reason": "no gate-score gain (-0.1529; progress -0.1111, cost +0.0837)",
+    "scores": {
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 4.0,
+    "tokens": 1992137,
+    "meta_tokens": 16012,
+    "factcheck_tokens": 1403
+   },
+   {
+    "round": 4,
+    "version": "v4",
+    "parent": "v1",
+    "score_mean": 0.2222,
+    "score_std": 0.1571,
+    "score_mean_seeds_1_3": 0.2222,
+    "clears": 0,
+    "n": 3,
+    "clear_rate": 0.0,
+    "clears_seeds_1_3": 0,
+    "avg_steps": 200.0,
+    "cost_mean": 0.7379,
+    "gate_mean": -0.1467,
+    "decision": "accepted",
+    "reason": "gate-score gain +0.0768 > 0 and drop +0.0290 <= 0.1",
+    "scores": {
+     "1": 0.0,
+     "2": 0.3333,
+     "3": 0.3333
+    },
+    "end_reasons": {
+     "budget_actions": 3
+    },
+    "resets_mean": 4.0,
+    "tokens": 1848852,
+    "meta_tokens": 16157,
+    "factcheck_tokens": 1488
+   }
+  ],
+  "edits": [
+   {
+    "round": 1,
+    "attempts": 1,
+    "child": "v1",
+    "decision": "accepted",
+    "proposed": 5,
+    "by_type": {
+     "promote": 3,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 3,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "applies": 1
+    },
+    "written": 4,
+    "written_edits": [
+     "add skill has_black_neighbor (rule)",
+     "add skill is_inside_black (rule)",
+     "add prompt game_hints (meta)",
+     "add skill region_state (meta)"
+    ],
+    "promotes": [
+     {
+      "attempt": 1,
+      "name": "has_black_neighbor",
+      "passed": true
+     },
+     {
+      "attempt": 1,
+      "name": "has_black_neighbor",
+      "passed": false
+     },
+     {
+      "attempt": 1,
+      "name": "is_inside_black",
+      "passed": true
+     }
+    ]
+   },
+   {
+    "round": 2,
+    "attempts": 1,
+    "child": "v2",
+    "decision": "accepted",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "edit prompt game_hints (meta)",
+     "add skill compare_region_states (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 3,
+    "attempts": 1,
+    "child": "v3",
+    "decision": "accepted",
+    "proposed": 6,
+    "by_type": {
+     "promote": 2,
+     "delete": 2,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 4,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "fact-check": 1,
+     "skill test": 1
+    },
+    "written": 4,
+    "written_edits": [
+     "add skill count_non_green (rule)",
+     "add skill count_colors (rule)",
+     "delete skill has_black_neighbor (rule)",
+     "delete skill is_inside_black (rule)"
+    ],
+    "promotes": [
+     {
+      "attempt": 1,
+      "name": "count_non_green",
+      "passed": true
+     },
+     {
+      "attempt": 1,
+      "name": "count_colors",
+      "passed": true
+     }
+    ]
+   },
+   {
+    "round": 4,
+    "attempts": 1,
+    "child": "v4",
+    "decision": "accepted",
+    "proposed": 5,
+    "by_type": {
+     "promote": 3,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 3,
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "skill test": 1,
+     "skill-name check": 2
+    },
+    "written": 2,
+    "written_edits": [
+     "add skill count_pattern (rule)",
+     "edit prompt game_hints (meta)"
+    ],
+    "promotes": [
+     {
+      "attempt": 1,
+      "name": "count_colors_region",
+      "passed": false
+     },
+     {
+      "attempt": 1,
+      "name": "count_colors_region",
+      "passed": false
+     },
+     {
+      "attempt": 1,
+      "name": "count_pattern",
+      "passed": true
+     }
+    ]
+   },
+   {
+    "round": 5,
+    "attempts": 1,
+    "child": "v5",
+    "decision": "rejected",
+    "proposed": 3,
+    "by_type": {
+     "delete": 1,
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "rule": 1,
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 3,
+    "written_edits": [
+     "delete skill count_non_green (rule)",
+     "add skill black_region_cols (meta)",
+     "edit prompt game_hints (meta)"
+    ],
+    "promotes": []
+   }
+  ],
+  "edits_15": [
+   {
+    "round": 1,
+    "attempts": 2,
+    "child": "v1",
+    "decision": "accepted",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {
+     "fact-check": 1
+    },
+    "written": 1,
+    "written_edits": [
+     "add prompt strategy (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 2,
+    "attempts": 1,
+    "child": "v2",
+    "decision": "rejected",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "edit prompt strategy (meta)",
+     "add skill orange_count (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 3,
+    "attempts": 1,
+    "child": "v3",
+    "decision": "rejected",
+    "proposed": 2,
+    "by_type": {
+     "edit": 2
+    },
+    "meta_by_type": {
+     "edit": 2
+    },
+    "by_source": {
+     "meta": 2
+    },
+    "dropped_by_check": {},
+    "written": 2,
+    "written_edits": [
+     "edit prompt strategy (meta)",
+     "add skill count_orange (meta)"
+    ],
+    "promotes": []
+   },
+   {
+    "round": 4,
+    "attempts": 1,
+    "child": "v4",
+    "decision": "accepted",
+    "proposed": 3,
+    "by_type": {
+     "delete": 2,
+     "edit": 1
+    },
+    "meta_by_type": {
+     "edit": 1
+    },
+    "by_source": {
+     "rule": 2,
+     "meta": 1
+    },
+    "dropped_by_check": {},
+    "written": 3,
+    "written_edits": [
+     "delete skill bfs_to_target (rule)",
+     "delete skill obstacle_map (rule)",
+     "edit prompt strategy (meta)"
+    ],
+    "promotes": []
+   }
+  ],
+  "checks": {
+   "state_change": [],
+   "repeats": []
+  },
+  "rejected_store": [
+   {
+    "id": "r1-a1-e2",
+    "round": 1,
+    "version": "v1",
+    "type": "promote",
+    "target": "skill",
+    "source": "rule",
+    "what": "add skill has_black_neighbor",
+    "rejected_by": "validate: applies"
+   },
+   {
+    "id": "r3-a1-e5",
+    "round": 3,
+    "version": "v3",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "validate: fact-check"
+   },
+   {
+    "id": "r3-a1-e6",
+    "round": 3,
+    "version": "v3",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill check_large_region",
+    "rejected_by": "validate: skill test"
+   },
+   {
+    "id": "r4-a1-e5",
+    "round": 4,
+    "version": "v4",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill black_region_position",
+    "rejected_by": "validate: skill test"
+   },
+   {
+    "id": "r4-a1-e1",
+    "round": 4,
+    "version": "v4",
+    "type": "promote",
+    "target": "skill",
+    "source": "rule",
+    "what": "add skill count_colors_region",
+    "rejected_by": "validate: skill-name check"
+   },
+   {
+    "id": "r4-a1-e2",
+    "round": 4,
+    "version": "v4",
+    "type": "promote",
+    "target": "skill",
+    "source": "rule",
+    "what": "add skill count_colors_region",
+    "rejected_by": "validate: skill-name check"
+   },
+   {
+    "id": "r5-gate-e1",
+    "round": 5,
+    "version": "v5",
+    "type": "delete",
+    "target": "skill",
+    "source": "rule",
+    "what": "delete skill count_non_green",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.0197)"
+   },
+   {
+    "id": "r5-gate-e3",
+    "round": 5,
+    "version": "v5",
+    "type": "edit",
+    "target": "skill",
+    "source": "meta",
+    "what": "add skill black_region_cols",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.0197)"
+   },
+   {
+    "id": "r5-gate-e2",
+    "round": 5,
+    "version": "v5",
+    "type": "edit",
+    "target": "prompt:game_hints",
+    "source": "meta",
+    "what": "edit prompt game_hints",
+    "rejected_by": "gate: tie on progress (|+0.0000| <= eps 0.05); child not cheaper (cost +0.0197)"
+   }
+  ],
+  "section": [
+   {
+    "round": 1,
+    "parent": "v0",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "add prompt game_hints",
+       "add skill region_state"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 2,
+    "parent": "v1",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "edit prompt game_hints",
+       "add skill compare_region_states"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 3,
+    "parent": "v2",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "edit prompt game_hints",
+       "add skill check_large_region"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 4,
+    "parent": "v3",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "edit prompt game_hints",
+       "add skill black_region_position"
+      ]
+     }
+    ]
+   },
+   {
+    "round": 5,
+    "parent": "v4",
+    "versions_shown": [],
+    "dropped_edits_shown": 0,
+    "section_chars": 224,
+    "meta_edits": 2,
+    "meta_repeats": 0,
+    "calls": [
+     {
+      "attempt": 1,
+      "meta_edits": 2,
+      "repeats": 0,
+      "proposed": [
+       "edit prompt game_hints",
+       "add skill black_region_cols"
+      ]
+     }
+    ]
+   }
+  ],
+  "helpers": {
+   "inline_by_round": {
+    "1": [
+     "has_black_neighbor",
+     "is_in_black",
+     "is_inside_black"
+    ],
+    "2": [],
+    "3": [
+     "count_colors",
+     "count_non_green"
+    ],
+    "4": [
+     "count_colors_region",
+     "count_pattern"
+    ],
+    "5": []
+   },
+   "promotes_proposed": 8,
+   "promotes_passed": 5,
+   "promoted_written": [
+    {
+     "name": "has_black_neighbor",
+     "version": "v1",
+     "decision": "accepted",
+     "calls_after": {
+      "v1": 0,
+      "v2": 0
+     }
+    },
+    {
+     "name": "is_inside_black",
+     "version": "v1",
+     "decision": "accepted",
+     "calls_after": {
+      "v1": 0,
+      "v2": 0
+     }
+    },
+    {
+     "name": "count_non_green",
+     "version": "v3",
+     "decision": "accepted",
+     "calls_after": {
+      "v3": 0,
+      "v4": 0
+     }
+    },
+    {
+     "name": "count_colors",
+     "version": "v3",
+     "decision": "accepted",
+     "calls_after": {
+      "v3": 6,
+      "v4": 0,
+      "v5": 0
+     }
+    },
+    {
+     "name": "count_pattern",
+     "version": "v4",
+     "decision": "accepted",
+     "calls_after": {
+      "v4": 0,
+      "v5": 0
+     }
+    }
+   ],
+   "skills_using_action_log": []
+  },
+  "failures": [
+   {
+    "version": "v0",
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.0,
+    "cell_errors_mean": 1.0,
+    "common_errors": [
+     {
+      "error": "SandboxViolation: SyntaxError: unterminated string literal (detected at line 13)",
+      "count": 1
+     },
+     {
+      "error": "ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()",
+      "count": 1
+     },
+     {
+      "error": "KeyError: 'game_over'",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "version": "v1",
+    "end_reasons": {
+     "budget_actions": 5
+    },
+    "resets_mean": 4.0,
+    "cell_errors_mean": 2.2,
+    "common_errors": [
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax. Perhaps you forgot a comma?",
+      "count": 2
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 2
+     },
+     {
+      "error": "TypeError: 'str' object is not callable",
+      "count": 2
+     }
+    ]
+   },
+   {
+    "version": "v2",
+    "end_reasons": {
+     "level1_solved": 3,
+     "budget_tokens": 2
+    },
+    "resets_mean": 1.2,
+    "cell_errors_mean": 12.0,
+    "common_errors": [
+     {
+      "error": "TypeError: 'dict' object is not callable",
+      "count": 38
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 6
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: unterminated triple-quoted string literal (detected at line 98)",
+      "count": 1
+     }
+    ]
+   },
+   {
+    "version": "v3",
+    "end_reasons": {
+     "level1_solved": 4,
+     "budget_tokens": 1
+    },
+    "resets_mean": 0.6,
+    "cell_errors_mean": 23.2,
+    "common_errors": [
+     {
+      "error": "TypeError: 'dict' object is not callable",
+      "count": 56
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: invalid syntax",
+      "count": 32
+     },
+     {
+      "error": "SandboxViolation: SyntaxError: '(' was never closed",
+      "count": 2
+     }
+    ]
+   },
+   {
+    "version": "v4",
+    "end_reasons": {
+     "level1_solved": 5
+    },
+    "resets_mean": 0.0,
+    "cell_errors_mean": 0.0,
+    "common_errors": []
+   },
+   {
+    "version": "v5",
+    "end_reasons": {
+     "level1_solved": 5
+    },
+    "resets_mean": 0.0,
+    "cell_errors_mean": 1.6,
+    "common_errors": []
+   }
+  ],
+  "repeat_rate": {
+   "16": {
+    "proposed": 21,
+    "dropped_as_repeats": 0,
+    "rate": 0.0
+   },
+   "15": {
+    "proposed": 9,
+    "would_be_repeats": 1,
+    "repeat_rate": 0.1111
+   }
+  },
+  "clicks": [
+   {
+    "round": 0,
+    "seed": 1,
+    "clicks": 200,
+    "no_effect": 191,
+    "repeated_no_effect": 161,
+    "no_effect_share": 0.955,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 180,
+    "repeated_no_effect": 115,
+    "no_effect_share": 0.9,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "clicks": 199,
+    "no_effect": 163,
+    "repeated_no_effect": 103,
+    "no_effect_share": 0.8191,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 182,
+    "repeated_no_effect": 161,
+    "no_effect_share": 0.91,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 0,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 173,
+    "repeated_no_effect": 85,
+    "no_effect_share": 0.865,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "clicks": 199,
+    "no_effect": 158,
+    "repeated_no_effect": 79,
+    "no_effect_share": 0.794,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "clicks": 200,
+    "no_effect": 165,
+    "repeated_no_effect": 87,
+    "no_effect_share": 0.825,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "clicks": 200,
+    "no_effect": 168,
+    "repeated_no_effect": 86,
+    "no_effect_share": 0.84,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 4,
+    "clicks": 200,
+    "no_effect": 178,
+    "repeated_no_effect": 110,
+    "no_effect_share": 0.89,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 1,
+    "seed": 5,
+    "clicks": 200,
+    "no_effect": 162,
+    "repeated_no_effect": 102,
+    "no_effect_share": 0.81,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "clicks": 53,
+    "no_effect": 23,
+    "repeated_no_effect": 14,
+    "no_effect_share": 0.434,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "clicks": 122,
+    "no_effect": 51,
+    "repeated_no_effect": 19,
+    "no_effect_share": 0.418,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "clicks": 128,
+    "no_effect": 55,
+    "repeated_no_effect": 33,
+    "no_effect_share": 0.4297,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 4,
+    "clicks": 53,
+    "no_effect": 15,
+    "repeated_no_effect": 2,
+    "no_effect_share": 0.283,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 2,
+    "seed": 5,
+    "clicks": 11,
+    "no_effect": 6,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.5455,
+    "every_step_regions": [
+     [
+      0,
+      51,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "clicks": 78,
+    "no_effect": 24,
+    "repeated_no_effect": 10,
+    "no_effect_share": 0.3077,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "clicks": 19,
+    "no_effect": 8,
+    "repeated_no_effect": 1,
+    "no_effect_share": 0.4211,
+    "every_step_regions": [
+     [
+      0,
+      41,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "clicks": 5,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": [
+     [
+      0,
+      59,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 4,
+    "clicks": 37,
+    "no_effect": 14,
+    "repeated_no_effect": 8,
+    "no_effect_share": 0.3784,
+    "every_step_regions": [
+     [
+      0,
+      18,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 3,
+    "seed": 5,
+    "clicks": 124,
+    "no_effect": 57,
+    "repeated_no_effect": 32,
+    "no_effect_share": 0.4597,
+    "every_step_regions": [
+     [
+      0,
+      0,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "clicks": 3,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "clicks": 3,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "clicks": 3,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 4,
+    "clicks": 3,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 4,
+    "seed": 5,
+    "clicks": 3,
+    "no_effect": 0,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.0,
+    "every_step_regions": []
+   },
+   {
+    "round": 5,
+    "seed": 1,
+    "clicks": 5,
+    "no_effect": 2,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.4,
+    "every_step_regions": [
+     [
+      0,
+      59,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 2,
+    "clicks": 10,
+    "no_effect": 7,
+    "repeated_no_effect": 3,
+    "no_effect_share": 0.7,
+    "every_step_regions": [
+     [
+      0,
+      52,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 3,
+    "clicks": 6,
+    "no_effect": 3,
+    "repeated_no_effect": 1,
+    "no_effect_share": 0.5,
+    "every_step_regions": [
+     [
+      0,
+      58,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 4,
+    "clicks": 5,
+    "no_effect": 2,
+    "repeated_no_effect": 0,
+    "no_effect_share": 0.4,
+    "every_step_regions": [
+     [
+      0,
+      59,
+      0,
+      63
+     ]
+    ]
+   },
+   {
+    "round": 5,
+    "seed": 5,
+    "clicks": 11,
+    "no_effect": 8,
+    "repeated_no_effect": 7,
+    "no_effect_share": 0.7273,
+    "every_step_regions": [
+     [
+      0,
+      51,
+      0,
+      63
+     ]
+    ]
+   }
+  ],
+  "clicks_by_round": {
+   "16": {
+    "0": {
+     "episodes": 5,
+     "clicks": 999,
+     "no_effect": 889,
+     "repeated_no_effect": 625,
+     "no_effect_per_episode": 177.8,
+     "repeated_per_episode": 125.0,
+     "no_effect_share": 0.8899
+    },
+    "1": {
+     "episodes": 5,
+     "clicks": 999,
+     "no_effect": 831,
+     "repeated_no_effect": 464,
+     "no_effect_per_episode": 166.2,
+     "repeated_per_episode": 92.8,
+     "no_effect_share": 0.8318
+    },
+    "2": {
+     "episodes": 5,
+     "clicks": 367,
+     "no_effect": 150,
+     "repeated_no_effect": 68,
+     "no_effect_per_episode": 30.0,
+     "repeated_per_episode": 13.6,
+     "no_effect_share": 0.4087
+    },
+    "3": {
+     "episodes": 5,
+     "clicks": 263,
+     "no_effect": 103,
+     "repeated_no_effect": 51,
+     "no_effect_per_episode": 20.6,
+     "repeated_per_episode": 10.2,
+     "no_effect_share": 0.3916
+    },
+    "4": {
+     "episodes": 5,
+     "clicks": 15,
+     "no_effect": 0,
+     "repeated_no_effect": 0,
+     "no_effect_per_episode": 0.0,
+     "repeated_per_episode": 0.0,
+     "no_effect_share": 0.0
+    },
+    "5": {
+     "episodes": 5,
+     "clicks": 37,
+     "no_effect": 22,
+     "repeated_no_effect": 11,
+     "no_effect_per_episode": 4.4,
+     "repeated_per_episode": 2.2,
+     "no_effect_share": 0.5946
+    }
+   },
+   "15": {
+    "0": {
+     "episodes": 3,
+     "clicks": 599,
+     "no_effect": 581,
+     "repeated_no_effect": 483,
+     "no_effect_per_episode": 193.7,
+     "repeated_per_episode": 161.0,
+     "no_effect_share": 0.9699
+    },
+    "1": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 516,
+     "repeated_no_effect": 397,
+     "no_effect_per_episode": 172.0,
+     "repeated_per_episode": 132.3,
+     "no_effect_share": 0.86
+    },
+    "2": {
+     "episodes": 3,
+     "clicks": 217,
+     "no_effect": 174,
+     "repeated_no_effect": 111,
+     "no_effect_per_episode": 58.0,
+     "repeated_per_episode": 37.0,
+     "no_effect_share": 0.8018
+    },
+    "3": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 416,
+     "repeated_no_effect": 278,
+     "no_effect_per_episode": 138.7,
+     "repeated_per_episode": 92.7,
+     "no_effect_share": 0.6933
+    },
+    "4": {
+     "episodes": 3,
+     "clicks": 600,
+     "no_effect": 315,
+     "repeated_no_effect": 207,
+     "no_effect_per_episode": 105.0,
+     "repeated_per_episode": 69.0,
+     "no_effect_share": 0.525
+    }
+   }
+  },
+  "v0_seeds_1_3": {
+   "15": {
+    "score": 0.0,
+    "no_effect_per_episode": 193.7,
+    "repeated_per_episode": 161.0,
+    "clicks_per_episode": 199.7
+   },
+   "16": {
+    "score": 0.0,
+    "no_effect_per_episode": 178.0,
+    "repeated_per_episode": 126.3,
+    "clicks_per_episode": 199.7
+   }
+  },
+  "record_cost": [
+   {
+    "round": 0,
+    "seed": 1,
+    "turns": 55,
+    "record_chars": 84494,
+    "record_tokens_est": 21124,
+    "tokens_in": 247151,
+    "share_of_input_est": 0.0855,
+    "turns_using_action_log": 1
+   },
+   {
+    "round": 0,
+    "seed": 2,
+    "turns": 66,
+    "record_chars": 140793,
+    "record_tokens_est": 35198,
+    "tokens_in": 332581,
+    "share_of_input_est": 0.1058,
+    "turns_using_action_log": 1
+   },
+   {
+    "round": 0,
+    "seed": 3,
+    "turns": 100,
+    "record_chars": 218878,
+    "record_tokens_est": 54720,
+    "tokens_in": 505933,
+    "share_of_input_est": 0.1082,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 0,
+    "seed": 4,
+    "turns": 55,
+    "record_chars": 95895,
+    "record_tokens_est": 23974,
+    "tokens_in": 246221,
+    "share_of_input_est": 0.0974,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 0,
+    "seed": 5,
+    "turns": 100,
+    "record_chars": 200461,
+    "record_tokens_est": 50115,
+    "tokens_in": 517226,
+    "share_of_input_est": 0.0969,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 1,
+    "turns": 123,
+    "record_chars": 288538,
+    "record_tokens_est": 72134,
+    "tokens_in": 711904,
+    "share_of_input_est": 0.1013,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 2,
+    "turns": 95,
+    "record_chars": 209500,
+    "record_tokens_est": 52375,
+    "tokens_in": 534853,
+    "share_of_input_est": 0.0979,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 3,
+    "turns": 62,
+    "record_chars": 139354,
+    "record_tokens_est": 34838,
+    "tokens_in": 339714,
+    "share_of_input_est": 0.1026,
+    "turns_using_action_log": 1
+   },
+   {
+    "round": 1,
+    "seed": 4,
+    "turns": 73,
+    "record_chars": 163559,
+    "record_tokens_est": 40890,
+    "tokens_in": 410333,
+    "share_of_input_est": 0.0997,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 1,
+    "seed": 5,
+    "turns": 112,
+    "record_chars": 265150,
+    "record_tokens_est": 66288,
+    "tokens_in": 669933,
+    "share_of_input_est": 0.0989,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 1,
+    "turns": 84,
+    "record_chars": 168187,
+    "record_tokens_est": 42047,
+    "tokens_in": 546937,
+    "share_of_input_est": 0.0769,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 2,
+    "turns": 155,
+    "record_chars": 402526,
+    "record_tokens_est": 100632,
+    "tokens_in": 1055110,
+    "share_of_input_est": 0.0954,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 3,
+    "turns": 153,
+    "record_chars": 370492,
+    "record_tokens_est": 92623,
+    "tokens_in": 1059636,
+    "share_of_input_est": 0.0874,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 4,
+    "turns": 83,
+    "record_chars": 188845,
+    "record_tokens_est": 47211,
+    "tokens_in": 564220,
+    "share_of_input_est": 0.0837,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 2,
+    "seed": 5,
+    "turns": 8,
+    "record_chars": 6619,
+    "record_tokens_est": 1655,
+    "tokens_in": 43147,
+    "share_of_input_est": 0.0384,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 1,
+    "turns": 82,
+    "record_chars": 188868,
+    "record_tokens_est": 47217,
+    "tokens_in": 543554,
+    "share_of_input_est": 0.0869,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 2,
+    "turns": 45,
+    "record_chars": 53673,
+    "record_tokens_est": 13418,
+    "tokens_in": 302383,
+    "share_of_input_est": 0.0444,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 3,
+    "turns": 6,
+    "record_chars": 3578,
+    "record_tokens_est": 894,
+    "tokens_in": 31170,
+    "share_of_input_est": 0.0287,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 4,
+    "turns": 138,
+    "record_chars": 244792,
+    "record_tokens_est": 61198,
+    "tokens_in": 810074,
+    "share_of_input_est": 0.0755,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 3,
+    "seed": 5,
+    "turns": 160,
+    "record_chars": 390662,
+    "record_tokens_est": 97666,
+    "tokens_in": 1054203,
+    "share_of_input_est": 0.0926,
+    "turns_using_action_log": 1
+   },
+   {
+    "round": 4,
+    "seed": 1,
+    "turns": 3,
+    "record_chars": 1217,
+    "record_tokens_est": 304,
+    "tokens_in": 10571,
+    "share_of_input_est": 0.0288,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 2,
+    "turns": 5,
+    "record_chars": 2247,
+    "record_tokens_est": 562,
+    "tokens_in": 20142,
+    "share_of_input_est": 0.0279,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 3,
+    "turns": 3,
+    "record_chars": 1217,
+    "record_tokens_est": 304,
+    "tokens_in": 10587,
+    "share_of_input_est": 0.0287,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 4,
+    "turns": 2,
+    "record_chars": 545,
+    "record_tokens_est": 136,
+    "tokens_in": 6778,
+    "share_of_input_est": 0.0201,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 4,
+    "seed": 5,
+    "turns": 3,
+    "record_chars": 1217,
+    "record_tokens_est": 304,
+    "tokens_in": 10725,
+    "share_of_input_est": 0.0284,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 1,
+    "turns": 4,
+    "record_chars": 1701,
+    "record_tokens_est": 425,
+    "tokens_in": 13118,
+    "share_of_input_est": 0.0324,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 2,
+    "turns": 11,
+    "record_chars": 6408,
+    "record_tokens_est": 1602,
+    "tokens_in": 38918,
+    "share_of_input_est": 0.0412,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 3,
+    "turns": 11,
+    "record_chars": 6886,
+    "record_tokens_est": 1722,
+    "tokens_in": 39008,
+    "share_of_input_est": 0.0441,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 4,
+    "turns": 4,
+    "record_chars": 1701,
+    "record_tokens_est": 425,
+    "tokens_in": 13756,
+    "share_of_input_est": 0.0309,
+    "turns_using_action_log": 0
+   },
+   {
+    "round": 5,
+    "seed": 5,
+    "turns": 8,
+    "record_chars": 5640,
+    "record_tokens_est": 1410,
+    "tokens_in": 29838,
+    "share_of_input_est": 0.0473,
+    "turns_using_action_log": 0
+   }
+  ],
+  "record_cost_summary": {
+   "episodes": 30,
+   "record_chars_mean": 128454.7667,
+   "record_tokens_est_mean": 32113.7,
+   "share_of_input_est_mean": 0.0678,
+   "turns_using_action_log": 4,
+   "episodes_using_action_log": 4
+  },
+  "click_map": {
+   "v0": {
+    "clicks": 999,
+    "no_effect": 877,
+    "locations": 181,
+    "no_effect_locations": 172
+   },
+   "v4": {
+    "clicks": 15,
+    "no_effect": 0,
+    "locations": 1,
+    "no_effect_locations": 0
+   }
+  },
+  "state_change_figure": null,
+  "replay": {
+   "version": "v4",
+   "seed": 1,
+   "solved": true,
+   "actions": 3,
+   "score": 1.0
+  },
+  "action_record_example": {
+   "version": "v4",
+   "seed": 1,
+   "turn": 2,
+   "text": "ACTION RECORD (what each action changed on screen, measured by comparing the frame before and after it; clicks as (x, y), the order action() takes them, \"on N\" = the cell's value before the click)\nChanges every step (left out below): none found\nLast 2 of 2 actions:\nstep 1 \u00b7 click (61, 33) on 9 \u00b7 265 cells changed \u00b7 row 0, col 63 \u00b7 7\u21924; rows 1\u201327, cols 32\u201335 \u00b7 0\u21923; rows 32\u201363, cols 42\u201351 \u00b7 3\u21920 \u00d7104, 3\u21924 \u00d716, 4\u21920 \u00d712\nstep 2 \u00b7 click (61, 33) on 9 \u00b7 266 cells changed \u00b7 row 0, cols 61\u201362 \u00b7 7\u21924; rows 1\u201327, cols 36\u201339 \u00b7 0\u21923; rows 32\u201363, cols 38\u201347 \u00b7 3\u21920 \u00d7104, 3\u21924 \u00d716, 4\u21920 \u00d712\nClicks this episode: 2 on 1 locations, 2 changed something. By location: (61, 33) \u00d72 (2 changed)",
+   "chars": 672,
+   "logged_chars": 672,
+   "matches_log": true
+  },
+  "comparison": {
+   "16": {
+    "rounds_done": 5,
+    "final_parent": "v4",
+    "v0_score": 0.0,
+    "v0_score_seeds_1_3": 0.0,
+    "best_score": 1.0,
+    "best_score_seeds_1_3": 1.0,
+    "improvement": 1.0,
+    "improvement_seeds_1_3": 1.0,
+    "best_clears": "5/5",
+    "best_clears_seeds_1_3": "3/3",
+    "v0_clears": "0/5",
+    "accepted": [
+     "v1",
+     "v2",
+     "v3",
+     "v4"
+    ],
+    "edits_by_type": {
+     "promote": 8,
+     "edit": 10,
+     "delete": 3
+    },
+    "proposed": 21,
+    "dropped_by_check": {
+     "applies": 1,
+     "fact-check": 1,
+     "skill test": 2,
+     "skill-name check": 2
+    },
+    "skills_promoted": 5,
+    "tokens_player": 12300609,
+    "tokens_meta": 103591,
+    "tokens_total": 12404200
+   },
+   "15": {
+    "rounds_done": 4,
+    "final_parent": "v4",
+    "v0_score": 0.0,
+    "v0_score_seeds_1_3": 0.0,
+    "best_score": 0.2222,
+    "best_score_seeds_1_3": 0.2222,
+    "improvement": 0.2222,
+    "improvement_seeds_1_3": 0.2222,
+    "best_clears": "0/3",
+    "best_clears_seeds_1_3": "0/3",
+    "v0_clears": "0/3",
+    "accepted": [
+     "v1",
+     "v4"
+    ],
+    "edits_by_type": {
+     "edit": 7,
+     "delete": 2
+    },
+    "proposed": 9,
+    "dropped_by_check": {
+     "fact-check": 1
+    },
+    "skills_promoted": 0,
+    "tokens_player": 9567358,
+    "tokens_meta": 81944,
+    "tokens_total": 9649302
+   }
+  },
+  "figures": [
+   "results/issue16/figures/vc33_score_per_round.png",
+   "results/issue16/figures/vc33_seed_scores.png",
+   "results/issue16/figures/vc33_cost.png",
+   "results/issue16/figures/vc33_lineage.png",
+   "results/issue16/figures/vc33_frame_evidence.png",
+   "results/issue16/figures/vc33_click_map.png",
+   "results/issue16/figures/vc33_replay.png"
+  ]
+ },
+ "figures": [
+  "results/issue16/figures/comparison.png",
+  "results/issue16/figures/no_effect_clicks.png"
+ ]
+}
