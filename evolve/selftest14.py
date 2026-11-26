@@ -641,6 +641,34 @@ def checkpoint_kill_and_resume() -> None:
     check(all(n == 1 for n in counts.values()), "after the extension every stage is still recorded exactly once")
 
 
+def checkpoint_episode_gap() -> None:
+    """#16: the kill test above can land between the episodes.json write and
+    the state-file write (it did on TC1N02, smoke job 75429). That gap,
+    made on purpose here instead of by timing."""
+    print("checkpoint: an episode saved but missing from the state file is recorded once on resume (#16)")
+    root = os.path.join(tempfile.mkdtemp(prefix="evolve_gap_"), "run")
+    cfg = base_cfg()
+    paths = loop.Paths(root, title="self-test")
+    rows = [{"seed": s, "wall_time_s": 10.0 * s} for s in cfg["seeds"]]
+    os.makedirs(paths.report_dir(0), exist_ok=True)
+    with open(os.path.join(paths.report_dir(0), "episodes.json"), "w", encoding="utf-8") as handle:
+        json.dump(rows, handle)
+    ckpt = Checkpoint(root, cfg, log=lambda _m: None)
+    for seed in cfg["seeds"]:
+        if seed != 4:  # seed 4: written to episodes.json, killed before the state file
+            ckpt.episode_done(0, seed, 10.0 * seed, [s for s in cfg["seeds"] if s <= seed and s != 4])
+
+    def no_play(_seed: int) -> Any:
+        raise AssertionError("a finished episode must not be played again")
+
+    loop.evaluate(build_v0(), 0, cfg, paths, no_play, log=lambda _m: None, ckpt=ckpt)
+    loop.evaluate(build_v0(), 0, cfg, paths, no_play, log=lambda _m: None, ckpt=ckpt)
+    played = sorted(c["seed"] for c in read_json(os.path.join(root, STATE_FILE))["completed"]
+                    if c.get("unit") == "episode")
+    check(played == [1, 2, 3, 4, 5], f"seed 4 is recorded once, nothing is replayed ({played})")
+    ckpt.disarm()
+
+
 def checkpoint_sigusr1() -> None:
     print("checkpoint: SIGUSR1 saves and exits at once (#14)")
     if not hasattr(signal, "SIGUSR1"):
@@ -670,6 +698,7 @@ def main() -> None:
     checkpoint_units()
     checkpoint_meta_stage()
     checkpoint_kill_and_resume()
+    checkpoint_episode_gap()
     checkpoint_sigusr1()
 
 

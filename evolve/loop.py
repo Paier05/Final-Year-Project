@@ -263,6 +263,14 @@ def evaluate(
     done = {e["seed"]: e for e in _read_json(out_path, [])}
     seeds = [int(s) for s in cfg["seeds"]]
     todo = [s for s in seeds if s not in done]
+    if ckpt is not None:
+        # A job killed between the episodes.json write and the state-file
+        # write leaves a finished episode the state does not list (#16: seen
+        # in the smoke job's kill test on TC1N02). It is not replayed, so
+        # record it here, once, as recovered() does for stages.
+        for seed in sorted(done):
+            if not ckpt.episode_was_completed(round_index, seed):
+                ckpt.episode_done(round_index, seed, float(done[seed].get("wall_time_s") or 0.0), list(done))
     if not todo:
         return [done[s] for s in seeds]
 

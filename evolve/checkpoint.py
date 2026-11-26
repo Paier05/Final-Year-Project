@@ -314,6 +314,10 @@ class Checkpoint:
         return any(c.get("unit") == "stage" and c["round"] == round_index and c["stage"] == stage
                    for c in self.state["completed"])
 
+    def episode_was_completed(self, round_index: int, seed: int) -> bool:
+        return any(c.get("unit") == "episode" and c["round"] == round_index and c.get("seed") == seed
+                   for c in self.state["completed"])
+
     def note_replay(self, round_index: int, seed: int, moved: list[str]) -> None:
         with self._mutex:
             self.state["replayed_after_cutoff"].append(
