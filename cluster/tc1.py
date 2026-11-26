@@ -8,7 +8,9 @@
     python cluster/tc1.py fetch runs/v3 logs             # copy results back
 
 Credentials are read from the environment and used only for SSH/SFTP:
-TC1_HOST, TC1_PORT, TC1_USER, TC1_PASSWORD. The password is never put on a
+TC1_HOST, TC1_PORT, TC1_USER, TC1_PASSWORD. TC1_REMOTE_DIR (default
+evo-harness) is the repo directory under the home directory: #16 uses
+evo-harness-16, so #15's code and runs in evo-harness stay as they are. The password is never put on a
 command line, in a file on the cluster, or in any output. The model keys for
 `put-env` come from QWEN_API_KEY / QWEN_BASE_URL (environment or .env) and are
 sent over SFTP into a 0600 file, not through a shell command.
@@ -32,7 +34,7 @@ import tempfile
 
 import paramiko
 
-REMOTE_REPO = "evo-harness"          # under the home directory on TC1
+REMOTE_REPO = os.environ.get("TC1_REMOTE_DIR") or "evo-harness"  # under the home directory on TC1
 ENV_FILE = ".evo_harness_env"
 GAMES = ("ls20", "ft09", "vc33")    # game files (gitignored) uploaded with the code
 # Not needed on the cluster and large: earlier runs' results and the PDFs.
@@ -143,7 +145,7 @@ def cmd_rm_env(client: paramiko.SSHClient) -> int:
 
 
 def cmd_fetch(client: paramiko.SSHClient, paths: list[str], dest: str) -> int:
-    """Copy directories or files under ~/evo-harness back, keeping their paths."""
+    """Copy directories or files under ~/<remote dir> back, keeping their paths."""
     sftp = client.open_sftp()
     count = size = 0
 
