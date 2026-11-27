@@ -17,7 +17,30 @@ Both games finished all 5 rounds in **one part each**, running in parallel on TC
 - The repeat check did most of the visible work. It dropped 8 of ft09's 19 proposed edits (42%, the same rate #15 would have had).
 - The state-change check dropped one skill, `solve_level`. That looks like a **false drop**: all 5 states it tested were turn 0, where that skill has nothing to click. Details and a fix are under ft09 below.
 
-Figures and tables come from `python -m analysis.issue16_report`, which writes `results/issue16/final.json` and `results/issue16/figures/` from the saved runs.
+Figures and tables come from `python -m analysis.issue16_report`, which writes `results/issue16/final.json` and `results/issue16/figures/` from the saved runs. The replays come from `python -m analysis.issue16_replays`.
+
+## How the two games were finished
+
+Each replay shows the final version (v4) of each game, rebuilt from the saved frames of its winning episode. It shows the frame after each action, a ring on each click, and the action-record line for that action.
+
+**vc33 · v4 · seed 1: cleared in 3 clicks.**
+- v4's hints say the maroon button at (61, 33) moves the black region left by 4 columns.
+- The player clicks it once per turn and checks where the region went. On the third click the region lines up and Level 1 is cleared.
+- All five seeds were won the same way: three clicks on (61, 33).
+
+![vc33 replay](https://github.com/Paier05/Final-Year-Project/blob/c660880b45770f346fde6769b67194e8f945bebf/results/issue16/replays/vc33_v4_seed1.gif?raw=true)
+
+![vc33 every frame](https://github.com/Paier05/Final-Year-Project/blob/c660880b45770f346fde6769b67194e8f945bebf/results/issue16/replays/vc33_v4_seed1_frames.png?raw=true)
+
+**ft09 · v4 · seed 5: cleared in 37 clicks, partly by luck.** This is the only v4 seed that cleared.
+1. In turns 1–9 the player toggles the blocks of the 3×3 grid between maroon and cyan, trying to fill the bar on row 63, which it takes for the goal.
+2. That bar moves on with every click. When it fills at step 33, the game is over and the harness restarts the level.
+3. The rest of turn 9's code keeps running on the fresh board: three clicks planned for the old board.
+4. In turn 10 the player calls `auto_solve`, whose first click clears Level 1.
+
+![ft09 replay](https://github.com/Paier05/Final-Year-Project/blob/c660880b45770f346fde6769b67194e8f945bebf/results/issue16/replays/ft09_v4_seed5.gif?raw=true)
+
+![ft09 every frame](https://github.com/Paier05/Final-Year-Project/blob/c660880b45770f346fde6769b67194e8f945bebf/results/issue16/replays/ft09_v4_seed5_frames.png?raw=true)
 
 ---
 
